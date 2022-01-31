@@ -30,7 +30,7 @@ public class Deck {
                 addCard(tmp);
             }
         }
-
+        // lägg till de svarta
         addCard(new Card(Value.plus4, Col.black));
         addCard(new Card(Value.plus4, Col.black));
         addCard(new Card(Value.pickColor, Col.black));
@@ -53,8 +53,12 @@ public class Deck {
             {
                 Card tmp = cards.get(i);
                 if(Card.equals(card, tmp))
+                {
                     cards.remove(i);
+                    return;
+                }
             }
+            throw new IllegalArgumentException("Can't remove card, card is not in deck!");
         }
         else
             throw new IllegalArgumentException("Can't remove card, deck is empty!");
