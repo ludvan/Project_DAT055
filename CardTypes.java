@@ -11,7 +11,8 @@ enum Value {
     stop,
     plus2,
     plus4,
-    reverse
+    reverse,
+    pickColor
 }
 
 enum Col {

@@ -34,4 +34,11 @@ public class Card {
     {
         return a.value == b.value && a.color == b.color;
     }
+
+    public String toString()
+    {
+        String tmp = "";
+        tmp = "val : " + value + "col : " + color;
+        return tmp;
+    }
 }

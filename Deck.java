@@ -17,9 +17,29 @@ public class Deck {
         }
     }
 
+    public void fillDeck()
+    {
+        // lägg till alla kort förutom de svarta
+        for(int c = 0; c < 4; c++)
+        {
+            Col color = Col.values()[c];
+            for(int v = 0; v <= 11; v++)
+            {
+                Value value = Value.values()[v];
+                Card tmp = new Card(value, color);
+                addCard(tmp);
+            }
+        }
+
+        addCard(new Card(Value.plus4, Col.black));
+        addCard(new Card(Value.plus4, Col.black));
+        addCard(new Card(Value.pickColor, Col.black));
+        addCard(new Card(Value.pickColor, Col.black));
+    }
+
     public void addCard(Card card)
     {
-        if(!inDeck(card))
+        if(!inDeck(card) || card.getColor() == Col.black)
             cards.add(card);
         else
             throw new IllegalArgumentException("Can't add card, card is already in deck!");
@@ -63,5 +83,16 @@ public class Deck {
                 return true;
         }
         return false;
+    }
+
+    public String toString()
+    {
+        String tmp = "";
+        for(int i = 0; i < cards.size(); i++)
+        {
+            tmp += cards.get(i).toString() + "/n";
+        }
+        tmp += "Deck size : " + cards.size();
+        return tmp;
     }
 }
