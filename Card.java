@@ -4,6 +4,11 @@ public class Card {
 
     public Card(Value val, Col col)
     {
+        if(col == Col.black)
+        {
+            if(val != Value.pickColor && val != Value.pickColor)
+                throw new IllegalArgumentException("Card can't be created, Illegal value / color combination!");
+        }
         value = val;
         color = col;
     }

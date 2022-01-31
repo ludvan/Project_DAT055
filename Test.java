@@ -5,5 +5,7 @@ public class Test {
         System.out.println(deck.toString());
         deck.fillDeck();
         System.out.println(deck.toString());
+        deck.removeCard(new Card(Value.eight, Col.yellow));
+        System.out.println(deck.toString());
     }
 }
