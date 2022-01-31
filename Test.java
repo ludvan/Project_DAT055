@@ -7,5 +7,7 @@ public class Test {
         System.out.println(deck.toString());
         deck.removeCard(new Card(Value.eight, Col.yellow));
         System.out.println(deck.toString());
+        deck.addCard(new Card(Value.eight, Col.yellow));
+        deck.addCard(new Card(Value.eight, Col.yellow));
     }
 }

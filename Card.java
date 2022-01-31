@@ -6,7 +6,7 @@ public class Card {
     {
         if(col == Col.black)
         {
-            if(val != Value.pickColor && val != Value.pickColor)
+            if(val != Value.plus4 && val != Value.pickColor)
                 throw new IllegalArgumentException("Card can't be created, Illegal value / color combination!");
         }
         value = val;
