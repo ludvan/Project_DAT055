@@ -38,7 +38,7 @@ public class Card {
     public String toString()
     {
         String tmp = "";
-        tmp = "val : " + value + "col : " + color;
+        tmp = "val : " + value + "  col : " + color;
         return tmp;
     }
 }

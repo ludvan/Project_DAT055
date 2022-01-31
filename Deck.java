@@ -90,7 +90,7 @@ public class Deck {
         String tmp = "";
         for(int i = 0; i < cards.size(); i++)
         {
-            tmp += cards.get(i).toString() + "/n";
+            tmp += cards.get(i).toString() + "\n";
         }
         tmp += "Deck size : " + cards.size();
         return tmp;
