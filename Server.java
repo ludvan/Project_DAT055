@@ -4,7 +4,7 @@ import java.util.*;
 
 public class Server {
     private int port;
-    private Set<String> clientNames = new HashSet<>();
+    private Set<Player> players = new HashSet<>();
     private Set<ClientThread> clientThreads = new HashSet<>();
 
     public Server(int _port)
@@ -39,16 +39,13 @@ public class Server {
             System.out.println("Syntax: java ChatServer <port-number>");
             System.exit(0);
         }
- 
-        int port = Integer.parseInt(args[0]);
+        
+        int port = 8989;
  
         Server server = new Server(port);
         server.execute();
     }
  
-    /**
-     * Delivers a message from one user to others (broadcasting)
-     */
     void broadcast(String message, ClientThread excludeUser) {
         for (ClientThread aUser : clientThreads) {
             if (aUser != excludeUser) {
@@ -60,29 +57,29 @@ public class Server {
     /**
      * Stores username of the newly connected client.
      */
-    void addUserName(String userName) {
-        clientNames.add(userName);
+    void addUser(Player user) {
+        players.add(user);
     }
  
     /**
      * When a client is disconneted, removes the associated username and UserThread
      */
-    void removeUser(String userName, ClientThread aUser) {
-        boolean removed = clientNames.remove(userName);
+    void removeUser(Player user, ClientThread aUser) {
+        boolean removed = players.remove(user);
         if (removed) {
             clientThreads.remove(aUser);
-            System.out.println("The user " + userName + " quitted");
+            System.out.println("The user " + user.getName() + " quitted");
         }
     }
  
-    Set<String> getUserNames() {
-        return this.clientNames;
+    Set<Player> getUserNames() {
+        return this.players;
     }
  
     /**
      * Returns true if there are other users connected (not count the currently connected user)
      */
     boolean hasUsers() {
-        return !this.clientNames.isEmpty();
+        return !this.players.isEmpty();
     }
 }

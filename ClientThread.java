@@ -29,7 +29,8 @@ public class ClientThread extends Thread {
             printUsers();
  
             String userName = reader.readLine();
-            server.addUserName(userName);
+            Player newUser = new Player(userName);
+            server.addUser(newUser);
  
             String serverMessage = "New user connected: " + userName;
             server.broadcast(serverMessage, this);
@@ -43,7 +44,7 @@ public class ClientThread extends Thread {
  
             } while (!clientMessage.equals("bye"));
  
-            server.removeUser(userName, this);
+            server.removeUser(newUser, this);
             socket.close();
  
             serverMessage = userName + " has quitted.";
