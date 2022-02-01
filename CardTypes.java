@@ -5,7 +5,7 @@ enum Value
     three,
     four,
     five,
-    size,
+    six,
     seven,
     eight,
     nine,

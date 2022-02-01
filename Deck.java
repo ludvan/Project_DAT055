@@ -76,6 +76,14 @@ public class Deck
         return cards.get(cards.size()-1);
     }
 
+    public Card getCard(int i)
+    {
+        if(i > cards.size())
+            throw new IllegalArgumentException("Index of of range!");
+        else
+            return cards.get(i);
+    }
+
     public int getSize()
     {
         return cards.size();
