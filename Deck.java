@@ -30,6 +30,7 @@ public class Deck
                 Value value = Value.values()[v];
                 Card tmp = new Card(value, color);
                 addCard(tmp);
+                addCard(tmp);
             }
             addCard(new Card(Value.zero, color));
         }
