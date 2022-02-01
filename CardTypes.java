@@ -11,8 +11,8 @@ enum Value
     nine,
     stop,
     plus2,
-    plus4,
     reverse,
+    plus4,
     pickColor
 }
 
