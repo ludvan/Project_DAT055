@@ -1,5 +1,6 @@
 enum Value 
 {
+    zero,
     one,
     two,
     three,

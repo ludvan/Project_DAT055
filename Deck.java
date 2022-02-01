@@ -25,16 +25,22 @@ public class Deck
         for(int c = 0; c < 4; c++)
         {
             Col color = Col.values()[c];
-            for(int v = 0; v <= 11; v++)
+            for(int v = 1; v <= 12; v++)
             {
                 Value value = Value.values()[v];
                 Card tmp = new Card(value, color);
                 addCard(tmp);
+                addCard(tmp);
             }
+            addCard(new Card(Value.zero, color));
         }
         // lägg till de svarta
         addCard(new Card(Value.plus4, Col.black));
         addCard(new Card(Value.plus4, Col.black));
+        addCard(new Card(Value.plus4, Col.black));
+        addCard(new Card(Value.plus4, Col.black));
+        addCard(new Card(Value.pickColor, Col.black));
+        addCard(new Card(Value.pickColor, Col.black));
         addCard(new Card(Value.pickColor, Col.black));
         addCard(new Card(Value.pickColor, Col.black));
     }
@@ -46,10 +52,7 @@ public class Deck
 
     public void addCard(Card card)
     {
-        if(!inDeck(card) || card.getColor() == Col.black)
-            cards.add(card);
-        else
-            throw new IllegalArgumentException("Can't add card, card is already in deck!");
+        cards.add(card);
     }
 
     public void removeCard(Card card)
