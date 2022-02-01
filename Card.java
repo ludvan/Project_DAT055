@@ -10,6 +10,11 @@ public class Card
             if(val != Value.plus4 && val != Value.pickColor)
                 throw new IllegalArgumentException("Card can't be created, Illegal value / color combination!");
         }
+        else
+        {
+            if(val == Value.plus4 || val == Value.pickColor)
+                throw new IllegalArgumentException("Card can't be created, Illegal value / color combination!");
+        }
         value = val;
         color = col;
     }
