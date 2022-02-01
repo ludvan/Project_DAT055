@@ -4,29 +4,55 @@ import java.util.*;
 
 public class Server {
     private int port;
+    private int playerLimit;
+    private Deck deck;
     private Set<Player> players = new HashSet<>();
     private Set<ClientThread> clientThreads = new HashSet<>();
 
     public Server(int _port)
     {
         port = _port;
+        playerLimit = 4; // hårdkodat så länge
+        deck = new Deck();
+        deck.fillDeck();
+        Deck.shuffle(deck);
+    }
+
+    public void dealCards()
+    {
+        while(deck.getSize() > 0)
+        {
+            for(Player player : players)
+            {
+                if(deck.getSize() <= 0)
+                    break;
+                
+                Card tmp = deck.drawCard();
+                deck.removeCard(tmp);
+                broadcast("player : " + player.getName() + " add card " + tmp.toString());
+            }
+        }
     }
 
     public void execute()
     {
         try (ServerSocket serverSocket = new ServerSocket(port)) {
- 
+            // lobby
             System.out.println("Chat Server is listening on port " + port);
+            System.out.println("Waiting for players to connect...");
  
-            while (true) {
+            while (players.size() < playerLimit) {
                 Socket socket = serverSocket.accept();
-                System.out.println("New user connected");
- 
                 ClientThread newUser = new ClientThread(socket, this);
                 clientThreads.add(newUser);
+                System.out.println("New user joined the lobby");
                 newUser.start();
- 
             }
+
+            // game loop
+            System.out.println("Match full, dealing cards ");
+            dealCards();
+
  
         } catch (IOException ex) {
             System.out.println("Error in the server: " + ex.getMessage());
@@ -39,7 +65,7 @@ public class Server {
             System.out.println("Syntax: java ChatServer <port-number>");
             System.exit(0);
         }
-        
+
         int port = 8989;
  
         Server server = new Server(port);
@@ -53,12 +79,19 @@ public class Server {
             }
         }
     }
+
+    void broadcast(String message) {
+        for (ClientThread aUser : clientThreads) {
+            aUser.sendMessage(message);
+        }
+    }
  
     /**
      * Stores username of the newly connected client.
      */
     void addUser(Player user) {
         players.add(user);
+        System.out.println("(" + players.size() + "/"+ playerLimit + ") users connected");
     }
  
     /**
@@ -69,6 +102,7 @@ public class Server {
         if (removed) {
             clientThreads.remove(aUser);
             System.out.println("The user " + user.getName() + " quitted");
+            System.out.println("(" + players.size() + "/"+ playerLimit + ") users connected");
         }
     }
  
