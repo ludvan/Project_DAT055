@@ -22,7 +22,7 @@ public class UnoWindow extends JFrame implements ActionListener{
 	public UnoWindow(){
         setTitle("Uno");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(1920,1080);
+        setSize(1920,540);
 
         myHand = new JPanel();
         
@@ -71,13 +71,18 @@ public class UnoWindow extends JFrame implements ActionListener{
 		
 	}
 	
-	private void removeCard() {
-		
+	private void removeCard(JButton clicked) {
+		myHand.remove(clicked);
+		myHand.revalidate();
+		myHand.repaint();
 	}
 	
 	//bara kopplad till knappen "test"
 	public void actionPerformed(ActionEvent e) {
 		Toolkit.getDefaultToolkit().beep();
+		
+		JButton clicked = (JButton) e.getSource();
+		removeCard(clicked);
 	}
 	
 	
