@@ -1,4 +1,5 @@
-enum Value {
+enum Value 
+{
     one,
     two,
     three,
@@ -15,7 +16,8 @@ enum Value {
     pickColor
 }
 
-enum Col {
+enum Col 
+{
     red,
     green,
     yellow,

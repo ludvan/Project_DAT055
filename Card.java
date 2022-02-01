@@ -1,4 +1,5 @@
-public class Card {
+public class Card 
+{
     private Value value;
     private Col color;
 

@@ -1,4 +1,5 @@
-public class Test {
+public class Test 
+{
     public static void main(String[] args)
     {
         Deck deck = new Deck();
@@ -8,6 +9,8 @@ public class Test {
         deck.removeCard(new Card(Value.eight, Col.yellow));
         System.out.println(deck.toString());
         deck.addCard(new Card(Value.eight, Col.yellow));
+        Deck.shuffle(deck);
+        System.out.println(deck.toString());
 
         System.out.println(Card.isStackable(new Card(Value.eight, Col.yellow), new Card(Value.five, Col.yellow)));
         System.out.println(Card.isStackable(new Card(Value.eight, Col.yellow), new Card(Value.five, Col.red)));
