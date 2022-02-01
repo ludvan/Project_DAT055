@@ -1,21 +1,24 @@
 import java.net.*;
 import java.io.*;
+import java.util.*;
  
 public class ChatClient {
     private String hostname;
     private int port;
     private String userName;
+    private Set<Player> players;
  
     public ChatClient(String hostname, int port) {
         this.hostname = hostname;
         this.port = port;
+        players = new HashSet<>();
     }
  
     public void execute() {
         try {
             Socket socket = new Socket(hostname, port);
  
-            System.out.println("Connected to the chat server");
+            System.out.println("Connected to the server");
  
             new ReadThread(socket, this).start();
             new WriteThread(socket, this).start();

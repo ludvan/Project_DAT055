@@ -8,14 +8,16 @@ public class Server {
     private Deck deck;
     private Set<Player> players = new HashSet<>();
     private Set<ClientThread> clientThreads = new HashSet<>();
+    private boolean in_match;
 
     public Server(int _port)
     {
         port = _port;
-        playerLimit = 4; // hårdkodat så länge
+        playerLimit = 2; // hårdkodat så länge
         deck = new Deck();
         deck.fillDeck();
         Deck.shuffle(deck);
+        in_match = false;
     }
 
     public void dealCards()
@@ -36,24 +38,22 @@ public class Server {
 
     public void execute()
     {
-        try (ServerSocket serverSocket = new ServerSocket(port)) {
+        try (ServerSocket serverSocket = new ServerSocket(port)) 
+        {
             // lobby
             System.out.println("Chat Server is listening on port " + port);
             System.out.println("Waiting for players to connect...");
  
-            while (players.size() < playerLimit) {
-                Socket socket = serverSocket.accept();
-                ClientThread newUser = new ClientThread(socket, this);
-                clientThreads.add(newUser);
-                System.out.println("New user joined the lobby");
-                newUser.start();
+            if(!in_match)
+            {
+                while (players.size() < playerLimit) {
+                    Socket socket = serverSocket.accept();
+                    ClientThread newUser = new ClientThread(socket, this);
+                    clientThreads.add(newUser);
+                    System.out.println("New user joined the lobby");
+                    newUser.start();
+                }             
             }
-
-            // game loop
-            System.out.println("Match full, dealing cards ");
-            dealCards();
-
- 
         } catch (IOException ex) {
             System.out.println("Error in the server: " + ex.getMessage());
             ex.printStackTrace();
@@ -92,6 +92,12 @@ public class Server {
     void addUser(Player user) {
         players.add(user);
         System.out.println("(" + players.size() + "/"+ playerLimit + ") users connected");
+        if(players.size() == playerLimit)
+        {
+            in_match = true;
+            System.out.println("Match full, dealing cards...");
+            dealCards();
+        }
     }
  
     /**
