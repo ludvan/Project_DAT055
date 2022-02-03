@@ -6,45 +6,56 @@ public class ChatClient {
     private String hostname;
     private int port;
     private String userName;
-    private Set<Player> players;
+    private Game game;
  
-    public ChatClient(String hostname, int port) {
+    public ChatClient(String hostname, int port, String username) {
         this.hostname = hostname;
         this.port = port;
-        players = new HashSet<>();
+        this.userName = username;
     }
  
     public void execute() {
         try {
             Socket socket = new Socket(hostname, port);
- 
-            System.out.println("Connected to the server");
- 
-            new ReadThread(socket, this).start();
-            new WriteThread(socket, this).start();
- 
+            ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+            oos.writeObject(userName);
+            System.out.println(userName + " connected to the server"); 
+            oos.flush();
+            oos.close();
+            socket.close();
         } catch (UnknownHostException ex) {
             System.out.println("Server not found: " + ex.getMessage());
         } catch (IOException ex) {
             System.out.println("I/O Error: " + ex.getMessage());
-        }
- 
+        } 
     }
  
+
+    void setGame(Game game)
+    {
+        game.setPlayers(game.getPlayers());
+        game.setDeck(game.getDeck());
+    }
+
     void setUserName(String userName) {
         this.userName = userName;
     }
  
     String getUserName() {
-        return this.userName;
+        return userName;
     }
  
- 
     public static void main(String[] args) { 
+        if(args.length < 1)
+        {
+            System.out.println("Enter username");
+            return;
+        }
         String hostname = "localhost";
         int port = 8989;
+        String username = args[0];
  
-        ChatClient client = new ChatClient(hostname, port);
+        ChatClient client = new ChatClient(hostname, port, username);
         client.execute();
     }
 }

@@ -5,35 +5,40 @@ import java.util.*;
 public class Server {
     private int port;
     private int playerLimit;
-    private Deck deck;
-    private Set<Player> players = new HashSet<>();
-    private Set<ClientThread> clientThreads = new HashSet<>();
+    private ArrayList<ClientThread> clientThreads;
     private boolean in_match;
+    private Game game;
 
     public Server(int _port)
     {
         port = _port;
+        game = new Game();
+        clientThreads = new ArrayList<ClientThread>();
         playerLimit = 2; // hårdkodat så länge
-        deck = new Deck();
-        deck.fillDeck();
-        Deck.shuffle(deck);
         in_match = false;
     }
 
     public void dealCards()
     {
-        while(deck.getSize() > 0)
+        Deck tmp = new Deck();
+        tmp.fillDeck();
+        Deck.shuffle(tmp);
+        game.setDeck(tmp);
+
+        while(game.getDeck().getSize() > 0)
         {
-            for(Player player : players)
+            for(Player player : game.getPlayers())
             {
-                if(deck.getSize() <= 0)
+                if(game.getDeck().getSize() <= 0)
                     break;
                 
-                Card tmp = deck.drawCard();
-                deck.removeCard(tmp);
-                broadcast("player : " + player.getName() + " add card " + tmp.toString());
+                Card topCard = game.getDeck().drawCard();
+                game.getDeck().removeCard(topCard);
+                player.getDeck().addCard(topCard);
             }
         }
+
+        broadcastGame(game);
     }
 
     public void execute()
@@ -43,10 +48,10 @@ public class Server {
             // lobby
             System.out.println("Chat Server is listening on port " + port);
             System.out.println("Waiting for players to connect...");
- 
+            
             if(!in_match)
             {
-                while (players.size() < playerLimit) {
+                while (game.getPlayers().size() < playerLimit) {
                     Socket socket = serverSocket.accept();
                     ClientThread newUser = new ClientThread(socket, this);
                     clientThreads.add(newUser);
@@ -61,11 +66,6 @@ public class Server {
     }
 
     public static void main(String[] args) {
-        if (args.length < 1) {
-            System.out.println("Syntax: java ChatServer <port-number>");
-            System.exit(0);
-        }
-
         int port = 8989;
  
         Server server = new Server(port);
@@ -85,14 +85,20 @@ public class Server {
             aUser.sendMessage(message);
         }
     }
+
+    void broadcastGame(Game game) {
+        for (ClientThread aUser : clientThreads) {
+            aUser.sendGame(game);
+        }
+    }
  
     /**
      * Stores username of the newly connected client.
      */
     void addUser(Player user) {
-        players.add(user);
-        System.out.println("(" + players.size() + "/"+ playerLimit + ") users connected");
-        if(players.size() == playerLimit)
+        game.addPlayer(user);
+        System.out.println("(" + game.getPlayers().size() + "/"+ playerLimit + ") users connected");
+        if(game.getPlayers().size() == playerLimit)
         {
             in_match = true;
             System.out.println("Match full, dealing cards...");
@@ -104,22 +110,20 @@ public class Server {
      * When a client is disconneted, removes the associated username and UserThread
      */
     void removeUser(Player user, ClientThread aUser) {
-        boolean removed = players.remove(user);
-        if (removed) {
-            clientThreads.remove(aUser);
-            System.out.println("The user " + user.getName() + " quitted");
-            System.out.println("(" + players.size() + "/"+ playerLimit + ") users connected");
-        }
+        game.removePlayer(user);
+        clientThreads.remove(aUser);
+        System.out.println("The user " + user.getName() + " quitted");
+        System.out.println("(" + game.getPlayers().size() + "/"+ playerLimit + ") users connected");
     }
  
-    Set<Player> getUserNames() {
-        return this.players;
+    ArrayList<Player> getPlayers() {
+        return this.game.getPlayers();
     }
  
     /**
      * Returns true if there are other users connected (not count the currently connected user)
      */
     boolean hasUsers() {
-        return !this.players.isEmpty();
+        return !this.game.getPlayers().isEmpty();
     }
 }

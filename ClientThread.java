@@ -11,7 +11,8 @@ import java.util.*;
 public class ClientThread extends Thread {
     private Socket socket;
     private Server server;
-    private PrintWriter writer;
+    private ObjectOutputStream oos;
+    private ObjectInputStream ois;
  
     public ClientThread(Socket socket, Server server) {
         this.socket = socket;
@@ -20,39 +21,50 @@ public class ClientThread extends Thread {
  
     public void run() {
         try {
-            InputStream input = socket.getInputStream();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(input));
- 
-            OutputStream output = socket.getOutputStream();
-            writer = new PrintWriter(output, true);
- 
+            ois = new ObjectInputStream(socket.getInputStream());
+            oos = new ObjectOutputStream(socket.getOutputStream());
+
             printUsers();
- 
-            String userName = reader.readLine();
-            Player newUser = new Player(userName);
+
+            String username = (String)ois.readObject();
+            Player newUser = new Player(username);
             server.addUser(newUser);
  
-            String serverMessage = "New user connected: " + userName;
+            String serverMessage = "New user connected: " + username;
             server.broadcast(serverMessage, this);
- 
-            String clientMessage;
- 
+            Object clientMessage;
+
             do {
-                clientMessage = reader.readLine();
-                serverMessage = "[" + userName + "]: " + clientMessage;
-                server.broadcast(serverMessage, this);
+                if(ois.available() != 0)
+                {
+                    clientMessage = ois.readObject();
+                    if(clientMessage instanceof Game)
+                    {
+                        System.out.println("game was recieved from client");
+                    }
+                    else if(clientMessage instanceof String)
+                    {
+                        System.out.println("string was recieved from client");
+                        server.broadcast((String)clientMessage, this);
+                    }
+                }
+                //serverMessage = "[" + userName + "]: " + clientMessage;
  
-            } while (!clientMessage.equals("bye"));
- 
+            } while (true);
+            /*
             server.removeUser(newUser, this);
             socket.close();
  
-            serverMessage = userName + " has quitted.";
+            serverMessage = username + " has quitted.";
             server.broadcast(serverMessage, this);
+            */
  
         } catch (IOException ex) {
             System.out.println("Error in UserThread: " + ex.getMessage());
             ex.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            System.out.println("Error recieving username in UserThread: " + e.getMessage());
+            e.printStackTrace();
         }
     }
  
@@ -60,10 +72,14 @@ public class ClientThread extends Thread {
      * Sends a list of online users to the newly connected user.
      */
     void printUsers() {
-        if (server.hasUsers()) {
-            writer.println("Connected users: " + server.getUserNames());
-        } else {
-            writer.println("No other users connected");
+        try {
+            if (server.hasUsers()) {
+                oos.writeObject("Connected users: " + server.getPlayers());
+            } else {
+                oos.writeObject("No other users connected");
+            }
+        } catch (IOException e) {
+            System.out.println("Error printing users : " + e.getMessage());
         }
     }
  
@@ -71,6 +87,15 @@ public class ClientThread extends Thread {
      * Sends a message to the client.
      */
     void sendMessage(String message) {
-        writer.println(message);
+        //writer.println(message);
+    }
+
+    void sendGame(Game game) {
+        try {
+            oos.writeObject(game);
+        } catch (IOException ex) {
+            System.out.println("Error in UserThread, can't send game : " + ex.getMessage());
+            ex.printStackTrace();
+        }
     }
 }
