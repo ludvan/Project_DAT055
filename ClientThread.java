@@ -21,13 +21,13 @@ public class ClientThread extends Thread {
             // om vi inte är i en match, lägg till nya spelare
             if(!server.inMatch())
             {
+                // skapa ny användare och lägg till i servern
                 String username = (String)ois.readObject();
                 Player newUser = new Player(username);
                 server.addUser(newUser);
     
                 String serverMessage = "New user connected: " + username;
-                server.broadcast(serverMessage, this);
-                
+                server.broadcast(serverMessage, this);        
             }
 
             //socket.close();
@@ -41,11 +41,11 @@ public class ClientThread extends Thread {
         }
     }
 
- 
+    
     /**
      * Sends a message to the client.
      */
-    void sendMessage(String message) {
+    void sendObject(Object message) {
         try {
             oos.writeObject(message);
             oos.flush();

@@ -3,6 +3,7 @@ import java.util.*;
 
 public class Game implements java.io.Serializable{
     private Deck deck;
+    private int player_id; // används för att hålla koll på spelarens kort
     private ArrayList<Player> players = new ArrayList<>();
     private int turn;
     private boolean reverse;
@@ -11,8 +12,19 @@ public class Game implements java.io.Serializable{
     {
         deck = new Deck();
         players = new ArrayList<>();
+        player_id = -1; // -1 for the serber version of game
         turn = 0;
         reverse = false;
+    }
+
+    public void setPlayerId(int id)
+    {
+        player_id = id;
+    }
+
+    public int getPlayerId()
+    {
+        return player_id;
     }
 
     public ArrayList<Player> getPlayers()
@@ -77,5 +89,18 @@ public class Game implements java.io.Serializable{
             t--;
         }
         return t%players.size();
+    }
+
+    public String toString()
+    {
+        String tmp = "";
+        tmp += "dealer deck : \n" + deck.toString();
+        tmp += "\n";
+        tmp += "players : " + players.size();
+        tmp += "\n";
+        tmp += "turn : " + turn;
+        tmp += "\n";
+        tmp += "reverse? : " + reverse;
+        return tmp;
     }
 }

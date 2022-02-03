@@ -38,7 +38,14 @@ public class Server {
             }
         }
 
-        broadcastGame(game);
+        // I spelarnas game vill vi sätta player_id till unika värden så
+        // att spelarna kan hålla koll på vilka kort som är sina
+        for(int i = 0; i < game.getPlayers().size(); i++)
+        {   
+            Game player_game = game;
+            player_game.setPlayerId(i);
+            send(player_game, clientThreads.get(i));
+        }
     }
 
     public void execute()
@@ -75,24 +82,23 @@ public class Server {
         Server server = new Server(port);
         server.execute();
     }
- 
-    void broadcast(String message, ClientThread excludeUser) {
+
+    void send(Object object, ClientThread user)
+    {
+        user.sendObject(object);
+    }
+
+    void broadcast(Object object) {
+        for (ClientThread aUser : clientThreads) {
+            aUser.sendObject(object);
+        }
+    }
+
+    void broadcast(Object object, ClientThread excludeUser) {
         for (ClientThread aUser : clientThreads) {
             if (aUser != excludeUser) {
-                aUser.sendMessage(message);
+                aUser.sendObject(object);
             }
-        }
-    }
-
-    void broadcast(String message) {
-        for (ClientThread aUser : clientThreads) {
-            aUser.sendMessage(message);
-        }
-    }
-
-    void broadcastGame(Game game) {
-        for (ClientThread aUser : clientThreads) {
-            aUser.sendGame(game);
         }
     }
  

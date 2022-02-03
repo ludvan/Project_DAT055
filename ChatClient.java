@@ -8,7 +8,7 @@ public class ChatClient {
     private String hostname;
     private int port;
     private String userName;
-    private Game game;
+    private Game game; // lokal kopia av spel state
  
     public ChatClient(String hostname, int port, String username) {
         this.hostname = hostname;
@@ -29,24 +29,18 @@ public class ChatClient {
             try {
                 ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
                 Object recieved;
-                System.out.println("read client messages ClientThread");
                 while(true) {
                     recieved = ois.readObject();
+                    // detta borde hanteras av en extern class kanske??
                     // todo skicka generaliserat medelande som egen class. detta skall innehålla ändringar mm
                     if(recieved instanceof Game)
                     {
-
-                        System.out.println("game was recieved from server");
                         setGame((Game)recieved);
                     }
                     else if(recieved instanceof String)
                     {
-                        System.out.println("string was recieved from server");
                         System.out.println(recieved);
-                        //server.broadcast((String)clientMessage, this);
                     }
-                    // något är fel
-                    System.out.println("bad! recieved : " + recieved.toString());
                 }
             }
             catch (IOException ex) {
@@ -64,11 +58,15 @@ public class ChatClient {
         } 
     }
  
-
     void setGame(Game game)
     {
-        game.setPlayers(game.getPlayers());
-        game.setDeck(game.getDeck());
+        this.game = new Game();
+        this.game.setPlayers(game.getPlayers());
+        this.game.setDeck(game.getDeck());
+        this.game.setPlayerId(game.getPlayerId());
+        // visa våra kort för skojs skull
+        int id = this.game.getPlayerId();
+        System.out.println("your cards : " + this.game.getPlayerDeck(id));
     }
 
     void setUserName(String userName) {
