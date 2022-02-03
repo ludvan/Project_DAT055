@@ -6,20 +6,36 @@ import javax.swing.*;
 
 public class UnoWindow extends JFrame implements ActionListener{
 	private JPanel myHand;
-	private JPanel op1Hand;
-	private JPanel op2Hand;
-	private JPanel op3Hand;
 	private JPanel centerArea;
 	
 	private JButton test;
+	private JButton pile;
+	private JButton drawPile;
+	private JButton addButton;
+	
+	
+	//OBS bör sättas i separat klass enligt MVC (motståndares händer styrs ej och bör vara i en view)
+	//hålls här så länge för testning
 	private JButton test1;
 	private JButton test2;
 	private JButton test3;
-	private JButton pile;
+	
+	private JPanel op1Hand;
+	private JPanel op2Hand;
+	private JPanel op3Hand;
+	
+	private Deck deck;
+
 	
 	
 	
 	public UnoWindow(){
+		deck = new Deck();
+		
+		deck.fillDeck();
+		Deck.shuffle(deck);
+		
+		
         setTitle("Uno");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(1920,540);
@@ -41,9 +57,13 @@ public class UnoWindow extends JFrame implements ActionListener{
         test3 = new JButton("test3");
         
         pile = new JButton("pile");
+        drawPile = new JButton ("draw");
+        drawPile.addActionListener(this);
+        addButton = new JButton("added");
         
         centerArea.setBackground(Color.white);
         centerArea.add(pile,BorderLayout.CENTER);
+        centerArea.add(drawPile);
         add(centerArea,BorderLayout.CENTER);
         
         myHand.setBackground(Color.yellow);
@@ -67,8 +87,21 @@ public class UnoWindow extends JFrame implements ActionListener{
         setVisible(true);
     }
 	
+	
 	private void addCard() {
+		System.out.println(deck.drawCard().toString());
+		Card addedCard = deck.drawCard();
+		JButton addedButton = new JButton(addedCard.toString());
+		addedButton.addActionListener(this);
 		
+		addedButton.setActionCommand(addedCard.toString());
+		
+		myHand.add(addedButton);
+		myHand.revalidate();
+		myHand.repaint();
+		deck.removeCard(addedCard);
+		//shuffle läggs till, annars var nästa kort alltid samma (t.ex. gul 1 två gånger i rad innan det tog slut på gul 1)
+		Deck.shuffle(deck);
 	}
 	
 	private void removeCard(JButton clicked) {
@@ -77,12 +110,17 @@ public class UnoWindow extends JFrame implements ActionListener{
 		myHand.repaint();
 	}
 	
-	//bara kopplad till knappen "test"
+	//bara kopplad till knappen "test", "draw" och nya knappar
 	public void actionPerformed(ActionEvent e) {
-		Toolkit.getDefaultToolkit().beep();
+		if(e.getActionCommand().equals("draw")) {
+			addCard();
+		}
+		//eftersom det gäller för alla klickbara kort som ej är draw (för tillfället)
+		else {
+			JButton clicked = (JButton) e.getSource();
+			removeCard(clicked);
+		}
 		
-		JButton clicked = (JButton) e.getSource();
-		removeCard(clicked);
 	}
 	
 	
