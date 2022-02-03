@@ -59,6 +59,10 @@ public class Server {
                     newUser.start();
                 }             
             }
+            while(in_match)
+            {
+                // spel logik
+            }
         } catch (IOException ex) {
             System.out.println("Error in the server: " + ex.getMessage());
             ex.printStackTrace();
@@ -125,5 +129,10 @@ public class Server {
      */
     boolean hasUsers() {
         return !this.game.getPlayers().isEmpty();
+    }
+
+    public boolean inMatch()
+    {
+        return in_match;
     }
 }

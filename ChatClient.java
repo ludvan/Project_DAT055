@@ -16,6 +16,8 @@ public class ChatClient {
  
     public void execute() {
         try {
+            // skapa en socket och skicka användarnamn till servern som lägger till användaren i en lista
+            // och startar en tråd för användaren
             Socket socket = new Socket(hostname, port);
             ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
             oos.writeObject(userName);
@@ -27,7 +29,7 @@ public class ChatClient {
             System.out.println("Server not found: " + ex.getMessage());
         } catch (IOException ex) {
             System.out.println("I/O Error: " + ex.getMessage());
-        } 
+        }
     }
  
 

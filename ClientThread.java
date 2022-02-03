@@ -18,42 +18,41 @@ public class ClientThread extends Thread {
             ois = new ObjectInputStream(socket.getInputStream());
             oos = new ObjectOutputStream(socket.getOutputStream());
 
-            printUsers();
-
+            // om vi inte är i en match, lägg till nya spelare
+            if(!server.inMatch())
+            {
+                String username = (String)ois.readObject();
+                Player newUser = new Player(username);
+                server.addUser(newUser);
+    
+                String serverMessage = "New user connected: " + username;
+                server.broadcast(serverMessage, this);
+            }
+            // annars prata med servern
+            else
+            {
+                Object clientMessage;
+                do {
+                    if(ois.available() != 0)
+                    {
+                        clientMessage = ois.readObject();
+                        if(clientMessage instanceof Game)
+                        {
+                            System.out.println("game was recieved from server");
+                        }
+                        else if(clientMessage instanceof String)
+                        {
+                            System.out.println("string was recieved from server");
+                            System.out.println(clientMessage);
+                            //server.broadcast((String)clientMessage, this);
+                        }
+                    }
+    
+                } while (true);
+            }
             
-            String username = (String)ois.readObject();
-            Player newUser = new Player(username);
-            server.addUser(newUser);
- 
-            String serverMessage = "New user connected: " + username;
-            server.broadcast(serverMessage, this);
-            Object clientMessage;
-
-            do {
-                if(ois.available() != 0)
-                {
-                    clientMessage = ois.readObject();
-                    if(clientMessage instanceof Game)
-                    {
-                        System.out.println("game was recieved from client");
-                    }
-                    else if(clientMessage instanceof String)
-                    {
-                        System.out.println("string was recieved from client");
-                        System.out.println(clientMessage);
-                        //server.broadcast((String)clientMessage, this);
-                    }
-                }
- 
-            } while (true);
-            /*
-            server.removeUser(newUser, this);
             socket.close();
- 
-            serverMessage = username + " has quitted.";
-            server.broadcast(serverMessage, this);
-            */
- 
+            
         } catch (IOException ex) {
             System.out.println("Error in UserThread: " + ex.getMessage());
             ex.printStackTrace();
@@ -62,17 +61,7 @@ public class ClientThread extends Thread {
             e.printStackTrace();
         }
     }
- 
-    /**
-     * Sends a list of online users to the newly connected user.
-     */
-    void printUsers() {
-        if (server.hasUsers()) {
-            System.out.println("Connected users: " + server.getPlayers());
-        } else {
-            System.out.println("No other users connected");
-        }
-    }
+
  
     /**
      * Sends a message to the client.
@@ -81,6 +70,7 @@ public class ClientThread extends Thread {
         //writer.println(message);
     }
 
+    // send game to client
     void sendGame(Game game) {
         try {
             oos.writeObject(game);
