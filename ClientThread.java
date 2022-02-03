@@ -29,29 +29,7 @@ public class ClientThread extends Thread {
                 server.broadcast(serverMessage, this);
                 
             }
-            // annars prata med servern
-            else
-            {
-                Object clientMessage;
-                do {
-                    if(ois.available() != 0)
-                    {
-                        clientMessage = ois.readObject();
-                        if(clientMessage instanceof Game)
-                        {
-                            System.out.println("game was recieved from server");
-                        }
-                        else if(clientMessage instanceof String)
-                        {
-                            System.out.println("string was recieved from server");
-                            System.out.println(clientMessage);
-                            //server.broadcast((String)clientMessage, this);
-                        }
-                    }
-    
-                } while (true);
-            }
-            
+
             //socket.close();
             
         } catch (IOException ex) {
@@ -80,6 +58,7 @@ public class ClientThread extends Thread {
     void sendGame(Game game) {
         try {
             oos.writeObject(game);
+            System.out.println("Game state sent from server");
             oos.flush();
         } catch (IOException ex) {
             System.out.println("Error in UserThread, can't send game : " + ex.getMessage());
