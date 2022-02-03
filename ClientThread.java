@@ -27,6 +27,7 @@ public class ClientThread extends Thread {
     
                 String serverMessage = "New user connected: " + username;
                 server.broadcast(serverMessage, this);
+                
             }
             // annars prata med servern
             else
@@ -51,7 +52,7 @@ public class ClientThread extends Thread {
                 } while (true);
             }
             
-            socket.close();
+            //socket.close();
             
         } catch (IOException ex) {
             System.out.println("Error in UserThread: " + ex.getMessage());
@@ -67,16 +68,21 @@ public class ClientThread extends Thread {
      * Sends a message to the client.
      */
     void sendMessage(String message) {
-        //writer.println(message);
+        try {
+            oos.writeObject(message);
+            oos.flush();
+        } catch (IOException e) {
+            System.out.println("Error in userThread, can't send message : " + e.getMessage());
+        }
     }
 
-    // send game to client
+    // send game state to client
     void sendGame(Game game) {
         try {
             oos.writeObject(game);
+            oos.flush();
         } catch (IOException ex) {
             System.out.println("Error in UserThread, can't send game : " + ex.getMessage());
-            ex.printStackTrace();
         }
     }
 }

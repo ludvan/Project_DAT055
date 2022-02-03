@@ -23,13 +23,14 @@ public class ChatClient {
             oos.writeObject(userName);
             System.out.println(userName + " connected to the server"); 
             oos.flush();
-            oos.close();
-            socket.close();
+
+            //oos.close();
+            //socket.close();
         } catch (UnknownHostException ex) {
             System.out.println("Server not found: " + ex.getMessage());
         } catch (IOException ex) {
             System.out.println("I/O Error: " + ex.getMessage());
-        }
+        } 
     }
  
 
