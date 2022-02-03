@@ -60,7 +60,7 @@ public class UnoWindow extends JFrame implements ActionListener{
         drawPile = new JButton ("draw");
         drawPile.addActionListener(this);
         addButton = new JButton("added");
-        
+
         centerArea.setBackground(Color.white);
         centerArea.add(pile,BorderLayout.CENTER);
         centerArea.add(drawPile);
@@ -120,10 +120,19 @@ public class UnoWindow extends JFrame implements ActionListener{
 			JButton clicked = (JButton) e.getSource();
 			removeCard(clicked);
 		}
-		
 	}
-	
-	
+
+	//inte kopplat till panelen än
+	public void paintComponent(Graphics g){
+	super.paintComponents(g);
+	for (int CardAmount=0; CardAmount < deck.getSize(); CardAmount++){
+		int x= 25*CardAmount;
+		int y= 0;
+		g.setColor(Color.black);
+		g.drawRect(25+x, 10+y, 40,80);
+		}
+	};
+
 	public static void main(String[] args){
         UnoWindow u = new UnoWindow();
         
