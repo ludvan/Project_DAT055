@@ -1,7 +1,7 @@
 import java.io.Serializable;
 import java.util.*;
 
-public class Game implements Serializable{
+public class Game implements java.io.Serializable{
     private Deck deck;
     private ArrayList<Player> players = new ArrayList<>();
     private int turn;

@@ -2,12 +2,6 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
  
-/**
- * This thread handles connection for each connected client, so the server
- * can handle multiple clients at the same time.
- *
- * @author www.codejava.net
- */
 public class ClientThread extends Thread {
     private Socket socket;
     private Server server;
@@ -26,6 +20,7 @@ public class ClientThread extends Thread {
 
             printUsers();
 
+            
             String username = (String)ois.readObject();
             Player newUser = new Player(username);
             server.addUser(newUser);
@@ -45,10 +40,10 @@ public class ClientThread extends Thread {
                     else if(clientMessage instanceof String)
                     {
                         System.out.println("string was recieved from client");
-                        server.broadcast((String)clientMessage, this);
+                        System.out.println(clientMessage);
+                        //server.broadcast((String)clientMessage, this);
                     }
                 }
-                //serverMessage = "[" + userName + "]: " + clientMessage;
  
             } while (true);
             /*
@@ -72,14 +67,10 @@ public class ClientThread extends Thread {
      * Sends a list of online users to the newly connected user.
      */
     void printUsers() {
-        try {
-            if (server.hasUsers()) {
-                oos.writeObject("Connected users: " + server.getPlayers());
-            } else {
-                oos.writeObject("No other users connected");
-            }
-        } catch (IOException e) {
-            System.out.println("Error printing users : " + e.getMessage());
+        if (server.hasUsers()) {
+            System.out.println("Connected users: " + server.getPlayers());
+        } else {
+            System.out.println("No other users connected");
         }
     }
  
