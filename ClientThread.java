@@ -53,15 +53,4 @@ public class ClientThread extends Thread {
             System.out.println("Error in userThread, can't send message : " + e.getMessage());
         }
     }
-
-    // send game state to client
-    void sendGame(Game game) {
-        try {
-            oos.writeObject(game);
-            System.out.println("Game state sent from server");
-            oos.flush();
-        } catch (IOException ex) {
-            System.out.println("Error in UserThread, can't send game : " + ex.getMessage());
-        }
-    }
 }

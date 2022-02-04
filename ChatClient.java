@@ -9,22 +9,33 @@ public class ChatClient {
     private int port;
     private String userName;
     private Game game; // lokal kopia av spel state
+    private ObjectOutputStream outputStream;
+    private Socket socket;
  
     public ChatClient(String hostname, int port, String username) {
         this.hostname = hostname;
         this.port = port;
         this.userName = username;
     }
- 
+    
+    public void sendToServer(Object object)
+    {
+        try{
+            outputStream.writeObject(object);
+            outputStream.flush();
+        }
+        catch (IOException ex) {
+            System.out.println("I/O Error: " + ex.getMessage());
+        }
+    }
+
     public void execute() {
         try {
             // skapa en socket och skicka användarnamn till servern som lägger till användaren i en lista
             // och startar en tråd för användaren
-            Socket socket = new Socket(hostname, port);
-            ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
-            oos.writeObject(userName);
-            System.out.println(userName + " connected to the server"); 
-            oos.flush();
+            socket = new Socket(hostname, port);
+            outputStream = new ObjectOutputStream(socket.getOutputStream());
+            sendToServer(userName);
             // loop som läser från servern
             try {
                 ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
@@ -49,7 +60,7 @@ public class ChatClient {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             } 
-            oos.close();
+            outputStream.close();
             socket.close();
         } catch (UnknownHostException ex) {
             System.out.println("Server not found: " + ex.getMessage());

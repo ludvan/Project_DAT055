@@ -14,7 +14,7 @@ public class Server {
         port = _port;
         game = new Game();
         clientThreads = new ArrayList<ClientThread>();
-        playerLimit = 5; // hårdkodat så länge
+        playerLimit = 4; // hårdkodat så länge
         in_match = false;
     }
 
