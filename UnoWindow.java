@@ -25,6 +25,7 @@ public class UnoWindow extends JFrame implements ActionListener{
 	private JPanel op3Hand;
 	
 	private Deck deck;
+	private Deck playedPile;
 
 	int width=1020;
 	int height= 540;
@@ -32,9 +33,23 @@ public class UnoWindow extends JFrame implements ActionListener{
 
 	public UnoWindow(){
 		deck = new Deck();
+		playedPile = new Deck();
+		
+		pile = new JButton("pile");
+		
+		
 		
 		deck.fillDeck();
 		Deck.shuffle(deck);
+		
+		//lägger första kortet
+		pile.setText(ButtonText(deck.drawCard()));
+		pile.setBackground(ButtonColor(deck.drawCard()));
+		playedPile.addCard(deck.drawCard());
+		deck.removeCard(deck.drawCard());
+		Deck.shuffle(deck);
+		
+		
 		
 		
         setTitle("Uno");
@@ -50,14 +65,11 @@ public class UnoWindow extends JFrame implements ActionListener{
         centerArea = new JPanel();
         
         
-        test = new JButton("test");
-        test.addActionListener(this);
-        
         test1 = new JButton("test1");
         test2 = new JButton("test2");
         test3 = new JButton("test3");
         
-        pile = new JButton("pile");
+        
         drawPile = new JButton ("draw");
         drawPile.addActionListener(this);
         addButton = new JButton("added");
@@ -68,7 +80,6 @@ public class UnoWindow extends JFrame implements ActionListener{
         add(centerArea,BorderLayout.CENTER);
         
         myHand.setBackground(Color.yellow);
-        myHand.add(test);
 		myHand.setPreferredSize(new Dimension(100, 100));
         add(myHand,BorderLayout.SOUTH);
         
@@ -128,10 +139,10 @@ public class UnoWindow extends JFrame implements ActionListener{
 	};
 
 	private void addCard() {
-		System.out.println(deck.drawCard().toString());
+		//System.out.println(deck.drawCard().toString());
 		Card addedCard = deck.drawCard();
 
-		JButton addedButton = new JButton(ButtonText(addedCard));
+		PlayerCard addedButton = new PlayerCard(ButtonText(addedCard),addedCard);
 
 		//ändrar inte buttonstorlek än,
 		addedButton.setBounds(20, 10, 70, 120);
@@ -152,16 +163,24 @@ public class UnoWindow extends JFrame implements ActionListener{
 		Deck.shuffle(deck);
 	}
 	
-	private void removeCard(JButton clicked) {
-		pile.setBackground(clicked.getBackground());
-		if (pile.getBackground()==Color.blue || pile.getBackground()==Color.black){
-			pile.setForeground(Color.white);
+	private void removeCard(PlayerCard clicked) {
+		if(Card.isStackable(clicked.getCardInfo(),playedPile.drawCard())) {
+			
+		
+			playedPile.addCard(clicked.getCardInfo());
+			pile.setBackground(clicked.getBackground());
+			if (pile.getBackground()==Color.blue || pile.getBackground()==Color.black){
+				pile.setForeground(Color.white);
+			}
+			pile.setText((clicked.getText()));
+	
+			myHand.remove(clicked);
+			myHand.revalidate();
+			myHand.repaint();
+			
+		}else {
+			System.out.println("not allowed");
 		}
-		pile.setText((clicked.getText()));
-
-		myHand.remove(clicked);
-		myHand.revalidate();
-		myHand.repaint();
 	}
 
 	private Color ButtonColor(Card c){
@@ -191,7 +210,7 @@ public class UnoWindow extends JFrame implements ActionListener{
 		}
 		//eftersom det gäller för alla klickbara kort som ej är draw (för tillfället)
 		else {
-			JButton clicked = (JButton) e.getSource();
+			PlayerCard clicked = (PlayerCard) e.getSource();
 			removeCard(clicked);
 		}
 	}
