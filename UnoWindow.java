@@ -87,7 +87,7 @@ public class UnoWindow extends JFrame implements ActionListener{
         setVisible(true);
     }
 
-	private String setButtonText(Card c){
+	private String ButtonText(Card c){
 		Value value = c.getValue();
 
 		String buttontext=null;
@@ -131,14 +131,14 @@ public class UnoWindow extends JFrame implements ActionListener{
 		System.out.println(deck.drawCard().toString());
 		Card addedCard = deck.drawCard();
 
-		JButton addedButton = new JButton(setButtonText(addedCard));
+		JButton addedButton = new JButton(ButtonText(addedCard));
 
 		//ändrar inte buttonstorlek än,
 		addedButton.setBounds(20, 10, 70, 120);
 
 
-		addedButton.setBackground(setButtonColor(addedCard));
-		if (setButtonColor(addedCard)==Color.blue || setButtonColor(addedCard)==Color.black){
+		addedButton.setBackground(ButtonColor(addedCard));
+		if (ButtonColor(addedCard)==Color.blue || ButtonColor(addedCard)==Color.black){
 			addedButton.setForeground(Color.white);
 		}
 		addedButton.addActionListener(this);
@@ -153,16 +153,18 @@ public class UnoWindow extends JFrame implements ActionListener{
 	}
 	
 	private void removeCard(JButton clicked) {
-		//få kortets färg
-		//få kortets value
-		//sätt det på pile
+		pile.setBackground(clicked.getBackground());
+		if (pile.getBackground()==Color.blue || pile.getBackground()==Color.black){
+			pile.setForeground(Color.white);
+		}
+		pile.setText((clicked.getText()));
 
 		myHand.remove(clicked);
 		myHand.revalidate();
 		myHand.repaint();
 	}
 
-	private Color setButtonColor(Card c){
+	private Color ButtonColor(Card c){
 		Col color = c.getColor();
 		switch(color){
 			case red :
