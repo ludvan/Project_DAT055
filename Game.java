@@ -77,6 +77,11 @@ public class Game implements java.io.Serializable{
         deck.addCard(card);
     }
 
+    public int getCurrentTurn()
+    {
+        return turn;
+    }
+
     public int nextTurn()
     {
         int t = turn;
