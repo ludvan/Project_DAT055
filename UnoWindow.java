@@ -183,6 +183,7 @@ public class UnoWindow extends JFrame implements ActionListener{
 		return Color.MAGENTA;
 	}
 
+
 	//bara kopplad till knappen "test", "draw" och nya knappar
 	public void actionPerformed(ActionEvent e) {
 		if(e.getActionCommand().equals("draw")) {
