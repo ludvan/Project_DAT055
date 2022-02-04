@@ -29,8 +29,7 @@ public class UnoWindow extends JFrame implements ActionListener{
 	int width=1020;
 	int height= 540;
 
-	
-	
+
 	public UnoWindow(){
 		deck = new Deck();
 		
@@ -84,85 +83,66 @@ public class UnoWindow extends JFrame implements ActionListener{
         op3Hand.setBackground(Color.blue);
         op3Hand.add(test3);
         add(op3Hand,BorderLayout.EAST);
-        
-        
-        
+
         setVisible(true);
     }
-	
-	
-	private void addCard() {
-		System.out.println(deck.drawCard().toString());
-		Card addedCard = deck.drawCard();
 
-		Value value = addedCard.getValue();
-		Col color = addedCard.getColor();
+	private String ButtonText(Card c){
+		Value value = c.getValue();
 
 		String buttontext=null;
 
 		switch (value){
 			case zero : buttontext = "0";
-						break;
+				break;
 			case one : buttontext = "1";
-						break;
+				break;
 			case two : buttontext = "2";
-						break;
+				break;
 			case three : buttontext = "3";
-						break;
+				break;
 			case four : buttontext = "4";
-						break;
+				break;
 			case five : buttontext = "5";
-						break;
+				break;
 			case six : buttontext = "6";
-						break;
+				break;
 			case seven : buttontext = "7";
-						break;
+				break;
 			case eight : buttontext = "8";
-						break;
+				break;
 			case nine : buttontext = "9";
-						break;
+				break;
 			case stop : buttontext = "stop";
-						break;
+				break;
 			case plus2 : buttontext = "+2";
-						break;
+				break;
 			case reverse : buttontext = "<-->";
-						break;
+				break;
 			case plus4 : buttontext = "+4";
-						break;
+				break;
 			case pickColor : buttontext = "pick color";
-						break;
+				break;
 		}
+		return buttontext;
+	};
 
-		JButton addedButton = new JButton(buttontext);
+	private void addCard() {
+		System.out.println(deck.drawCard().toString());
+		Card addedCard = deck.drawCard();
+
+		JButton addedButton = new JButton(ButtonText(addedCard));
 
 		//ändrar inte buttonstorlek än,
 		addedButton.setBounds(20, 10, 70, 120);
 
 
-		switch(color){
-			case red :
-				addedButton.setBackground(Color.red);
-				break;
-			case green :
-				addedButton.setBackground(Color.green);
-				break;
-			case yellow :
-				addedButton.setBackground(Color.yellow);
-				break;
-			case blue :
-				addedButton.setBackground(Color.blue);
-				addedButton.setForeground(Color.white);
-				break;
-			case black :
-				addedButton.setBackground(Color.black);
-				addedButton.setForeground(Color.white);
-				break;
-			default:
-				System.out.println("didn't get a valid color");
+		addedButton.setBackground(ButtonColor(addedCard));
+		if (ButtonColor(addedCard)==Color.blue || ButtonColor(addedCard)==Color.black){
+			addedButton.setForeground(Color.white);
 		}
-
 		addedButton.addActionListener(this);
-		
+
 		addedButton.setActionCommand(addedCard.toString());
 		myHand.add(addedButton);
 		myHand.revalidate();
@@ -173,11 +153,37 @@ public class UnoWindow extends JFrame implements ActionListener{
 	}
 	
 	private void removeCard(JButton clicked) {
+		pile.setBackground(clicked.getBackground());
+		if (pile.getBackground()==Color.blue || pile.getBackground()==Color.black){
+			pile.setForeground(Color.white);
+		}
+		pile.setText((clicked.getText()));
+
 		myHand.remove(clicked);
 		myHand.revalidate();
 		myHand.repaint();
 	}
-	
+
+	private Color ButtonColor(Card c){
+		Col color = c.getColor();
+		switch(color){
+			case red :
+				return Color.red;
+			case green :
+				return Color.green;
+			case yellow :
+				return Color.yellow;
+			case blue :
+				return Color.blue;
+			case black :
+				return Color.black;
+			default:
+				System.out.println("didn't get a valid color");
+		}
+		return Color.MAGENTA;
+	}
+
+
 	//bara kopplad till knappen "test", "draw" och nya knappar
 	public void actionPerformed(ActionEvent e) {
 		if(e.getActionCommand().equals("draw")) {
