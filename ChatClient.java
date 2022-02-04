@@ -66,7 +66,8 @@ public class ChatClient {
         this.game.setPlayerId(game.getPlayerId());
         // visa våra kort för skojs skull
         int id = this.game.getPlayerId();
-        System.out.println("your cards : " + this.game.getPlayerDeck(id));
+        System.out.println("ID : " + id);
+        System.out.println("your cards : " + this.game.getPlayers().get(id).getDeck());
     }
 
     void setUserName(String userName) {

@@ -14,7 +14,7 @@ public class Server {
         port = _port;
         game = new Game();
         clientThreads = new ArrayList<ClientThread>();
-        playerLimit = 2; // hårdkodat så länge
+        playerLimit = 5; // hårdkodat så länge
         in_match = false;
     }
 
@@ -27,14 +27,14 @@ public class Server {
 
         while(game.getDeck().getSize() > 0)
         {
-            for(Player player : game.getPlayers())
+            for(int i = 0; i < game.getPlayers().size(); i++)
             {
                 if(game.getDeck().getSize() <= 0)
                     break;
                 
                 Card topCard = game.getDeck().drawCard();
                 game.getDeck().removeCard(topCard);
-                player.getDeck().addCard(topCard);
+                game.getPlayers().get(i).getDeck().addCard(topCard);
             }
         }
 
