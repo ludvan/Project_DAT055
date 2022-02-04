@@ -11,22 +11,18 @@ public class ChatClient {
     private Game game; // lokal kopia av spel state
     private ObjectOutputStream outputStream;
     private Socket socket;
+    private ArrayList<Object> sendBuffer; // buffra det vi vill skicka
  
     public ChatClient(String hostname, int port, String username) {
         this.hostname = hostname;
         this.port = port;
         this.userName = username;
+        sendBuffer = new ArrayList<Object>();
     }
     
     public void sendToServer(Object object)
     {
-        try{
-            outputStream.writeObject(object);
-            outputStream.flush();
-        }
-        catch (IOException ex) {
-            System.out.println("I/O Error: " + ex.getMessage());
-        }
+        sendBuffer.add(object);
     }
 
     public void execute() {
@@ -35,8 +31,10 @@ public class ChatClient {
             // och startar en tråd för användaren
             socket = new Socket(hostname, port);
             outputStream = new ObjectOutputStream(socket.getOutputStream());
-            sendToServer(userName);
-            // loop som läser från servern
+            outputStream.writeObject(userName);
+            outputStream.flush();
+
+            // loop som läser från och skriver till servern
             try {
                 ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
                 Object recieved;
@@ -48,9 +46,21 @@ public class ChatClient {
                     {
                         setGame((Game)recieved);
                     }
-                    else if(recieved instanceof String)
+                    if(recieved instanceof String)
                     {
                         System.out.println(recieved);
+                    }
+                    // om vi har något att skicka, skicka det
+                    if(sendBuffer.size() != 0)
+                    {
+                        try{
+                            outputStream.writeObject(sendBuffer.get(0));
+                            outputStream.flush();
+                            sendBuffer.clear();
+                        }
+                        catch (IOException ex) {
+                            System.out.println("I/O Error: " + ex.getMessage());
+                        }
                     }
                 }
             }
@@ -79,6 +89,11 @@ public class ChatClient {
         int id = this.game.getPlayerId();
         System.out.println("ID : " + id);
         System.out.println("your cards : " + this.game.getPlayers().get(id).getDeck());
+    }
+
+    public boolean isClientTurn()
+    {
+        return this.game.getPlayerId() == game.getCurrentTurn();
     }
 
     void setUserName(String userName) {
