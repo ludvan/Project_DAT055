@@ -1,4 +1,6 @@
-
+/*
+ * Klass för data som ska utbytas mellan server och klienter.
+*/
 public class TransmitData {
 	private Card card;
 	private int playerId;
