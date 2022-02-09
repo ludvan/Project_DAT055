@@ -3,6 +3,7 @@ import java.io.*;
 import java.util.*;
 
 public class ChatClient {
+    private GameBoard board;
     private String hostname; // serverns ip 
     private int port;
     private String userName;
@@ -19,6 +20,8 @@ public class ChatClient {
         this.userName = username;
         sendBuffer = new ArrayList<Object>();
         in_match = false;
+        board = new GameBoard();
+        board.setGame(game);
     }
     
     public void sendToServer(Object object)
@@ -118,6 +121,8 @@ public class ChatClient {
         this.game.setPlayerId(new_game.getPlayerId());
         this.game.setCurrentTurn(new_game.getCurrentTurn());
         in_match = true;
+        board.setGame(game);
+        board.update();
     }
 
     void updateGame(Game new_game)
@@ -125,6 +130,8 @@ public class ChatClient {
         this.game.setDeck(new_game.getDeck());
         this.game.setPlayers(new_game.getPlayers());
         this.game.setCurrentTurn(new_game.getCurrentTurn());
+        board.setGame(game);
+        board.update();
     }
 
     public boolean isClientTurn()
@@ -141,14 +148,15 @@ public class ChatClient {
     }
  
     public static void main(String[] args) { 
+        /*
         if(args.length < 1)
         {
             System.out.println("Enter username");
             return;
-        }
+        }*/
         String hostname = "localhost";
         int port = 8989;
-        String username = args[0];
+        String username = System.console().readLine();
  
         ChatClient client = new ChatClient(hostname, port, username);
         client.execute();
