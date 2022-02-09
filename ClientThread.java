@@ -1,6 +1,5 @@
 import java.io.*;
 import java.net.*;
-import java.util.*;
  
 public class ClientThread extends Thread {
     private Socket socket;
@@ -8,9 +7,9 @@ public class ClientThread extends Thread {
     private ObjectOutputStream oos;
     private ObjectInputStream ois;
  
-    public ClientThread(Socket socket, Server server) {
-        this.socket = socket;
-        this.server = server;
+    public ClientThread(Socket _socket, Server _server) {
+        this.socket = _socket;
+        this.server = _server;
         try {
             ois = new ObjectInputStream(socket.getInputStream());
             oos = new ObjectOutputStream(socket.getOutputStream());
@@ -37,29 +36,19 @@ public class ClientThread extends Thread {
             }
             while(true)
             {
-                if(server.inMatch())
-                {
-                    try {
-                        System.out.println("server reading inputstream...");
-                        Object recieved = ois.readObject();
-
-                        if(recieved instanceof Card)
-                        {
-                            Game tmp = server.getGame();
-                            System.out.println("server recieved card");
-                            server.broadcast(tmp.getPlayers().get(tmp.getCurrentTurn()).getName() + " placed card : " + ((Card)recieved).toString() + "\n");
-                        }
-                        System.out.println("server recieved something");
-                    }
-                    catch (ClassNotFoundException e) {
-                        System.out.println("Error recieving card in UserThread: " + e.getMessage());
-                        e.printStackTrace();
+                try {
+                    Object recieved = ois.readObject();
+                    if(recieved instanceof Card)
+                    {
+                        server.handleCard((Card)recieved);
                     }
                 }
+                catch(ClassNotFoundException e)
+                {
+                    System.out.println("Error recieving card : " + e.getMessage());
+                }
             }
-
-            //socket.close();
-            
+            //socket.close();            
         } catch (IOException ex) {
             System.out.println("Error in UserThread: " + ex.getMessage());
             ex.printStackTrace();

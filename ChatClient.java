@@ -2,8 +2,6 @@ import java.net.*;
 import java.io.*;
 import java.util.*;
 
-import javax.lang.model.util.ElementScanner6;
- 
 public class ChatClient {
     private String hostname; // serverns ip 
     private int port;
@@ -48,7 +46,14 @@ public class ChatClient {
                     // todo skicka generaliserat medelande som egen class. detta skall innehålla ändringar mm
                     if(recieved instanceof Game)
                     {
-                        setGame((Game)recieved);
+                        if(!in_match)
+                        {
+                            setGame((Game)recieved);
+                        }
+                        else
+                        {
+                            updateGame((Game)recieved);
+                        }
                     }
                     if(recieved instanceof String)
                     {
@@ -63,9 +68,14 @@ public class ChatClient {
                             // Det är vår tur att spela temporär lösning på att skicka ett kort
                             String console_in = System.console().readLine();
                             int selected_card = Integer.valueOf(console_in);
+
                             Card selected = game.getPlayerDeck(game.getPlayerId()).getCard(selected_card);
                             // lägg till kortet i vår send buffer
                             sendToServer(selected);
+                        }
+                        else
+                        {
+                            System.out.println("wait for your turn \n");
                         }
                     }
 
@@ -99,18 +109,22 @@ public class ChatClient {
             System.out.println("I/O Error: " + ex.getMessage());
         } 
     }
- 
-    void setGame(Game game)
+
+    void setGame(Game new_game)
     {
         this.game = new Game();
-        this.game.setPlayers(game.getPlayers());
-        this.game.setDeck(game.getDeck());
-        this.game.setPlayerId(game.getPlayerId());
+        this.game.setPlayers(new_game.getPlayers());
+        this.game.setDeck(new_game.getDeck());
+        this.game.setPlayerId(new_game.getPlayerId());
+        this.game.setCurrentTurn(new_game.getCurrentTurn());
         in_match = true;
-        // visa våra kort för skojs skull
-        int id = this.game.getPlayerId();
-        System.out.println("ID : " + id);
-        System.out.println("your cards : \n" + this.game.getPlayers().get(id).getDeck());
+    }
+
+    void updateGame(Game new_game)
+    {
+        this.game.setDeck(new_game.getDeck());
+        this.game.setPlayers(new_game.getPlayers());
+        this.game.setCurrentTurn(new_game.getCurrentTurn());
     }
 
     public boolean isClientTurn()

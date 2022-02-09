@@ -6,6 +6,7 @@ public class Menu extends JFrame{
     
     private final int window_width = 1920;
     private final int window_height = 1080;
+    private Server server; // lagra server
 
     public Menu(){
         setTitle("GameLauncher");
@@ -57,8 +58,8 @@ public class Menu extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e){
                 try {
-                    Server s = new Server(8989);
-                    s.execute();
+                    server = new Server(8989);
+                    server.start();
                 } catch (Exception y) {
                     JOptionPane.showInputDialog(null, y + "");
                 }

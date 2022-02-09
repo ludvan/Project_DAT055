@@ -2,7 +2,7 @@ import java.net.*;
 import java.io.*;
 import java.util.*;
 
-public class Server {
+public class Server extends Thread {
     private int port;
     private int playerLimit;
     private ArrayList<ClientThread> clientThreads;
@@ -16,6 +16,11 @@ public class Server {
         clientThreads = new ArrayList<ClientThread>();
         playerLimit = 2; // hårdkodat så länge
         in_match = false;
+    }
+
+    public Game getGame()
+    {
+        return game;
     }
 
     public void dealCards()
@@ -33,8 +38,8 @@ public class Server {
                     break;
                 
                 Card topCard = game.getDeck().drawCard();
-                game.getDeck().removeCard(topCard);
-                game.getPlayers().get(i).getDeck().addCard(topCard);
+                game.deckRemove(topCard);
+                game.playerAddCard(i, topCard);
             }
         }
 
@@ -48,7 +53,28 @@ public class Server {
         }
     }
 
-    public void execute()
+    public void handleCard(Card card)
+    {
+        if(!game.getDeck().isEmpty())
+        {
+            if(!Card.isStackable(card, game.getDeck().drawCard()))
+            {
+                send("can't place that card", clientThreads.get(game.getCurrentTurn()));
+                return;
+            }
+        }
+        
+        if(card.getValue() == Value.reverse)
+            game.setReverse(!game.getReverse());
+
+        addCardToDeck(card);
+        removeCardFromPlayer(game.getCurrentTurn(), card);
+        nextTurn();
+        //server.broadcast("\n" + tmp.getPlayers().get(tmp.getCurrentTurn()).getName() + " placed card : " + ((Card)recieved).toString() + "\n");
+        updateClientsGame();
+    }
+
+    public void run()
     {
         try (ServerSocket serverSocket = new ServerSocket(port)) 
         {
@@ -79,10 +105,10 @@ public class Server {
     }
 
     public static void main(String[] args) {
-        int port = 8989;
+        //int port = 8989;
  
-        Server server = new Server(port);
-        server.execute();
+        //Server server = new Server(port);
+        //server.execute();
     }
 
     public void send(Object object, ClientThread user)
@@ -103,6 +129,41 @@ public class Server {
             }
         }
     }
+
+    public void addCardToPlayer(int player, Card card)
+    {
+        this.game.playerAddCard(player, card);
+    }
+
+    public void removeCardFromPlayer(int player, Card card)
+    {
+        this.game.playerRemoveCard(player, card);
+    }
+
+    public void addCardToDeck(Card card)
+    {
+        this.game.deckAddCard(card);
+    }
+
+    public void removeCardFromDeck(Card card)
+    {
+        this.game.deckRemove(card);
+    }
+
+    public void nextTurn()
+    {
+        game.setCurrentTurn(game.nextTurn());
+    } 
+
+    public void updateClientsGame()
+    {
+        Game player_game = new Game(game);
+        for(int i = 0; i < this.game.getPlayers().size(); i++)
+        {   
+            player_game.setPlayerId(i);
+            send(player_game, clientThreads.get(i));
+        }
+    }
  
     /**
      * Stores username of the newly connected client.
@@ -116,11 +177,6 @@ public class Server {
             System.out.println("Match full, dealing cards...");
             dealCards();
         }
-    }
-
-    public Game getGame()
-    {
-        return game;
     }
  
     /**
