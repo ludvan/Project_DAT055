@@ -77,6 +77,8 @@ public class Deck implements Serializable
 
     public Card drawCard()
     {
+        if(isEmpty())
+            return null;
         return cards.get(cards.size()-1);
     }
 

@@ -14,7 +14,7 @@ public class Server {
         port = _port;
         game = new Game();
         clientThreads = new ArrayList<ClientThread>();
-        playerLimit = 4; // hårdkodat så länge
+        playerLimit = 2; // hårdkodat så länge
         in_match = false;
     }
 
@@ -66,10 +66,12 @@ public class Server {
                     newUser.start();
                 }             
             }
+            /*
             while(in_match)
             {
                 // spel logik
             }
+            */
         } catch (IOException ex) {
             System.out.println("Error in the server: " + ex.getMessage());
             ex.printStackTrace();
@@ -83,18 +85,18 @@ public class Server {
         server.execute();
     }
 
-    void send(Object object, ClientThread user)
+    public void send(Object object, ClientThread user)
     {
         user.sendObject(object);
     }
 
-    void broadcast(Object object) {
+    public void broadcast(Object object) {
         for (ClientThread aUser : clientThreads) {
             aUser.sendObject(object);
         }
     }
 
-    void broadcast(Object object, ClientThread excludeUser) {
+    public void broadcast(Object object, ClientThread excludeUser) {
         for (ClientThread aUser : clientThreads) {
             if (aUser != excludeUser) {
                 aUser.sendObject(object);
@@ -114,6 +116,11 @@ public class Server {
             System.out.println("Match full, dealing cards...");
             dealCards();
         }
+    }
+
+    public Game getGame()
+    {
+        return game;
     }
  
     /**

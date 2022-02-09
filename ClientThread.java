@@ -11,13 +11,18 @@ public class ClientThread extends Thread {
     public ClientThread(Socket socket, Server server) {
         this.socket = socket;
         this.server = server;
+        try {
+            ois = new ObjectInputStream(socket.getInputStream());
+            oos = new ObjectOutputStream(socket.getOutputStream());
+        } 
+        catch (IOException ex) {
+            System.out.println("Error in ClientThread constructor: " + ex.getMessage());
+            ex.printStackTrace();
+        }
     }
  
     public void run() {
         try {
-            ois = new ObjectInputStream(socket.getInputStream());
-            oos = new ObjectOutputStream(socket.getOutputStream());
-
             // om vi inte är i en match, lägg till nya spelare
             if(!server.inMatch())
             {
@@ -25,9 +30,32 @@ public class ClientThread extends Thread {
                 String username = (String)ois.readObject();
                 Player newUser = new Player(username);
                 server.addUser(newUser);
-    
+                /*
                 String serverMessage = "New user connected: " + username;
-                server.broadcast(serverMessage, this);        
+                server.broadcast(serverMessage);  
+                */      
+            }
+            while(true)
+            {
+                if(server.inMatch())
+                {
+                    try {
+                        System.out.println("server reading inputstream...");
+                        Object recieved = ois.readObject();
+
+                        if(recieved instanceof Card)
+                        {
+                            Game tmp = server.getGame();
+                            System.out.println("server recieved card");
+                            server.broadcast(tmp.getPlayers().get(tmp.getCurrentTurn()).getName() + " placed card : " + ((Card)recieved).toString() + "\n");
+                        }
+                        System.out.println("server recieved something");
+                    }
+                    catch (ClassNotFoundException e) {
+                        System.out.println("Error recieving card in UserThread: " + e.getMessage());
+                        e.printStackTrace();
+                    }
+                }
             }
 
             //socket.close();
@@ -50,7 +78,7 @@ public class ClientThread extends Thread {
             oos.writeObject(message);
             oos.flush();
         } catch (IOException e) {
-            System.out.println("Error in userThread, can't send message : " + e.getMessage());
+            System.out.println("Error in userThread, can't send object : " + e.getMessage());
         }
     }
 }
