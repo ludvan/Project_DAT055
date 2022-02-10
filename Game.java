@@ -2,14 +2,28 @@ import java.util.*;
 
 public class Game implements java.io.Serializable{
     private Deck deck;
+    private Deck discardDeck;
     private int player_id; // används för att hålla koll på spelarens kort
     private ArrayList<Player> players;
     private int turn;
     private boolean reverse;
 
+    public Game copy(Game game)
+    {
+        Game tmp = new Game();
+        tmp.setDeck(game.getDeck());
+        tmp.setDiscardDeck(game.getDiscardDeck());
+        tmp.setPlayerId(game.getPlayerId());
+        tmp.setPlayers(game.getPlayers());
+        tmp.setCurrentTurn(game.getCurrentTurn());
+        tmp.setReverse(game.getReverse());
+        return tmp;
+    }
+
     public Game()
     {
         deck = new Deck();
+        discardDeck = new Deck();
         players = new ArrayList<>();
         player_id = -1; // -1 for the serber version of game
         turn = 0;
@@ -19,6 +33,7 @@ public class Game implements java.io.Serializable{
     public Game(Game clone)
     {
         deck = clone.getDeck();
+        discardDeck = clone.getDiscardDeck();
         players = clone.getPlayers();
         player_id = clone.getPlayerId(); // -1 for the serber version of game
         turn = clone.getCurrentTurn();
@@ -88,6 +103,26 @@ public class Game implements java.io.Serializable{
     public void deckRemove(Card card)
     {
         deck.removeCard(card);
+    }
+
+    public void setDiscardDeck(Deck deck)
+    {
+        this.discardDeck = deck;
+    }
+
+    public Deck getDiscardDeck()
+    {
+        return this.discardDeck;
+    }
+
+    public void discardDeckAddCard(Card card)
+    {
+        discardDeck.addCard(card);
+    }
+
+    public void discardDeckRemove(Card card)
+    {
+        discardDeck.removeCard(card);
     }
 
     public int getCurrentTurn()

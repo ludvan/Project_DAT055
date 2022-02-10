@@ -29,29 +29,30 @@ public class Server extends Thread {
         Deck tmp = new Deck();
         tmp.fillDeck();
         Deck.shuffle(tmp);
-        game.setDeck(tmp);
+        game.setDiscardDeck(tmp);
 
-        while(game.getDeck().getSize() > 0)
+        // dela ut 7 kort var
+        int cpp = 0;
+        while(cpp < 7)
         {
             for(int i = 0; i < game.getPlayers().size(); i++)
             {
-                if(game.getDeck().getSize() <= 0)
+                if(game.getDiscardDeck().getSize() <= 0)
                     break;
                 
-                Card topCard = game.getDeck().drawCard();
-                game.deckRemove(topCard);
-                game.playerAddCard(i, topCard);
+                Card top_card = game.getDiscardDeck().drawCard();
+                game.discardDeckRemove(top_card);
+                game.playerAddCard(i, top_card);
             }
+            cpp++;
         }
+        Card top_card = game.getDiscardDeck().drawCard();
+        game.deckAddCard(top_card);
+        game.discardDeckRemove(top_card);
 
         // I spelarnas game vill vi sätta player_id till unika värden så
         // att spelarna kan hålla koll på vilka kort som är sina
-        for(int i = 0; i < game.getPlayers().size(); i++)
-        {   
-            Game player_game = game;
-            player_game.setPlayerId(i);
-            send(player_game, clientThreads.get(i));
-        }
+        updateClientsGame(game);
     }
 
     public void handleCard(Card card)
@@ -68,11 +69,13 @@ public class Server extends Thread {
         if(card.getValue() == Value.reverse)
             game.setReverse(!game.getReverse());
 
-        addCardToDeck(card);
-        removeCardFromPlayer(game.getCurrentTurn(), card);
-        nextTurn();
+
+        game.deckAddCard(card);
+        game.playerRemoveCard(game.getCurrentTurn(), card);
+        game.setCurrentTurn(game.nextTurn());
+
         //server.broadcast("\n" + tmp.getPlayers().get(tmp.getCurrentTurn()).getName() + " placed card : " + ((Card)recieved).toString() + "\n");
-        updateClientsGame();
+        updateClientsGame(game);
     }
 
     public void run()
@@ -139,34 +142,9 @@ public class Server extends Thread {
         }
     }
 
-    public void addCardToPlayer(int player, Card card)
+    public void updateClientsGame(Game new_game)
     {
-        this.game.playerAddCard(player, card);
-    }
-
-    public void removeCardFromPlayer(int player, Card card)
-    {
-        this.game.playerRemoveCard(player, card);
-    }
-
-    public void addCardToDeck(Card card)
-    {
-        this.game.deckAddCard(card);
-    }
-
-    public void removeCardFromDeck(Card card)
-    {
-        this.game.deckRemove(card);
-    }
-
-    public void nextTurn()
-    {
-        game.setCurrentTurn(game.nextTurn());
-    } 
-
-    public void updateClientsGame()
-    {
-        Game player_game = new Game(game);
+        Game player_game = new_game.copy(new_game);
         for(int i = 0; i < this.game.getPlayers().size(); i++)
         {   
             player_game.setPlayerId(i);

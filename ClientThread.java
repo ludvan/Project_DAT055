@@ -65,7 +65,7 @@ public class ClientThread extends Thread {
     void sendObject(Object message) {
         try {
             oos.writeObject(message);
-            oos.flush();
+            oos.reset();
         } catch (IOException e) {
             System.out.println("Error in userThread, can't send object : " + e.getMessage());
         }

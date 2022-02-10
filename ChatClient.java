@@ -22,6 +22,7 @@ public class ChatClient {
         in_match = false;
         board = new GameBoard();
         board.setGame(game);
+        board.setClient(this);
     }
     
     public void sendToServer(Object object)
@@ -63,25 +64,26 @@ public class ChatClient {
                         System.out.println(recieved);
                     }
                     // detta sker när clienten är i en match
+                    /*
                     if(in_match)
                     {
                         if(isClientTurn())
                         {
-                            System.out.println("your turn! \n select card \n");
+                            //System.out.println("your turn! \n select card \n");
                             // Det är vår tur att spela temporär lösning på att skicka ett kort
-                            String console_in = System.console().readLine();
-                            int selected_card = Integer.valueOf(console_in);
+                            //String console_in = System.console().readLine();
+                            //int selected_card = Integer.valueOf(console_in);
 
-                            Card selected = game.getPlayerDeck(game.getPlayerId()).getCard(selected_card);
+                            //Card selected = game.getPlayerDeck(game.getPlayerId()).getCard(selected_card);
                             // lägg till kortet i vår send buffer
-                            sendToServer(selected);
+                            //sendToServer(selected);
                         }
                         else
                         {
                             System.out.println("wait for your turn \n");
                         }
                     }
-
+                    */
                     // om vi har något att skicka, skicka det (detta sker om vi vill skicka kort mm)
                     // OBS för debug har buffern endast ett object åt gången
                     if(sendBuffer.size() != 0)
@@ -116,10 +118,7 @@ public class ChatClient {
     void setGame(Game new_game)
     {
         this.game = new Game();
-        this.game.setPlayers(new_game.getPlayers());
-        this.game.setDeck(new_game.getDeck());
-        this.game.setPlayerId(new_game.getPlayerId());
-        this.game.setCurrentTurn(new_game.getCurrentTurn());
+        game = game.copy(new_game);
         in_match = true;
         board.setGame(game);
         board.update();
@@ -127,9 +126,8 @@ public class ChatClient {
 
     void updateGame(Game new_game)
     {
-        this.game.setDeck(new_game.getDeck());
-        this.game.setPlayers(new_game.getPlayers());
-        this.game.setCurrentTurn(new_game.getCurrentTurn());
+        System.out.println(new_game.toString());
+        game = game.copy(new_game);
         board.setGame(game);
         board.update();
     }
@@ -156,6 +154,7 @@ public class ChatClient {
         }*/
         String hostname = "localhost";
         int port = 8989;
+        System.out.println("Enter a username : ");
         String username = System.console().readLine();
  
         ChatClient client = new ChatClient(hostname, port, username);
