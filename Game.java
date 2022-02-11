@@ -147,7 +147,11 @@ public class Game implements java.io.Serializable{
         {
             t--;
         }
-        return t%players.size();
+        if(t < 0)
+            t = players.size()-1;
+        if(t > players.size()-1)
+            t = 0;
+        return t;
     }
 
     public boolean getReverse()
