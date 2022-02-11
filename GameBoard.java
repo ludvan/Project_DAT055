@@ -92,47 +92,6 @@ public class GameBoard extends JFrame {
 		add(opPanel, layout.NORTH);
 		revalidate();
 		repaint();
-		//int players = game.getPlayers().size();
-		/*
-		for(int i = 0; i < players; i++)
-		{
-			Player player = game.getPlayers().get(i);
-			double angle = 90.0 + 360.0 * ((double)(i-game.getPlayerId())/players);
-			double rel_posx = ((Math.cos(Math.toRadians(angle)) + 1)/2);
-			double rel_posy = ((Math.sin(Math.toRadians(angle)) + 1)/2);
-			int posx = (int)(rel_posx*(width-300));
-			int posy = (int)(rel_posy*(height-150));
-
-			JPanel panel = new JPanel();
-			GridLayout layout = new GridLayout(1, 4);
-			panel.setLayout(layout);
-			panel.setBounds(posx, posy, 164*4, 258/2);
-			for(int c = 0; c < player.getDeck().getSize(); i++)
-			{
-				if(game.getPlayerId() == i)
-				{
-					panel.add(new GameCard(player.getDeck().getCard(c)));
-				}
-				else
-				{
-					panel.add(new GameCard());
-				}
-				add(panel);
-			}
-			panel.revalidate();
-			panel.repaint();
-			
-		}
-		if(!game.getDeck().isEmpty())
-		{
-			GameCard gameDeck = new GameCard(game.getDeck().drawCard());
-			gameDeck.setLayout(null);
-			gameDeck.setBounds(width / 2 - 42, height / 2 - 65, 84, 129);
-			add(gameDeck);
-		}
-		revalidate();
-		repaint();
-		*/
 	}
 
 	public void setClient(ChatClient _client)

@@ -62,7 +62,7 @@ public class Server extends Thread {
     {
         int currentPlayer = game.getCurrentTurn();
         // om användaren endast vill dra ett kort från discard deck
-
+        
         if(data.getDrawCard())
         {
             drawCardCounter++;
