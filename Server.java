@@ -56,8 +56,9 @@ public class Server extends Thread {
         updateClientsGame(game);
     }
 
-    public void handleCard(Card card)
+    public void handleCard(TransmitData data)
     {
+        Card card = data.getCard();
         if(!game.getDeck().isEmpty())
         {
             if(!Card.isStackable(card, game.getDeck().drawCard()))

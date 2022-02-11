@@ -38,10 +38,10 @@ public class ClientThread extends Thread {
             {
                 try {
                     Object recieved = ois.readObject();
-                    if(recieved instanceof Card)
+                    if(recieved instanceof TransmitData)
                     {
                         System.out.println("Card recieved");
-                        server.handleCard((Card)recieved);
+                        server.handleCard((TransmitData)recieved);
                     }
                     System.out.println("something recieved");
                 }
