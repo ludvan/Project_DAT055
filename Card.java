@@ -31,6 +31,11 @@ public class Card implements Serializable
         return color;
     }
 
+    public void setColor(Col c)
+    {
+        color = c;
+    }
+
     public static boolean isStackable(Card a, Card b)
     {
         boolean tmp = false;
