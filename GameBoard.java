@@ -49,8 +49,10 @@ public class GameBoard extends JFrame {
 			card_button.addActionListener(new ActionListener(){
 				@Override
 				public void actionPerformed(ActionEvent e){
+					System.out.println("button pressed!");
 					if(client.isClientTurn())
 					{
+						System.out.println("Card selected : " + card_button.getCard().toString());
 						client.sendToServer(card_button.getCard());
 					}
 				}

@@ -13,6 +13,7 @@ public class ChatClient {
     private ObjectInputStream inputStream;
     private Socket socket;
     private ArrayList<Object> sendBuffer; // buffra det vi vill skicka
+    private boolean hasSelectCard = false;
  
     public ChatClient(String hostname, int port, String username) {
         this.hostname = hostname;
@@ -27,7 +28,9 @@ public class ChatClient {
     
     public void sendToServer(Object object)
     {
+        System.out.println("sending " + object.toString() + " to server...");
         sendBuffer.add(object);
+        hasSelectCard = true;
     }
 
     public void execute() {
@@ -64,32 +67,41 @@ public class ChatClient {
                         System.out.println(recieved);
                     }
                     // detta sker när clienten är i en match
-                    /*
+                    
                     if(in_match)
                     {
                         if(isClientTurn())
                         {
-                            //System.out.println("your turn! \n select card \n");
+                            hasSelectCard = false;
+                            while(!hasSelectCard)
+                            {
+                                // busy wait while user selects card
+                                hasSelectCard = false;
+                            }
+                            /*
+                            System.out.println("your turn! \n select card \n");
                             // Det är vår tur att spela temporär lösning på att skicka ett kort
-                            //String console_in = System.console().readLine();
-                            //int selected_card = Integer.valueOf(console_in);
+                            String console_in = System.console().readLine();
+                            int selected_card = Integer.valueOf(console_in);
 
-                            //Card selected = game.getPlayerDeck(game.getPlayerId()).getCard(selected_card);
+                            Card selected = game.getPlayerDeck(game.getPlayerId()).getCard(selected_card);
                             // lägg till kortet i vår send buffer
-                            //sendToServer(selected);
+                            sendToServer(selected);
+                            */
                         }
                         else
                         {
                             System.out.println("wait for your turn \n");
                         }
                     }
-                    */
+                    
                     // om vi har något att skicka, skicka det (detta sker om vi vill skicka kort mm)
                     // OBS för debug har buffern endast ett object åt gången
                     if(sendBuffer.size() != 0)
                     {
                         try{
                             outputStream.writeObject(sendBuffer.get(0));
+                            outputStream.reset();
                             System.out.print("client sent " + sendBuffer.get(0).toString() + " in ChatClient");
                             sendBuffer.clear();//sendBuffer.remove(0);
                         }
