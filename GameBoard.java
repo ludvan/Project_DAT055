@@ -55,7 +55,8 @@ public class GameBoard extends JFrame {
 					}
 				}
 			});
-			center_panel.add(discardDeck);
+			if(!client.hasStackableCard())
+				center_panel.add(discardDeck);
 		}
 		add(center_panel, layout.CENTER);
 		// player hand
