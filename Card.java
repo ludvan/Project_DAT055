@@ -38,7 +38,7 @@ public class Card implements Serializable
             tmp = true;
         if(a.color == b.color)
             tmp = true;
-        if(a.color == Col.black)
+        if(a.color == Col.black || b.color == Col.black)
             tmp = true;
         return tmp;
     }
