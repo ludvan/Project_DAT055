@@ -37,6 +37,8 @@ public class ColorChoice extends JPanel implements ActionListener {
 		visible = false;
 	}
 	
+	//Ändra till JOption, blir smidigt och fint
+	
 	public void actionPerformed(ActionEvent e) {
 		switch(e.getActionCommand()) {
 		case "red":
