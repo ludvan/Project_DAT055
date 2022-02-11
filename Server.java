@@ -58,11 +58,12 @@ public class Server extends Thread {
 
     public void handleCard(TransmitData data)
     {
+        int currentPlayer = game.getCurrentTurn();
         // om användaren endast vill dra ett kort från discard deck
         if(data.getDrawCard())
         {
             Card tmp = game.getDiscardDeck().drawCard();
-            game.playerAddCard(game.getCurrentTurn(), tmp);
+            game.playerAddCard(currentPlayer, tmp);
             game.discardDeckRemove(tmp);
             updateClientsGame(game);
             return;
@@ -73,7 +74,7 @@ public class Server extends Thread {
         {
             if(!Card.isStackable(card, game.getDeck().drawCard()))
             {
-                send("can't place that card", clientThreads.get(game.getCurrentTurn()));
+                send("can't place that card", clientThreads.get(currentPlayer));
                 return;
             }
         }
@@ -112,7 +113,7 @@ public class Server extends Thread {
             game.setReverse(!game.getReverse());
 
         game.deckAddCard(card);
-        game.playerRemoveCard(game.getCurrentTurn(), card);
+        game.playerRemoveCard(currentPlayer, card);
         game.setCurrentTurn(game.nextTurn());
         updateClientsGame(game);
     }
