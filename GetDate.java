@@ -10,10 +10,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 
-//TODO:
-//Fixa exceptions
-//Fixa konstruktor
-
 public class GetDate {
 	public static URLConnection uc;
 	
@@ -28,10 +24,10 @@ public class GetDate {
 			uc = url.openConnection();
 		}
 		catch (MalformedURLException e) { 
-			System.out.println("Exception"); 
+			System.out.println("MalformedURLException: " + e.getMessage()); 
 		}
 		catch (IOException e){ 
-			System.out.println("Exception"); 
+			System.out.println("IOException: " + e.getMessage()); 
 		}
 		
 		try {
@@ -48,7 +44,7 @@ public class GetDate {
 			}
 		} 
 		catch (IOException e) { 
-			System.out.println("Exception"); 
+			System.out.println("IOException: " + e.getMessage()); 
 		}
 		return null;
 	}
