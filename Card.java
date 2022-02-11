@@ -54,4 +54,8 @@ public class Card implements Serializable
         tmp = "val : " + value + "  col : " + color;
         return tmp;
     }
+    
+    public void setColor(Col chosen) {
+    	this.color = chosen;
+    }
 }
