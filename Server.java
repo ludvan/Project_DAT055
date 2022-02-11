@@ -64,6 +64,8 @@ public class Server extends Thread {
             Card tmp = game.getDiscardDeck().drawCard();
             game.playerAddCard(game.getCurrentTurn(), tmp);
             game.discardDeckRemove(tmp);
+            updateClientsGame(game);
+            return;
         }
 
         Card card = data.getCard();
