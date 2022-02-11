@@ -75,27 +75,27 @@ public class Server extends Thread {
         if(card.getValue() == Value.plus2){
             /* Add two cards to the players hand */
             Card tmp = game.getDiscardDeck().drawCard();
-            game.playerAddCard(game.getCurrentTurn(), tmp);
+            game.playerAddCard(game.nextTurn(), tmp);
             game.discardDeckRemove(tmp);
             tmp = game.getDiscardDeck().drawCard();
-            game.playerAddCard(game.getCurrentTurn(), tmp);
+            game.playerAddCard(game.nextTurn(), tmp);
             game.discardDeckRemove(tmp);
-            System.out.println(game.getCurrentTurn() + " drew 2 cards");
+            System.out.println(game.nextTurn() + " drew 2 cards");
         }
         if(card.getValue() == Value.plus4){
             Card tmp = game.getDiscardDeck().drawCard();
-            game.playerAddCard(game.getCurrentTurn(), tmp);
+            game.playerAddCard(game.nextTurn(), tmp);
             game.discardDeckRemove(tmp);
             tmp = game.getDiscardDeck().drawCard();
-            game.playerAddCard(game.getCurrentTurn(), tmp);
+            game.playerAddCard(game.nextTurn(), tmp);
             game.discardDeckRemove(tmp);     
             tmp = game.getDiscardDeck().drawCard();
-            game.playerAddCard(game.getCurrentTurn(), tmp);
+            game.playerAddCard(game.nextTurn(), tmp);
             game.discardDeckRemove(tmp);            
             tmp = game.getDiscardDeck().drawCard();
-            game.playerAddCard(game.getCurrentTurn(), tmp);
+            game.playerAddCard(game.nextTurn(), tmp);
             game.discardDeckRemove(tmp);
-            System.out.println(game.getCurrentTurn() + " drew 4 cards");
+            System.out.println(game.nextTurn() + " drew 4 cards");
         }
 
         game.deckAddCard(card);
