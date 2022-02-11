@@ -9,6 +9,7 @@ public class Server extends Thread {
     private boolean in_match;
     private Game game;
     private String server_status; // håller koll på vad som skrivs ut från servern
+    private int drawCardCounter; // används för att begränsa så att användaren inte kan plocka upp nmer än 3 kort
 
     public Server(int _port)
     {
@@ -17,6 +18,7 @@ public class Server extends Thread {
         clientThreads = new ArrayList<ClientThread>();
         playerLimit = 2; // hårdkodat så länge
         in_match = false;
+        drawCardCounter = 0;
     }
 
     public Game getGame()
@@ -56,13 +58,35 @@ public class Server extends Thread {
         updateClientsGame(game);
     }
 
-    public void handleCard(Card card)
+    public void handleCard(TransmitData data)
     {
+        int currentPlayer = game.getCurrentTurn();
+        // om användaren endast vill dra ett kort från discard deck
+
+        if(data.getDrawCard())
+        {
+            drawCardCounter++;
+            Card tmp = game.getDiscardDeck().drawCard();
+            game.playerAddCard(currentPlayer, tmp);
+            game.discardDeckRemove(tmp);
+
+            // användaren har dragit så många kort hen kan gå vidare
+            if(drawCardCounter >= 3)
+            {
+                game.setCurrentTurn(game.nextTurn());
+                drawCardCounter = 0;
+            }
+
+            updateClientsGame(game);
+            return;
+        }
+
+        Card card = data.getCard();
         if(!game.getDeck().isEmpty())
         {
             if(!Card.isStackable(card, game.getDeck().drawCard()))
             {
-                send("can't place that card", clientThreads.get(game.getCurrentTurn()));
+                send("can't place that card", clientThreads.get(currentPlayer));
                 return;
             }
         }
@@ -76,6 +100,7 @@ public class Server extends Thread {
             game.playerAddCard(game.nextTurn(), tmp);
             game.discardDeckRemove(tmp);
             System.out.println(game.nextTurn() + " drew 2 cards");
+            game.setCurrentTurn(game.nextTurn());
         }
         if(card.getValue() == Value.plus4){
             Card tmp = game.getDiscardDeck().drawCard();
@@ -91,6 +116,7 @@ public class Server extends Thread {
             game.playerAddCard(game.nextTurn(), tmp);
             game.discardDeckRemove(tmp);
             System.out.println(game.nextTurn() + " drew 4 cards");
+            game.setCurrentTurn(game.nextTurn());
         }
 
         if(card.getValue() == Value.stop)
@@ -99,7 +125,7 @@ public class Server extends Thread {
             game.setReverse(!game.getReverse());
 
         game.deckAddCard(card);
-        game.playerRemoveCard(game.getCurrentTurn(), card);
+        game.playerRemoveCard(currentPlayer, card);
         game.setCurrentTurn(game.nextTurn());
         updateClientsGame(game);
     }
