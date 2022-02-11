@@ -149,6 +149,19 @@ public class ChatClient {
         return this.game.getPlayerId() == game.getCurrentTurn();
     }
 
+    public boolean hasStackableCard()
+    {
+        boolean tmp = false;
+        for(int i = 0; i < game.getPlayerDeck(game.getPlayerId()).getSize(); i++)
+        {
+            if(Card.isStackable(game.getPlayerDeck(game.getPlayerId()).getCard(i), game.getDeck().drawCard()))
+            {
+                tmp = true;
+            }
+        }
+        return tmp;
+    }
+
     void setUserName(String userName) {
         this.userName = userName;
     }
