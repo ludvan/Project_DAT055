@@ -9,6 +9,9 @@ public class Server extends Thread {
     private boolean in_match;
     private Game game;
     private String server_status; // håller koll på vad som skrivs ut från servern
+    private Col validColor;
+    private Value validValue;
+    private int currentPlayer;
 
     public Server(int _port)
     {
@@ -43,6 +46,7 @@ public class Server extends Thread {
                 Card top_card = game.getDiscardDeck().drawCard();
                 game.discardDeckRemove(top_card);
                 game.playerAddCard(i, top_card);
+                Deck.shuffle(game.getDiscardDeck());
             }
             cpp++;
         }
@@ -67,45 +71,75 @@ public class Server extends Thread {
         }
         
         if(card.getValue() == Value.reverse)
-        {
             game.setReverse(!game.getReverse());
-        }
-        if(card.getValue() == Value.stop)
-        {   // om stopkort, hoppa två turns istälelt för en
-            game.setCurrentTurn(game.nextTurn());
-        }
 
-        // lägg till kort
-        if(card.getValue() == Value.plus2){
-            /* Add two cards to the players hand */
-            Card tmp = game.getDiscardDeck().drawCard();
-            game.playerAddCard(game.nextTurn(), tmp);
-            game.discardDeckRemove(tmp);
-            tmp = game.getDiscardDeck().drawCard();
-            game.playerAddCard(game.nextTurn(), tmp);
-            game.discardDeckRemove(tmp);
-            System.out.println(game.getCurrentTurn() + " drew 2 cards");
-        }
-        if(card.getValue() == Value.plus4){
-            /* Add four cards to the players hand */
-            Card tmp = game.getDiscardDeck().drawCard();
-            game.playerAddCard(game.nextTurn(), tmp);
-            game.discardDeckRemove(tmp);
-            tmp = game.getDiscardDeck().drawCard();
-            game.playerAddCard(game.nextTurn(), tmp);
-            game.discardDeckRemove(tmp);
-            tmp = game.getDiscardDeck().drawCard();
-            game.playerAddCard(game.nextTurn(), tmp);
-            game.discardDeckRemove(tmp);
-            tmp = game.getDiscardDeck().drawCard();
-            game.playerAddCard(game.nextTurn(), tmp);
-            game.discardDeckRemove(tmp);
-            System.out.println(game.getCurrentTurn() + " drew 4 cards");
-        }
 
         game.deckAddCard(card);
         game.playerRemoveCard(game.getCurrentTurn(), card);
         game.setCurrentTurn(game.nextTurn());
+
+        //server.broadcast("\n" + tmp.getPlayers().get(tmp.getCurrentTurn()).getName() + " placed card : " + ((Card)recieved).toString() + "\n");
+        updateClientsGame(game);
+
+        Deck playerHand = game.getPlayerDeck(game.getCurrentTurn());
+        if(card.getColor() == Col.black){
+            validColor = card.getColor();
+            validValue = card.getValue();
+        }
+        if(card.getColor() != validColor){
+            //throw new Exception("Invalid Color");
+        } else if(card.getValue() != validValue){
+            //throw new Exception("Invalid Value");
+        }
+
+        playerHand.removeCard(card);
+
+        if(playerHand.isEmpty()){
+            System.out.println(game.getCurrentTurn() + "has won the game!");
+            System.exit(0);
+        }
+
+        validColor = card.getColor();
+        validValue = card.getValue();
+        game.deckAddCard(card);
+
+        if(game.getReverse() == false){
+            /* Om man är t.ex 10 spelare och det currentPlayer är 1
+            så kommer det bli spelare 2 som spelar nästa gång */
+            currentPlayer = (currentPlayer + 1) % getPlayers().size();
+        } else if(game.getReverse() == true){
+            currentPlayer = (currentPlayer - 1) % getPlayers().size();
+            if(currentPlayer == -1){
+                /* Specialfall, om currentPlayer blir under noll så kommer den hoppa
+                till högsta spelaren, t.ex som i förra exemplet spelare 10 */
+                currentPlayer = getPlayers().size() - 1;
+            }
+        }
+        /* Möjligtvis onödig? */
+        if(card.getColor() == Col.black){
+            validColor = card.getColor();
+        }
+        if(card.getValue() == Value.plus2){
+            /* Add two cards to the players hand */
+            playerHand.addCard(card);
+            playerHand.addCard(card);
+            System.out.println(game.getCurrentTurn() + " drew 2 cards");
+        }
+        if(card.getValue() == Value.plus4){
+            /* Add four cards to the players hand */
+            playerHand.addCard(card);
+            playerHand.addCard(card);
+            playerHand.addCard(card);
+            playerHand.addCard(card);
+            System.out.println(game.getCurrentTurn() + " drew 4 cards");
+        }
+        if(card.getValue() == Value.stop){
+            if(game.getReverse() == false){
+                currentPlayer = (currentPlayer + 1) % getPlayers().size();
+            } else if(game.getReverse() == true){
+                currentPlayer = (currentPlayer - 1) % getPlayers().size();
+            }
+        }
     }
 
     public void run()
