@@ -43,6 +43,7 @@ public class Server extends Thread {
                 Card top_card = game.getDiscardDeck().drawCard();
                 game.discardDeckRemove(top_card);
                 game.playerAddCard(i, top_card);
+                Deck.shuffle(game.getDiscardDeck());
             }
             cpp++;
         }
@@ -67,38 +68,35 @@ public class Server extends Thread {
         }
         
         if(card.getValue() == Value.reverse)
-        {
             game.setReverse(!game.getReverse());
-        }
-        if(card.getValue() == Value.stop)
-        {   // om stopkort, hoppa två turns istälelt för en
-            game.setCurrentTurn(game.nextTurn());
-        }
 
-        // lägg till kort
+
+        game.deckAddCard(card);
+        game.playerRemoveCard(game.getCurrentTurn(), card);
+        game.setCurrentTurn(game.nextTurn());
+
         if(card.getValue() == Value.plus2){
             /* Add two cards to the players hand */
             Card tmp = game.getDiscardDeck().drawCard();
-            game.playerAddCard(game.nextTurn(), tmp);
+            game.playerAddCard(game.getCurrentTurn(), tmp);
             game.discardDeckRemove(tmp);
             tmp = game.getDiscardDeck().drawCard();
-            game.playerAddCard(game.nextTurn(), tmp);
+            game.playerAddCard(game.getCurrentTurn(), tmp);
             game.discardDeckRemove(tmp);
             System.out.println(game.getCurrentTurn() + " drew 2 cards");
         }
         if(card.getValue() == Value.plus4){
-            /* Add four cards to the players hand */
             Card tmp = game.getDiscardDeck().drawCard();
-            game.playerAddCard(game.nextTurn(), tmp);
+            game.playerAddCard(game.getCurrentTurn(), tmp);
             game.discardDeckRemove(tmp);
             tmp = game.getDiscardDeck().drawCard();
-            game.playerAddCard(game.nextTurn(), tmp);
-            game.discardDeckRemove(tmp);
+            game.playerAddCard(game.getCurrentTurn(), tmp);
+            game.discardDeckRemove(tmp);     
             tmp = game.getDiscardDeck().drawCard();
-            game.playerAddCard(game.nextTurn(), tmp);
-            game.discardDeckRemove(tmp);
+            game.playerAddCard(game.getCurrentTurn(), tmp);
+            game.discardDeckRemove(tmp);            
             tmp = game.getDiscardDeck().drawCard();
-            game.playerAddCard(game.nextTurn(), tmp);
+            game.playerAddCard(game.getCurrentTurn(), tmp);
             game.discardDeckRemove(tmp);
             System.out.println(game.getCurrentTurn() + " drew 4 cards");
         }
