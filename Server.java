@@ -74,6 +74,7 @@ public class Server extends Thread {
             if(drawCardCounter >= 3)
             {
                 game.setCurrentTurn(game.nextTurn());
+                drawCardCounter = 0;
             }
 
             updateClientsGame(game);
