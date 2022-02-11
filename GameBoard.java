@@ -32,12 +32,32 @@ public class GameBoard extends JFrame {
 
 		BorderLayout layout = new BorderLayout();
 		setLayout(layout);
+		GridLayout center_layout = new GridLayout(1, 2);
+		JPanel center_panel = new JPanel();
+		center_panel.setLayout(center_layout);
 		// deck card
 		if(!game.getDeck().isEmpty())
 		{
 			GameCard gameDeck = new GameCard(game.getDeck().drawCard());
-			add(gameDeck, layout.CENTER);
+			center_panel.add(gameDeck);
 		}
+		// discard deck card
+		if(!game.getDiscardDeck().isEmpty())
+		{
+			GameCard discardDeck = new GameCard();
+			discardDeck.addActionListener(new ActionListener(){
+				@Override
+				public void actionPerformed(ActionEvent e){
+					if(client.isClientTurn())
+					{
+						TransmitData data = new TransmitData(null, -100, Col.black, true, false);
+						client.sendToServer(data);
+					}
+				}
+			});
+			center_panel.add(discardDeck);
+		}
+		add(center_panel, layout.CENTER);
 		// player hand
 		GridLayout handLayout = new GridLayout(2, 7);
 		JPanel hand = new JPanel();
