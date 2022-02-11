@@ -106,6 +106,7 @@ public class Server extends Thread {
         game.deckAddCard(card);
         game.playerRemoveCard(game.getCurrentTurn(), card);
         game.setCurrentTurn(game.nextTurn());
+        updateClientsGame(game);
     }
 
     public void run()
