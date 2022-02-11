@@ -76,7 +76,7 @@ public class ChatClient {
                             while(!hasSelectCard)
                             {
                                 // busy wait medan användaren väljer kort
-                                System.out.println("wiating...");
+                                System.out.println("waiting...");
                             }
                             /*
                             System.out.println("your turn! \n select card \n");
