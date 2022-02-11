@@ -53,7 +53,8 @@ public class GameBoard extends JFrame {
 					if(client.isClientTurn())
 					{
 						System.out.println("Card selected : " + card_button.getCard().toString());
-						client.sendToServer(card_button.getCard());
+						TransmitData data = new TransmitData(card_button.getCard(), -100, Col.black, false, false);
+						client.sendToServer(data);
 					}
 				}
 			});

@@ -8,12 +8,14 @@ public class TransmitData implements Serializable {
 	private int playerId;
 	private Col chosenColor;
 	private boolean drawCard; // indikerar att användaren vill dra ett kort från discard deck
+	private boolean chooseColor;
 
-	public TransmitData(Card c, int id, Col chosenColor, boolean drawCard) {
+	public TransmitData(Card c, int id, Col chosenColor, boolean drawCard, boolean chooseColor) {
 		this.card = c;
 		this.playerId = id;
 		this.chosenColor = chosenColor;
 		this.drawCard = drawCard;
+		this.chooseColor = chooseColor;
 	}
 	
 	public void setCard(Card c) {
@@ -38,6 +40,15 @@ public class TransmitData implements Serializable {
 	public Col getChosenColor()
 	{
 		return chosenColor;
+	}
+
+	public void setChooseColor(boolean c)
+	{
+		chooseColor = c;
+	}
+	public boolean getChooseColor()
+	{
+		return chooseColor;
 	}
 
 	public void setDrawCard(boolean b)
