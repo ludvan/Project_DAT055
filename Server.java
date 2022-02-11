@@ -67,13 +67,10 @@ public class Server extends Thread {
             }
         }
         
+        if(card.getValue() == Value.stop)
+            game.setCurrentTurn(game.nextTurn());
         if(card.getValue() == Value.reverse)
             game.setReverse(!game.getReverse());
-
-
-        game.deckAddCard(card);
-        game.playerRemoveCard(game.getCurrentTurn(), card);
-        game.setCurrentTurn(game.nextTurn());
 
         if(card.getValue() == Value.plus2){
             /* Add two cards to the players hand */
