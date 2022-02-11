@@ -48,14 +48,14 @@ public class GameBoard extends JFrame {
 			discardDeck.addActionListener(new ActionListener(){
 				@Override
 				public void actionPerformed(ActionEvent e){
-					if(client.isClientTurn())
+					if(client.isClientTurn() && !client.hasStackableCard())
 					{
 						TransmitData data = new TransmitData(null, -100, Col.black, true, false);
 						client.sendToServer(data);
 					}
 				}
 			});
-			if(!client.hasStackableCard())
+			if(!client.hasStackableCard() && client.isClientTurn())
 				center_panel.add(discardDeck);
 		}
 		add(center_panel, layout.CENTER);
