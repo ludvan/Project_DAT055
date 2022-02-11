@@ -87,6 +87,7 @@ public class Server extends Thread {
             game.playerAddCard(game.nextTurn(), tmp);
             game.discardDeckRemove(tmp);
             System.out.println(game.nextTurn() + " drew 2 cards");
+            game.setCurrentTurn(game.nextTurn());
         }
         if(card.getValue() == Value.plus4){
             Card tmp = game.getDiscardDeck().drawCard();
@@ -102,6 +103,7 @@ public class Server extends Thread {
             game.playerAddCard(game.nextTurn(), tmp);
             game.discardDeckRemove(tmp);
             System.out.println(game.nextTurn() + " drew 4 cards");
+            game.setCurrentTurn(game.nextTurn());
         }
 
         if(card.getValue() == Value.stop)
