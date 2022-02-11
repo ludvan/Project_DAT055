@@ -9,6 +9,7 @@ public class Server extends Thread {
     private boolean in_match;
     private Game game;
     private String server_status; // håller koll på vad som skrivs ut från servern
+    private int drawCardCounter; // används för att begränsa så att användaren inte kan plocka upp nmer än 3 kort
 
     public Server(int _port)
     {
@@ -17,6 +18,7 @@ public class Server extends Thread {
         clientThreads = new ArrayList<ClientThread>();
         playerLimit = 2; // hårdkodat så länge
         in_match = false;
+        drawCardCounter = 0;
     }
 
     public Game getGame()
@@ -60,11 +62,20 @@ public class Server extends Thread {
     {
         int currentPlayer = game.getCurrentTurn();
         // om användaren endast vill dra ett kort från discard deck
+
         if(data.getDrawCard())
         {
+            drawCardCounter++;
             Card tmp = game.getDiscardDeck().drawCard();
             game.playerAddCard(currentPlayer, tmp);
             game.discardDeckRemove(tmp);
+
+            // användaren har dragit så många kort hen kan gå vidare
+            if(drawCardCounter >= 3)
+            {
+                game.setCurrentTurn(game.nextTurn());
+            }
+
             updateClientsGame(game);
             return;
         }
