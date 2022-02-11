@@ -3,69 +3,43 @@ import java.awt.event.*;
 
 import javax.swing.*;
 
-public class ColorChoice extends JPanel implements ActionListener {
-	
-	private ChatClient Choiceclient;
-	
-	private JButton redB;
-	private JButton blueB;
-	private JButton greenB;
-	private JButton yellowB;
-	
+public class ColorChoice{
+	private ChatClient ChoiceClient;
 	private Col ChosenColor;
-	
-	private boolean visible;
-	
+	//Ordning i sträng viktig
+	private String[] options = {"red","blue","yellow","green"};
+
 	ColorChoice(ChatClient currentClient){
-		setLayout(new FlowLayout());
-		
-		Choiceclient = currentClient;
-		
-		redB = new JButton("red");
-		blueB = new JButton("blue");
-		greenB = new JButton("green");
-		yellowB = new JButton("yellow");
-		redB.addActionListener(this);
-		blueB.addActionListener(this);
-		greenB.addActionListener(this);
-		yellowB.addActionListener(this);
-		
-		add(redB);
-		add(blueB);
-		add(greenB);
-		add(yellowB);
-		visible = false;
+		ChoiceClient = currentClient;
 	}
 	
-	//Ändra till JOption, blir smidigt och fint
-	
-	public void actionPerformed(ActionEvent e) {
-		switch(e.getActionCommand()) {
-		case "red":
+
+	public void ChooseColor(){
+		int answer = JOptionPane.showOptionDialog(null, "Choose a color", "",JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
+
+		switch(answer) {
+		case 0:
 			ChosenColor = Col.red;
-		case "blue":
+			break;
+		case 1:
 			ChosenColor = Col.blue;
-		case "green":
-			ChosenColor = Col.green;
-		case "yellow":
+			break;
+		case 2:
 			ChosenColor = Col.yellow;
+			break;
+		case 3:
+			ChosenColor = Col.green;
+			break;
 		default:
-			System.out.println("didn't get a valid color");
+			throw new IllegalArgumentException("Unknown input");
+			
 		}
-		//inte snyggt
+		
+		//bör ses över
 		TransmitData data = new TransmitData(new Card(Value.zero,Col.blue), -100, ChosenColor, false, true);
-		Choiceclient.sendToServer(data);
-		
-		toggle();
-		
+		ChoiceClient.sendToServer(data);
 	}
 	
-	
-	public void toggle() {
-		visible = !visible;
-		
-		setVisible(visible);
-	}
 	
 
 }
