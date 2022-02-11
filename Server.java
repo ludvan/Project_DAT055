@@ -58,6 +58,14 @@ public class Server extends Thread {
 
     public void handleCard(TransmitData data)
     {
+        // om användaren endast vill dra ett kort från discard deck
+        if(data.getDrawCard())
+        {
+            Card tmp = game.getDiscardDeck().drawCard();
+            game.playerAddCard(game.getCurrentTurn(), tmp);
+            game.discardDeckRemove(tmp);
+        }
+
         Card card = data.getCard();
         if(!game.getDeck().isEmpty())
         {
