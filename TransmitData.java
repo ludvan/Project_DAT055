@@ -1,26 +1,51 @@
+import java.io.Serializable;
+
 /*
- * Klass för data som ska skickas från klient till server
+ * Klass fï¿½r data som ska skickas frï¿½n klient till server
 */
-public class TransmitData {
+public class TransmitData implements Serializable {
 	private Card card;
 	private int playerId;
 	private Col chosenColor;
-	
-	public TransmitData(Card c, int id, Col chosenColor) {
+	private boolean drawCard; // indikerar att anvÃ¤ndaren vill dra ett kort frÃ¥n discard deck
+
+	public TransmitData(Card c, int id, Col chosenColor, boolean drawCard) {
 		this.card = c;
 		this.playerId = id;
 		this.chosenColor = chosenColor;
+		this.drawCard = drawCard;
 	}
 	
 	public void setCard(Card c) {
 		this.card = c;
 	}
+	public Card getCard()
+	{
+		return card;
+	}
 	
 	public void setPlayerId(int id) {
 		this.playerId = id;
 	}
+	public int getPlayerId()
+	{
+		return playerId;
+	}
 	
 	public void setChosenColor(Col chosenColor) {
 		this.chosenColor = chosenColor;
+	}
+	public Col getChosenColor()
+	{
+		return chosenColor;
+	}
+
+	public void setDrawCard(boolean b)
+	{
+		drawCard = b;
+	}
+	public boolean getDrawCard()
+	{
+		return drawCard;
 	}
 }
