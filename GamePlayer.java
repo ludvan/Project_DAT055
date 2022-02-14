@@ -3,33 +3,52 @@ import javax.swing.*;
 
 public class GamePlayer extends JButton
 {
-    public GamePlayer(String text)
+    private boolean isActive;
+
+    public void setActive(boolean active)
     {
-        ImageIcon icon = new ImageIcon("GUI/Misc/profile.png");
+        isActive = active;
+        setPlayerIcon();
+    }
+
+    public boolean getActive()
+    {
+        return isActive;
+    }
+
+    public void setPlayerIcon()
+    {
+        ImageIcon icon;
+
+        if(isActive)
+            icon = new ImageIcon("GUI/Misc/profile_active.png");
+        else
+            icon = new ImageIcon("GUI/Misc/profile.png");
+
         Image image = icon.getImage(); // transform it 
-        Image newimg = image.getScaledInstance(64, 100,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way 
+        Image newimg = image.getScaledInstance(64, 64,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way 
         icon = new ImageIcon(newimg); 
         setIcon(icon);
+    }
+
+    public GamePlayer(boolean active)
+    {
         setVerticalTextPosition(SwingConstants.BOTTOM);
         setHorizontalTextPosition(SwingConstants.CENTER);
-        setText(text);
+        isActive = active;
+        setPlayerIcon();
         setBorderPainted(false);
-        setOpaque(false);
         setContentAreaFilled(false);
         setForeground(Color.white);
     }
 
     public GamePlayer()
     {
-        ImageIcon icon = new ImageIcon("GUI/Misc/profile.png");
-        Image image = icon.getImage(); // transform it 
-        Image newimg = image.getScaledInstance(64, 64,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way 
-        icon = new ImageIcon(newimg); 
-        setIcon(icon);
+        isActive = false;
+        setPlayerIcon();
         setVerticalTextPosition(SwingConstants.BOTTOM);
         setHorizontalTextPosition(SwingConstants.CENTER);
         setBorderPainted(false);
-        setOpaque(false);
         setContentAreaFilled(false);
         setForeground(Color.white);
     }

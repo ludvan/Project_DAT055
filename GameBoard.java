@@ -107,8 +107,7 @@ public class GameBoard extends JFrame {
 			else
 				player_display.setText(game.getPlayers().get(i).getName() + "(You) " + game.getPlayerDeck(i).getSize());
 
-			if(i==game.getCurrentTurn())
-				player_display.setBorder(BorderFactory.createLineBorder(Color.GREEN));
+			player_display.setActive(i==game.getCurrentTurn());
 			opPanel.add(player_display);
 		}
 		add(opPanel, layout.NORTH);
