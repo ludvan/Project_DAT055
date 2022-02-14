@@ -75,8 +75,14 @@ public class ChatClient {
                             hasSelectCard = false;
                             while(!hasSelectCard)
                             {
-                                // busy wait medan användaren väljer kort
-                                System.out.println("waiting...");
+                                // vänta medan användaren väljer kort
+                                //System.out.println("waiting...");
+                                try {
+                                    Thread.sleep(250);
+                                } catch (InterruptedException e) {
+                                    // TODO Auto-generated catch block
+                                    e.printStackTrace();
+                                }
                             }
                             /*
                             System.out.println("your turn! \n select card \n");
@@ -177,7 +183,8 @@ public class ChatClient {
             System.out.println("Enter username");
             return;
         }*/
-        String hostname = "localhost";
+        System.out.println("Enter server ip write 'localhost' for running on same device");
+        String hostname = System.console().readLine();
         int port = 8989;
         System.out.println("Enter a username : ");
         String username = System.console().readLine();

@@ -11,6 +11,8 @@ public class GameBoard extends JFrame {
 	private ChatClient client;
 	private int width;
 	private int height;
+	private Color backgroundColor = new Color(80, 0,0);
+	private Color handColor = new Color(150, 0,0);
 
 	public GameBoard()
 	{
@@ -34,11 +36,13 @@ public class GameBoard extends JFrame {
 		setLayout(layout);
 		GridLayout center_layout = new GridLayout(1, 2);
 		JPanel center_panel = new JPanel();
+		center_panel.setBackground(backgroundColor);
 		center_panel.setLayout(center_layout);
 		// deck card
 		if(!game.getDeck().isEmpty())
 		{
 			GameCard gameDeck = new GameCard(game.getDeck().drawCard());
+			gameDeck.setBackground(backgroundColor);
 			center_panel.add(gameDeck);
 		}
 		// discard deck card
@@ -55,18 +59,25 @@ public class GameBoard extends JFrame {
 					}
 				}
 			});
-			if(!client.hasStackableCard() && client.isClientTurn())
-				center_panel.add(discardDeck);
+			if(client.hasStackableCard() || !client.isClientTurn())
+				discardDeck.setOpacity(0.5f);
+			else
+				discardDeck.setOpacity(1f);
+
+			discardDeck.setBackground(backgroundColor);
+			center_panel.add(discardDeck);
 		}
 		add(center_panel, layout.CENTER);
 		// player hand
-		GridLayout handLayout = new GridLayout(2, 7);
+		GridLayout handLayout = new GridLayout(1, 10);
 		JPanel hand = new JPanel();
+		hand.setBackground(handColor);
 		hand.setLayout(handLayout);
 		for(int i = 0; i < game.getPlayerDeck(game.getPlayerId()).getSize(); i++)
 		{
 			Card card = game.getPlayerDeck(game.getPlayerId()).getCard(i);
 			GameCard card_button = new GameCard(card);
+			card_button.setBackground(handColor);
 			card_button.addActionListener(new ActionListener(){
 				@Override
 				public void actionPerformed(ActionEvent e){
@@ -79,16 +90,25 @@ public class GameBoard extends JFrame {
 					}
 				}
 			});
+			if(!client.isClientTurn())
+				card_button.setOpacity(0.5f);
 			hand.add(card_button);
 		}
 		add(hand, layout.SOUTH);
 
-		GridLayout opLayout = new GridLayout(1, game.getPlayers().size()-1);
+		GridLayout opLayout = new GridLayout(1, game.getPlayers().size());
 		JPanel opPanel = new JPanel();
 		for(int i = 0; i < game.getPlayers().size(); i++)
 		{
+			JButton player_display = new JButton();
 			if(i!=game.getPlayerId())
-				opPanel.add(new JButton(game.getPlayers().get(i).getName() + " " + game.getPlayerDeck(i).getSize()));
+				player_display.setText(game.getPlayers().get(i).getName() + " " + game.getPlayerDeck(i).getSize());
+			else
+				player_display.setText(game.getPlayers().get(i).getName() + "(You) " + game.getPlayerDeck(i).getSize());
+
+			if(i==game.getCurrentTurn())
+				player_display.setBorder(BorderFactory.createLineBorder(Color.GREEN));
+			opPanel.add(player_display);
 		}
 		add(opPanel, layout.NORTH);
 		revalidate();
