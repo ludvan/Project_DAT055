@@ -127,6 +127,7 @@ public class Server extends Thread {
         game.playerRemoveCard(currentPlayer, card);
         game.setCurrentTurn(game.nextTurn());
         updateClientsGame(game);
+        drawCardCounter = 0;
     }
 
     public void run()
