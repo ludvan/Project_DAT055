@@ -42,7 +42,6 @@ public class ChatClient {
             inputStream = new ObjectInputStream(socket.getInputStream());
 
             outputStream.writeObject(userName);
-            //outputStream.flush();
 
             // loop som läser från och skriver till servern
             try {
@@ -76,7 +75,6 @@ public class ChatClient {
                             while(!hasSelectCard)
                             {
                                 // vänta medan användaren väljer kort
-                                //System.out.println("waiting...");
                                 try {
                                     Thread.sleep(250);
                                 } catch (InterruptedException e) {
@@ -84,16 +82,6 @@ public class ChatClient {
                                     e.printStackTrace();
                                 }
                             }
-                            /*
-                            System.out.println("your turn! \n select card \n");
-                            // Det är vår tur att spela temporär lösning på att skicka ett kort
-                            String console_in = System.console().readLine();
-                            int selected_card = Integer.valueOf(console_in);
-
-                            Card selected = game.getPlayerDeck(game.getPlayerId()).getCard(selected_card);
-                            // lägg till kortet i vår send buffer
-                            sendToServer(selected);
-                            */
                         }
                         else
                         {
@@ -177,19 +165,25 @@ public class ChatClient {
     }
  
     public static void main(String[] args) { 
-        /*
-        if(args.length < 1)
+        String hostname;
+        String username;
+        int port;
+        if(args.length < 3)
         {
-            System.out.println("Enter username");
-            return;
-        }*/
-        System.out.println("Enter server ip write 'localhost' for running on same device");
-        String hostname = System.console().readLine();
-        int port = 8989;
-        System.out.println("Enter a username : ");
-        String username = System.console().readLine();
- 
+            System.out.println("Enter server ip write 'localhost' for running on same device");
+            hostname = System.console().readLine();
+            port = 8989;
+            System.out.println("Enter a username : ");
+            username = System.console().readLine();
+        }
+        else
+        {
+            hostname = args[0];
+            port = Integer.parseInt(args[1]);
+            username = args[2];
+        }
         ChatClient client = new ChatClient(hostname, port, username);
+
         client.execute();
     }
 }

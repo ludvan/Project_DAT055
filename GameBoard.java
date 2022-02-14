@@ -135,8 +135,7 @@ public class GameBoard extends JFrame {
 		return game;
 	}
 	public static void main(String[] args){
-        GameBoard board = new GameBoard();
-        
+        GameBoard board = new GameBoard();       
     }
 	
 }

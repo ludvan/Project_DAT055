@@ -11,12 +11,12 @@ public class Server extends Thread {
     private String server_status; // håller koll på vad som skrivs ut från servern
     private int drawCardCounter; // används för att begränsa så att användaren inte kan plocka upp nmer än 3 kort
 
-    public Server(int _port)
+    public Server(int _port, int player_limit)
     {
         port = _port;
         game = new Game();
         clientThreads = new ArrayList<ClientThread>();
-        playerLimit = 2; // hårdkodat så länge
+        playerLimit = player_limit; // hårdkodat så länge
         in_match = false;
         drawCardCounter = 0;
     }
@@ -168,9 +168,11 @@ public class Server extends Thread {
         return server_status;
     }
     public static void main(String[] args) {
-        int port = 8989;
- 
-        Server server = new Server(port);
+        if(args.length < 2)
+            return;
+        int port = Integer.parseInt(args[0]);
+        int limit = Integer.parseInt(args[1]);
+        Server server = new Server(port, limit);
         server.run();
     }
 
