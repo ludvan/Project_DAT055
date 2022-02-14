@@ -98,9 +98,10 @@ public class GameBoard extends JFrame {
 
 		GridLayout opLayout = new GridLayout(1, game.getPlayers().size());
 		JPanel opPanel = new JPanel();
+		opPanel.setBackground(handColor);
 		for(int i = 0; i < game.getPlayers().size(); i++)
 		{
-			JButton player_display = new JButton();
+			GamePlayer player_display = new GamePlayer();
 			if(i!=game.getPlayerId())
 				player_display.setText(game.getPlayers().get(i).getName() + " " + game.getPlayerDeck(i).getSize());
 			else
