@@ -62,25 +62,6 @@ public class Server extends Thread {
     {
         int currentPlayer = game.getCurrentTurn();
 
-        // om vi får in ett svart kort vill vi vänta på att 
-        // en färg väljs
-        if(data.getCard().getColor() == Col.black)
-        {
-            Card tmp = data.getCard();
-            game.playerRemoveCard(currentPlayer, tmp);
-            game.deckAddCard(tmp);
-            return;
-        }
-        // hanterar färgval om kortet är svart
-        if(data.getChooseColor() && game.getDeck().drawCard().getColor() == Col.black)
-        {
-            Col chosenColor = data.getChosenColor();
-            Card tmp = data.getCard();
-            game.getDeck().drawCard().setColor(chosenColor);
-            game.setCurrentTurn(game.nextTurn());
-            updateClientsGame(game);
-            return;
-        }
         // om användaren endast vill dra ett kort från discard deck
         if(data.getDrawCard())
         {
@@ -143,8 +124,17 @@ public class Server extends Thread {
         if(card.getValue() == Value.reverse)
             game.setReverse(!game.getReverse());
 
+
+        if(data.getChooseColor())
+        {
+            System.out.println("Color chosen : " + data.getChosenColor().toString());
+            card.setColor(data.getChosenColor());
+        }
         game.deckAddCard(card);
         game.playerRemoveCard(currentPlayer, card);
+        // om vi får in ett svart kort vill vi vänta på att 
+        // en färg väljs
+
         game.setCurrentTurn(game.nextTurn());
         updateClientsGame(game);
     }
@@ -170,12 +160,6 @@ public class Server extends Thread {
                     newUser.start();
                 }             
             }
-            /*
-            while(in_match)
-            {
-                // spel logik
-            }
-            */
         } catch (IOException ex) {
             server_status += "\n Error in the server: " + ex.getMessage();
             System.out.println("Error in the server: " + ex.getMessage());

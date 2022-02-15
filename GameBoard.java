@@ -84,9 +84,17 @@ public class GameBoard extends JFrame {
 					System.out.println("button pressed!");
 					if(client.isClientTurn())
 					{
-						System.out.println("Card selected : " + card_button.getCard().toString());
-						TransmitData data = new TransmitData(card_button.getCard(), -100, Col.black, false, false);
-						client.sendToServer(data);
+						if(card_button.getCard().getColor() != Col.black)
+						{
+							System.out.println("Card selected : " + card_button.getCard().toString());
+							TransmitData data = new TransmitData(card_button.getCard(), -100, Col.black, false, false);
+							client.sendToServer(data);
+						}
+						else
+						{
+							// för svarta kort måste en färg bestämmas
+							ColorChoice colorMenu = new ColorChoice(client, card_button.getCard());
+						}
 					}
 				}
 			});

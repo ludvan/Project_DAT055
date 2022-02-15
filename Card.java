@@ -50,6 +50,10 @@ public class Card implements Serializable
 
     public static boolean equals(Card a, Card b)
     {
+        if(a.color == Col.black || b.color == Col.black)
+        {
+            return a.value == b.value;
+        }
         return a.value == b.value && a.color == b.color;
     }
 

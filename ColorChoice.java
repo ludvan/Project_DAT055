@@ -1,44 +1,47 @@
 import javax.swing.*;
 
 public class ColorChoice{
-	private ChatClient ChoiceClient;
-	private Col ChosenColor;
-	//Ordning i sträng viktig
+	private ChatClient choiceClient;
+	private Card currentCard;
+	private Col chosenColor;
+	//Ordning i strï¿½ng viktig
 	private String[] options = {"red","blue","yellow","green"};
 
-	ColorChoice(ChatClient currentClient){
-		ChoiceClient = currentClient;
+	ColorChoice(ChatClient currentClient, Card card){
+		choiceClient = currentClient;
+		currentCard = card;
+		ChooseColor();
 	}
 	
 
 	public void ChooseColor(){
 		int answer = JOptionPane.showOptionDialog(null, "Choose a color", "",JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
 		
-		//answer = -1 om man stänger fönstret istället för att välja något
+		//answer = -1 om man stï¿½nger fï¿½nstret istï¿½llet fï¿½r att vï¿½lja nï¿½got
 		if(answer == -1) {
 			ChooseColor();
 		}else {
 			switch(answer) {
 			case 0:
-				ChosenColor = Col.red;
+				chosenColor = Col.red;
 				break;
 			case 1:
-				ChosenColor = Col.blue;
+				chosenColor = Col.blue;
 				break;
 			case 2:
-				ChosenColor = Col.yellow;
+				chosenColor = Col.yellow;
 				break;
 			case 3:
-				ChosenColor = Col.green;
+				chosenColor = Col.green;
 				break;
 			default:
 				throw new IllegalArgumentException("Unknown input");
 				
 			}
 			
-			//bör ses över
-			TransmitData data = new TransmitData(new Card(Value.zero,Col.blue), -100, ChosenColor, false, true);
-			ChoiceClient.sendToServer(data);
+			//bï¿½r ses ï¿½ver
+			TransmitData data = new TransmitData(currentCard, -100, chosenColor, false, true);
+			choiceClient.sendToServer(data);
 		}
 		
 	}
