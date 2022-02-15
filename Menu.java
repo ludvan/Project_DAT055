@@ -69,9 +69,23 @@ public class Menu extends JFrame{
             public void actionPerformed(ActionEvent e){
                 try {
                     // vi vill inte skapa två servrar på samma klient
+                    
+                    // IP-adress, port, antal spelare
+                    String port;    //Denna behöver för tillfället vara 8989
+                    port = JOptionPane.showInputDialog("Please enter the port of the Server(Port 8989 is default):");
+                    String nbrOfPlayers;
+                    nbrOfPlayers = JOptionPane.showInputDialog("Please enter the amount of players in the game (2-10):");
+                    int a = Integer.parseInt(nbrOfPlayers);
+                    while(a > 10){
+                        JOptionPane.showMessageDialog(null,"Too many players, try again!");
+                        nbrOfPlayers = JOptionPane.showInputDialog("Please enter the amount of players in the game (2-10):");
+                        a = Integer.parseInt(nbrOfPlayers);   
+                    }
+                    String open_server = "java Server " + port + " " + nbrOfPlayers;
                     if(serverProcess != null)
                         serverProcess.destroy();
-                    serverProcess = Runtime.getRuntime().exec("java Server 8989 2"); 
+                    serverProcess = Runtime.getRuntime().exec(open_server);
+                    //serverProcess = Runtime.getRuntime().exec("java Server 8989 2"); 
                 } catch (Exception y) {
                     JOptionPane.showInputDialog(null, y + "");
                 }
@@ -85,7 +99,10 @@ public class Menu extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e){
                 try {
-                    clientProcess.add(Runtime.getRuntime().exec("java ChatClient localhost 8989 Bob"));                   
+                    String port = "8989";
+                    String nickname = JOptionPane.showInputDialog("Please Enter your nickname:");
+                    
+                    clientProcess.add(Runtime.getRuntime().exec("java ChatClient localhost " + port + " " + nickname));                 
                 } catch (Exception y) {
                     JOptionPane.showInputDialog(null, y + "");
                 }
