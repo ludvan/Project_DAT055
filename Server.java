@@ -232,6 +232,9 @@ public class Server extends Thread {
         game.addPlayer(user);
         server_status += "\n (" + game.getPlayers().size() + "/"+ playerLimit + ") users connected";
         System.out.println("(" + game.getPlayers().size() + "/"+ playerLimit + ") users connected");
+        //Skicka playerlista till spelare i lobby
+        broadcast(game.getPlayers());
+        
         if(game.getPlayers().size() == playerLimit)
         {
             in_match = true;

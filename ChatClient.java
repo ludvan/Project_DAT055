@@ -48,6 +48,10 @@ public class ChatClient {
                 Object recieved;
                 while(true) {
                     recieved = inputStream.readObject();
+                    //instanceof ArrayList<Player> var ej till�tet
+                    if(recieved instanceof ArrayList) {
+                    	System.out.println("so far so good");
+                    }
                     // detta borde hanteras av en extern class kanske??
                     // todo skicka generaliserat medelande som egen class. detta skall innehålla ändringar mm
                     if(recieved instanceof Game)

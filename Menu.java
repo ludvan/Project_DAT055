@@ -71,7 +71,7 @@ public class Menu extends JFrame{
                     // vi vill inte skapa två servrar på samma klient
                     if(serverProcess != null)
                         serverProcess.destroy();
-                    serverProcess = Runtime.getRuntime().exec("java Server 8989 2"); 
+                    serverProcess = Runtime.getRuntime().exec("java Server 8989 3"); 
                 } catch (Exception y) {
                     JOptionPane.showInputDialog(null, y + "");
                 }
