@@ -61,6 +61,26 @@ public class Server extends Thread {
     public void handleCard(TransmitData data)
     {
         int currentPlayer = game.getCurrentTurn();
+
+        // om vi får in ett svart kort vill vi vänta på att 
+        // en färg väljs
+        if(data.getCard().getColor() == Col.black)
+        {
+            Card tmp = data.getCard();
+            game.playerRemoveCard(currentPlayer, tmp);
+            game.deckAddCard(tmp);
+            return;
+        }
+        // hanterar färgval om kortet är svart
+        if(data.getChooseColor() && game.getDeck().drawCard().getColor() == Col.black)
+        {
+            Col chosenColor = data.getChosenColor();
+            Card tmp = data.getCard();
+            game.getDeck().drawCard().setColor(chosenColor);
+            game.setCurrentTurn(game.nextTurn());
+            updateClientsGame(game);
+            return;
+        }
         // om användaren endast vill dra ett kort från discard deck
         if(data.getDrawCard())
         {
@@ -79,7 +99,7 @@ public class Server extends Thread {
             updateClientsGame(game);
             return;
         }
-
+        // kolla om vi kan lägga kortet
         Card card = data.getCard();
         if(!game.getDeck().isEmpty())
         {
@@ -90,8 +110,8 @@ public class Server extends Thread {
             }
         }
 
+        // om det 
         if(card.getValue() == Value.plus2){
-            /* Add two cards to the players hand */
             Card tmp = game.getDiscardDeck().drawCard();
             game.playerAddCard(game.nextTurn(), tmp);
             game.discardDeckRemove(tmp);
@@ -127,7 +147,6 @@ public class Server extends Thread {
         game.playerRemoveCard(currentPlayer, card);
         game.setCurrentTurn(game.nextTurn());
         updateClientsGame(game);
-        drawCardCounter = 0;
     }
 
     public void run()
