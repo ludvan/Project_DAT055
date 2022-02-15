@@ -16,7 +16,7 @@ public class GameBoard extends JFrame {
 
 	public GameBoard()
 	{
-		new JFrame();
+		//new JFrame();
 		setLayout(null);
 		width = 1200;
 		height = 600;
@@ -113,6 +113,24 @@ public class GameBoard extends JFrame {
 		add(opPanel, layout.NORTH);
 		revalidate();
 		repaint();
+	}
+	
+	public void lobbyUpdate(ArrayList<Player> players) {
+		getContentPane().removeAll();
+
+		BorderLayout layout = new BorderLayout();
+		setLayout(layout);
+		GridLayout center_layout = new GridLayout(5, 2);
+		JPanel center_panel = new JPanel();
+		center_panel.setBackground(backgroundColor);
+		center_panel.setLayout(center_layout);
+		add(center_panel, layout.CENTER);
+		revalidate();
+		repaint();
+		for(int i = 0; i<players.size(); i++) {
+			System.out.println(players.get(i));
+		}
+		System.out.println("reached end of lobbyUpdate");
 	}
 
 	public void setClient(ChatClient _client)

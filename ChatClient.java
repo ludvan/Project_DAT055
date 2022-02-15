@@ -51,6 +51,10 @@ public class ChatClient {
                     //instanceof ArrayList<Player> var ej tillåtet
                     if(recieved instanceof ArrayList) {
                     	System.out.println("so far so good");
+                    	@SuppressWarnings("unchecked") //försökt hitta bättre lösning, kör så här så länge
+						ArrayList<Player> playerList = (ArrayList<Player>) recieved;
+                    	
+                    	board.lobbyUpdate(playerList);
                     }
                     // detta borde hanteras av en extern class kanske??
                     // todo skicka generaliserat medelande som egen class. detta skall innehÃ¥lla Ã¤ndringar mm
