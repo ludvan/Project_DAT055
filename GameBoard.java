@@ -120,17 +120,40 @@ public class GameBoard extends JFrame {
 
 		BorderLayout layout = new BorderLayout();
 		setLayout(layout);
-		GridLayout center_layout = new GridLayout(5, 2);
-		JPanel center_panel = new JPanel();
-		center_panel.setBackground(backgroundColor);
-		center_panel.setLayout(center_layout);
-		add(center_panel, layout.CENTER);
+		GridLayout lobbyLayout = new GridLayout(2, 5);
+		JPanel lobbyPanel = new JPanel();
+		lobbyPanel.setLayout(lobbyLayout);
+		
+		//Lägg till spelare
+		for(int i = 0; i<players.size(); i++) {
+			JLabel label = new JLabel(players.get(i).getName());
+			JPanel outerPanel = new JPanel();
+			JPanel panel = new JPanel();
+			panel.setBackground(Color.white);
+			outerPanel.setBackground(backgroundColor);
+			
+			
+			panel.add(label, BorderLayout.CENTER);
+			outerPanel.add(panel, BorderLayout.CENTER);
+			lobbyPanel.add(outerPanel);
+		}
+		
+		//Lägg till rutor utan spelare
+		for(int i = 0; i<10-players.size(); i++) {
+			JLabel label = new JLabel("Open slot");
+			JPanel outerPanel = new JPanel();
+			JPanel panel = new JPanel();
+			panel.setBackground(Color.white);
+			outerPanel.setBackground(backgroundColor);
+			
+			
+			panel.add(label, BorderLayout.CENTER);
+			outerPanel.add(panel, BorderLayout.CENTER);
+			lobbyPanel.add(outerPanel);
+		}
+		add(lobbyPanel);
 		revalidate();
 		repaint();
-		for(int i = 0; i<players.size(); i++) {
-			System.out.println(players.get(i));
-		}
-		System.out.println("reached end of lobbyUpdate");
 	}
 
 	public void setClient(ChatClient _client)

@@ -49,11 +49,10 @@ public class ChatClient {
                 while(true) {
                     recieved = inputStream.readObject();
                     //instanceof ArrayList<Player> var ej tillåtet
+                    //OBS måste skrivas om ifall vi skickar andra ArrayList (tror/hoppas vi inte behöver)
                     if(recieved instanceof ArrayList) {
-                    	System.out.println("so far so good");
                     	@SuppressWarnings("unchecked") //försökt hitta bättre lösning, kör så här så länge
 						ArrayList<Player> playerList = (ArrayList<Player>) recieved;
-                    	
                     	board.lobbyUpdate(playerList);
                     }
                     // detta borde hanteras av en extern class kanske??
