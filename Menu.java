@@ -1,7 +1,6 @@
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.*;
-import java.io.*;
 import java.util.ArrayList;
 
 import javax.swing.*;
@@ -10,7 +9,6 @@ public class Menu extends JFrame{
     private final int window_width = 1920;
     private final int window_height = 1080;
     private Process serverProcess;
-    private BufferedReader inStream = null;
     private ArrayList<Process> clientProcess;
 
     public Menu(){
