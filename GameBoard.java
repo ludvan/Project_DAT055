@@ -127,28 +127,28 @@ public class GameBoard extends JFrame {
 		//Lägg till spelare
 		for(int i = 0; i<players.size(); i++) {
 			JLabel label = new JLabel(players.get(i).getName());
+			label.setFont(new Font("Yu Gothic UI Semibold",Font.PLAIN,20));
 			JPanel outerPanel = new JPanel();
 			JPanel panel = new JPanel();
 			panel.setBackground(Color.white);
 			outerPanel.setBackground(backgroundColor);
 			
-			
-			panel.add(label, BorderLayout.CENTER);
-			outerPanel.add(panel, BorderLayout.CENTER);
+			panel.add(label);
+			outerPanel.add(panel/*, BorderLayout.CENTER*/);
 			lobbyPanel.add(outerPanel);
 		}
 		
 		//Lägg till rutor utan spelare
 		for(int i = 0; i<10-players.size(); i++) {
 			JLabel label = new JLabel("Open slot");
+			label.setFont(new Font("Yu Gothic UI Semibold",Font.PLAIN,20));
 			JPanel outerPanel = new JPanel();
 			JPanel panel = new JPanel();
 			panel.setBackground(Color.white);
 			outerPanel.setBackground(backgroundColor);
 			
-			
-			panel.add(label, BorderLayout.CENTER);
-			outerPanel.add(panel, BorderLayout.CENTER);
+			panel.add(label);
+			outerPanel.add(panel/*, BorderLayout.CENTER*/);
 			lobbyPanel.add(outerPanel);
 		}
 		add(lobbyPanel);
