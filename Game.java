@@ -133,7 +133,7 @@ public class Game implements java.io.Serializable{
     public void setCurrentTurn(int _turn)
     {
         turn = _turn; 
-        System.out.println("setCurrentTurn");
+        // System.out.println("setCurrentTurn");
     }
 
     public int nextTurn()

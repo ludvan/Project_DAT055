@@ -28,7 +28,7 @@ public class ChatClient {
     
     public void sendToServer(Object object)
     {
-        System.out.println("sending " + object.toString() + " to server...");
+        // System.out.println("sending " + object.toString() + " to server...");
         sendBuffer.add(object);
         hasSelectCard = true;
     }
@@ -63,7 +63,7 @@ public class ChatClient {
                     }
                     if(recieved instanceof String)
                     {
-                        System.out.println(recieved);
+                        // System.out.println(recieved);
                     }
                     // detta sker när clienten är i en match
                     
@@ -85,7 +85,7 @@ public class ChatClient {
                         }
                         else
                         {
-                            System.out.println("wait for your turn \n");
+                            // System.out.println("wait for your turn \n");
                         }
                     }
                     
@@ -96,17 +96,17 @@ public class ChatClient {
                         try{
                             outputStream.writeObject(sendBuffer.get(0));
                             outputStream.reset();
-                            System.out.print("client sent " + sendBuffer.get(0).toString() + " in ChatClient");
+                            // System.out.print("client sent " + sendBuffer.get(0).toString() + " in ChatClient");
                             sendBuffer.clear();//sendBuffer.remove(0);
                         }
                         catch (IOException ex) {
-                            System.out.println("I/O Error: " + ex.getMessage());
+                            // System.out.println("I/O Error: " + ex.getMessage());
                         }
                     }
                 }
             }
             catch (IOException ex) {
-                System.out.println("I/O Error: " + ex.getMessage());
+                // System.out.println("I/O Error: " + ex.getMessage());
             } catch (ClassNotFoundException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -115,9 +115,9 @@ public class ChatClient {
             inputStream.close();
             socket.close();
         } catch (UnknownHostException ex) {
-            System.out.println("Server not found: " + ex.getMessage());
+            // System.out.println("Server not found: " + ex.getMessage());
         } catch (IOException ex) {
-            System.out.println("I/O Error: " + ex.getMessage());
+            // System.out.println("I/O Error: " + ex.getMessage());
         } 
     }
 
@@ -132,7 +132,7 @@ public class ChatClient {
 
     void updateGame(Game new_game)
     {
-        System.out.println(new_game.toString());
+        // System.out.println(new_game.toString());
         game = game.copy(new_game);
         board.setGame(game);
         board.update();

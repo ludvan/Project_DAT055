@@ -76,6 +76,11 @@ public class Server extends Thread {
                 game.setCurrentTurn(game.nextTurn());
                 drawCardCounter = 0;
             }
+            // om det kort som dras går att lägga så vill vi återställa räknaren
+            if(Card.isStackable(tmp, game.getDeck().drawCard()))
+            {
+                drawCardCounter = 0;
+            }
 
             updateClientsGame(game);
             return;

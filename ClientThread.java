@@ -40,10 +40,10 @@ public class ClientThread extends Thread {
                     Object recieved = ois.readObject();
                     if(recieved instanceof TransmitData)
                     {
-                        System.out.println("Card recieved");
+                        // System.out.println("Card recieved");
                         server.handleCard((TransmitData)recieved);
                     }
-                    System.out.println("something recieved");
+                    // System.out.println("something recieved");
                 }
                 catch(ClassNotFoundException e)
                 {
