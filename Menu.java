@@ -35,23 +35,10 @@ public class Menu extends JFrame{
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(window_width,window_height); //Kan komma att ändras
         JPanel p = new JPanel();
-        p.setBorder(new EmptyBorder(10,10,10,10));
-        p.setLayout(new GridBagLayout());
-        
-        // "Uno" - texten
-        JLabel label = new JLabel();
-        label.setText("UNO");
-        label.setFont(new Font("Yu Gothic UI Semibold", Font.PLAIN, 36));
-        
-        //Dimension size = label.getPreferredSize();
-        //label.setBounds(window_width/2, 20, size.width, size.height);
 
         // "PLAY" - Knappen
         JButton play = new JButton("PLAY");
         play.setFont(new Font("Yu Gothic UI Semibold", Font.PLAIN, 36));
-        Dimension play_size = play.getPreferredSize();
-        play.setBounds(window_width/2 - 20, window_height/5, play_size.width, play_size.height);
-        //play.setSize(87, 60);
         play.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e){
@@ -67,7 +54,6 @@ public class Menu extends JFrame{
         // "EXIT" - Knappen
         JButton exit = new JButton("EXIT");
         exit.setFont(new Font("Yu Gothic UI Semibold", Font.PLAIN, 36)); //17
-        exit.setBounds(window_width/2 - 10, 7*window_height/15, play_size.width, play_size.height);
         exit.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e){
@@ -82,8 +68,6 @@ public class Menu extends JFrame{
         // Create Server button
         JButton create = new JButton("CREATE SERVER");
         create.setFont(new Font("Yu Gothic UI Semibold",Font.PLAIN,36));
-        Dimension server_size = create.getPreferredSize();
-        create.setBounds(window_width/2 - 100, 2*window_height/7, server_size.width, server_size.height);
         create.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e){
@@ -121,7 +105,6 @@ public class Menu extends JFrame{
         // Join Server button
         JButton join = new JButton("JOIN SERVER");
         join.setFont(new Font("Yu Gothic UI Semibold", Font.PLAIN, 36));
-        join.setBounds(window_width/2 - 100, 3*window_height/8, server_size.width, server_size.height);
         join.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e){
@@ -144,8 +127,7 @@ public class Menu extends JFrame{
       //Change settings
         File configFile = new File("config.properties"); //Open config file
         JButton config = new JButton("Change settings");
-        config.setFont(new Font("Yu Gothic UI Semibold", Font.PLAIN, 36)); //17
-        config.setBounds(window_width/2 - 100, 3*window_height/10, play_size.width, play_size.height);
+        config.setFont(new Font("Yu Gothic UI Semibold", Font.PLAIN, 36));
         config.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e){
@@ -172,19 +154,22 @@ public class Menu extends JFrame{
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridwidth = GridBagConstraints.REMAINDER;
         gbc.anchor = GridBagConstraints.NORTH;
-        p.add(label);
+        // "UNO" - texten
+        JLabel text = new JLabel("UNO");
+        text.setFont(new Font("Yu Gothic UI Semibold", Font.PLAIN, 36));
+        p.add(text, gbc);
         gbc.anchor = GridBagConstraints.CENTER;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         JPanel buttons = new JPanel(new GridBagLayout());
-        //p.add(Box.createRigidArea(new Dimension(0,window_height / 10)));
+        buttons.add(Box.createRigidArea(new Dimension(0,window_height / 10)));
         buttons.add(play,gbc);
-        //p.add(Box.createRigidArea(new Dimension(0,window_height / 50)));
+        buttons.add(Box.createRigidArea(new Dimension(0,window_height / 10)));
         buttons.add(exit,gbc);
-        //p.add(Box.createRigidArea(new Dimension(0,window_height / 50)));
+        buttons.add(Box.createRigidArea(new Dimension(0,window_height / 10)));
         buttons.add(create,gbc);
-        //p.add(Box.createRigidArea(new Dimension(0,window_height / 50)));
+        buttons.add(Box.createRigidArea(new Dimension(0,window_height / 10)));
         buttons.add(join,gbc);
-        //p.add(Box.createRigidArea(new Dimension(0,window_height / 50)));
+        buttons.add(Box.createRigidArea(new Dimension(0,window_height / 10)));
         buttons.add(config,gbc);
         gbc.weighty = 1;
         p.add(buttons,gbc);
