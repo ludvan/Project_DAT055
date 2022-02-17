@@ -13,6 +13,7 @@ public class GameBoard extends JFrame {
 	private int height;
 	private Color backgroundColor = new Color(80, 0,0);
 	private Color handColor = new Color(150, 0,0);
+	private int playerLimit;
 
 	public GameBoard()
 	{
@@ -123,33 +124,22 @@ public class GameBoard extends JFrame {
 		GridLayout lobbyLayout = new GridLayout(2, 5);
 		JPanel lobbyPanel = new JPanel();
 		lobbyPanel.setLayout(lobbyLayout);
+		lobbyPanel.setBackground(backgroundColor);
 		
 		//Lägg till spelare
 		for(int i = 0; i<players.size(); i++) {
-			JLabel label = new JLabel(players.get(i).getName());
-			label.setFont(new Font("Yu Gothic UI Semibold",Font.PLAIN,20));
-			JPanel outerPanel = new JPanel();
-			JPanel panel = new JPanel();
-			panel.setBackground(Color.white);
-			outerPanel.setBackground(backgroundColor);
-			
-			panel.add(label);
-			outerPanel.add(panel/*, BorderLayout.CENTER*/);
-			lobbyPanel.add(outerPanel);
+			GamePlayer lobbyDisplay = new GamePlayer(true);
+			lobbyDisplay.setText(players.get(i).getName());
+
+			lobbyPanel.add(lobbyDisplay);
 		}
 		
 		//Lägg till rutor utan spelare
-		for(int i = 0; i<10-players.size(); i++) {
-			JLabel label = new JLabel("Open slot");
-			label.setFont(new Font("Yu Gothic UI Semibold",Font.PLAIN,20));
-			JPanel outerPanel = new JPanel();
-			JPanel panel = new JPanel();
-			panel.setBackground(Color.white);
-			outerPanel.setBackground(backgroundColor);
+		for(int i = 0; i<playerLimit-players.size(); i++) {
+			GamePlayer lobbyDisplay = new GamePlayer();
+			lobbyDisplay.setText("Open slot");
 			
-			panel.add(label);
-			outerPanel.add(panel/*, BorderLayout.CENTER*/);
-			lobbyPanel.add(outerPanel);
+			lobbyPanel.add(lobbyDisplay);
 		}
 		add(lobbyPanel);
 		revalidate();
@@ -174,6 +164,10 @@ public class GameBoard extends JFrame {
 	public Game getGame()
 	{
 		return game;
+	}
+	
+	public void setPlayerLimit(Integer players) {
+		playerLimit = players;
 	}
 	public static void main(String[] args){
         GameBoard board = new GameBoard();       

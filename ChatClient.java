@@ -50,6 +50,9 @@ public class ChatClient {
                     recieved = inputStream.readObject();
                     //instanceof ArrayList<Player> var ej tillåtet
                     //OBS måste skrivas om ifall vi skickar andra ArrayList (tror/hoppas vi inte behöver)
+                    if(recieved instanceof Integer) {
+                    	board.setPlayerLimit((Integer)recieved);
+                    }
                     if(recieved instanceof ArrayList) {
                     	@SuppressWarnings("unchecked") //försökt hitta bättre lösning, kör så här så länge
 						ArrayList<Player> playerList = (ArrayList<Player>) recieved;

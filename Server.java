@@ -168,6 +168,7 @@ public class Server extends Thread {
                     server_status += "\n New user joined the lobby";
                     System.out.println("New user joined the lobby");
                     newUser.start();
+                    broadcast((Integer)playerLimit);
                 }             
             }
             /*
