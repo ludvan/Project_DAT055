@@ -1,3 +1,4 @@
+import java.awt.*;
 import java.net.*;
 import java.io.*;
 import java.util.*;
@@ -145,14 +146,10 @@ public class Server extends Thread {
 
         game.deckAddCard(card);
         game.playerRemoveCard(currentPlayer, card);
+        countpoints();
 
         if(WeHaveAWinner()){
-            //count every players hand
-
-            //end this round
-
-            //show this matches leaderboard
-
+            countpoints();
         }
 
         game.setCurrentTurn(game.nextTurn());
@@ -160,17 +157,48 @@ public class Server extends Thread {
     }
 
     /**
-     * indicates whether a game is wom by some player or not
+     * adds upp every players points on hand
      *
      *
-      * @param
-     * @return
+     */
+    public void countpoints()
+    {
+        int roundpoints=0;
+        //för varje spelare:
+        for(int i = 0; i < game.getPlayers().size(); i++) {
+            //find decksize
+            int decksize = game.getPlayers().get(i).getDeck().getSize();
+            //för varje kort
+            for (int j = 0; j < decksize; j++) {
+                //hitta kortets value
+                Value val = game.getPlayers().get(i).getDeck().getCard(j).getValue();
+                //translate val to int och räkna upp
+                roundpoints=roundpoints+valToInt(val);
+            }
+            System.out.println(game.getPlayers().get(i)+" has "+ roundpoints +"points");
+        }
+    }
+
+    public int valToInt(Value v){
+        int index= v.ordinal();
+        if (index >= 13){
+            return 50;
+        }else if ((index >= 10) && (index < 13)){
+            return 20;
+        }else {
+            return index;
+        }
+    }
+
+    /**
+     * deciding if round is won
+     *
+     * @return true if round is wo by current player else false
      */
 
     public boolean WeHaveAWinner(){
         int currentPlayer = game.getCurrentTurn();
 
-
         String name=game.getPlayers().get(currentPlayer).getName();;
 
         if(game.getDeck().isEmpty()){
@@ -181,21 +209,6 @@ public class Server extends Thread {
 
         return false;
     }
-
-/*    public boolean WeHaveAWinner(TransmitData data){
-        int currentPlayer = game.getCurrentTurn();
-        String name=game.getPlayers().get(currentPlayer).getName();;
-
-        if(game.getDeck().isEmpty()){
-            System.out.println(name+" has won!");
-            return true;
-        }
-        System.out.println(name+" has not won!");
-
-        return false;
-    }
-
- */
 
     public void run()
     {
