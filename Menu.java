@@ -94,7 +94,8 @@ public class Menu extends JFrame{
                                 break;
                             }
                         } catch (NumberFormatException z) {
-                            JOptionPane.showInputDialog(null, z);
+                            JOptionPane.showMessageDialog(null, "Invalid input");
+                            //JOptionPane.showInputDialog(null, z);
                         }
                         JOptionPane.showMessageDialog(null,"The amount of players needs to be between 2 and 10!");
                     }

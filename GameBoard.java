@@ -81,12 +81,12 @@ public class GameBoard extends JFrame {
 			card_button.addActionListener(new ActionListener(){
 				@Override
 				public void actionPerformed(ActionEvent e){
-					System.out.println("button pressed!");
+					// System.out.println("button pressed!");
 					if(client.isClientTurn())
 					{
 						if(card_button.getCard().getColor() != Col.black)
 						{
-							System.out.println("Card selected : " + card_button.getCard().toString());
+							// System.out.println("Card selected : " + card_button.getCard().toString());
 							TransmitData data = new TransmitData(card_button.getCard(), -100, Col.black, false, false);
 							client.sendToServer(data);
 						}
