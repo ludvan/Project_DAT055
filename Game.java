@@ -25,7 +25,7 @@ public class Game implements java.io.Serializable{
         deck = new Deck();
         discardDeck = new Deck();
         players = new ArrayList<>();
-        player_id = -1; // -1 for the serber version of game
+        player_id = -1; // -1 for the server version of game
         turn = 0;
         reverse = false;
     }
@@ -162,6 +162,11 @@ public class Game implements java.io.Serializable{
     public void setReverse(boolean val)
     {
         reverse = val;
+    }
+
+    public void getPlayerName(int player_id)
+    {
+
     }
 
     public String toString()

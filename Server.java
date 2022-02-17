@@ -145,9 +145,57 @@ public class Server extends Thread {
 
         game.deckAddCard(card);
         game.playerRemoveCard(currentPlayer, card);
+
+        if(WeHaveAWinner()){
+            //count every players hand
+
+            //end this round
+
+            //show this matches leaderboard
+
+        }
+
         game.setCurrentTurn(game.nextTurn());
         updateClientsGame(game);
     }
+
+    /**
+     * indicates whether a game is wom by some player or not
+     *
+     *
+      * @param
+     * @return
+     */
+
+    public boolean WeHaveAWinner(){
+        int currentPlayer = game.getCurrentTurn();
+
+
+        String name=game.getPlayers().get(currentPlayer).getName();;
+
+        if(game.getDeck().isEmpty()){
+            System.out.println(name+" has won!");
+            return true;
+        }
+        System.out.println(name+" has not won!");
+
+        return false;
+    }
+
+/*    public boolean WeHaveAWinner(TransmitData data){
+        int currentPlayer = game.getCurrentTurn();
+        String name=game.getPlayers().get(currentPlayer).getName();;
+
+        if(game.getDeck().isEmpty()){
+            System.out.println(name+" has won!");
+            return true;
+        }
+        System.out.println(name+" has not won!");
+
+        return false;
+    }
+
+ */
 
     public void run()
     {
