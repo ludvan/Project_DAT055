@@ -13,10 +13,11 @@ public class GameBoard extends JFrame {
 	private int height;
 	private Color backgroundColor = new Color(80, 0,0);
 	private Color handColor = new Color(150, 0,0);
+	private int playerLimit;
 
 	public GameBoard()
 	{
-		new JFrame();
+		//new JFrame();
 		setLayout(null);
 		width = 1200;
 		height = 600;
@@ -122,6 +123,36 @@ public class GameBoard extends JFrame {
 		revalidate();
 		repaint();
 	}
+	
+	public void lobbyUpdate(ArrayList<Player> players) {
+		getContentPane().removeAll();
+
+		BorderLayout layout = new BorderLayout();
+		setLayout(layout);
+		GridLayout lobbyLayout = new GridLayout(2, 5);
+		JPanel lobbyPanel = new JPanel();
+		lobbyPanel.setLayout(lobbyLayout);
+		lobbyPanel.setBackground(backgroundColor);
+		
+		//Lägg till spelare
+		for(int i = 0; i<players.size(); i++) {
+			GamePlayer lobbyDisplay = new GamePlayer(true);
+			lobbyDisplay.setText(players.get(i).getName());
+
+			lobbyPanel.add(lobbyDisplay);
+		}
+		
+		//Lägg till rutor utan spelare
+		for(int i = 0; i<playerLimit-players.size(); i++) {
+			GamePlayer lobbyDisplay = new GamePlayer();
+			lobbyDisplay.setText("Open slot");
+			
+			lobbyPanel.add(lobbyDisplay);
+		}
+		add(lobbyPanel);
+		revalidate();
+		repaint();
+	}
 
 	public void setClient(ChatClient _client)
 	{
@@ -141,6 +172,10 @@ public class GameBoard extends JFrame {
 	public Game getGame()
 	{
 		return game;
+	}
+	
+	public void setPlayerLimit(Integer players) {
+		playerLimit = players;
 	}
 	public static void main(String[] args){
         GameBoard board = new GameBoard();       

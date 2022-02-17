@@ -163,6 +163,7 @@ public class Server extends Thread {
                     server_status += "\n New user joined the lobby";
                     System.out.println("New user joined the lobby");
                     newUser.start();
+                    broadcast((Integer)playerLimit);
                 }             
             }
         } catch (IOException ex) {
@@ -221,6 +222,9 @@ public class Server extends Thread {
         game.addPlayer(user);
         server_status += "\n (" + game.getPlayers().size() + "/"+ playerLimit + ") users connected";
         System.out.println("(" + game.getPlayers().size() + "/"+ playerLimit + ") users connected");
+        //Skicka playerlista till spelare i lobby
+        broadcast(game.getPlayers());
+        
         if(game.getPlayers().size() == playerLimit)
         {
             in_match = true;

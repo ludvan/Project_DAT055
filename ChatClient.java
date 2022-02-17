@@ -48,6 +48,16 @@ public class ChatClient {
                 Object recieved;
                 while(true) {
                     recieved = inputStream.readObject();
+                    //instanceof ArrayList<Player> var ej tillåtet
+                    //OBS måste skrivas om ifall vi skickar andra ArrayList (tror/hoppas vi inte behöver)
+                    if(recieved instanceof Integer) {
+                    	board.setPlayerLimit((Integer)recieved);
+                    }
+                    if(recieved instanceof ArrayList) {
+                    	@SuppressWarnings("unchecked") //försökt hitta bättre lösning, kör så här så länge
+						ArrayList<Player> playerList = (ArrayList<Player>) recieved;
+                    	board.lobbyUpdate(playerList);
+                    }
                     // detta borde hanteras av en extern class kanske??
                     // todo skicka generaliserat medelande som egen class. detta skall innehÃ¥lla Ã¤ndringar mm
                     if(recieved instanceof Game)
