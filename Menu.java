@@ -90,6 +90,7 @@ public class Menu extends JFrame{
                                 break;
                             }
                         } catch (NumberFormatException z) {
+                            Toolkit.getDefaultToolkit().beep();
                             JOptionPane.showMessageDialog(null, "The amount of players needs to be between 2 and 10!");
                         }
                     }
