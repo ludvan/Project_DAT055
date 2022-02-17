@@ -2,8 +2,13 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Properties;
 
 import javax.swing.*;
 public class Menu extends JFrame{
@@ -123,11 +128,42 @@ public class Menu extends JFrame{
                 }
             }
         });
+
+        
+      //Change settings
+        File configFile = new File("config.properties"); //Open config file
+        JButton config = new JButton("Change settings");
+        config.setFont(new Font("Yu Gothic UI Semibold", Font.PLAIN, 36)); //17
+        config.setBounds(window_width/2 - 100, 3*window_height/10, play_size.width, play_size.height);
+        config.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e){
+            	String port = JOptionPane.showInputDialog("Please Enter port:");;
+                String nickname = JOptionPane.showInputDialog("Please Enter your nickname:");
+                System.out.println("port " + port + " :: name " + nickname);
+                
+                try {
+                    Properties props = new Properties();
+                    props.setProperty("port", port);
+                    props.setProperty("nickname", nickname);
+                    FileWriter writer = new FileWriter(configFile);
+                    props.store(writer, "host settings");
+                    writer.close();
+                } catch (FileNotFoundException ex) {
+                    // file does not exist
+                } catch (IOException ex) {
+                    // I/O error
+                }
+            }
+        });
+        
+        
         p.add(label);
         p.add(play);
         p.add(exit);
         p.add(create);
         p.add(join);
+        p.add(config);
         add(p);
         setVisible(true);
     }
