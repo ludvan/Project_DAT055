@@ -1,3 +1,4 @@
+import java.sql.SQLOutput;
 import java.util.*;
 
 public class Game implements java.io.Serializable{
@@ -168,6 +169,38 @@ public class Game implements java.io.Serializable{
     {
 
     }
+
+    public void countpoints()
+    {
+    //    System.out.println("!!!!!!!start countpoints in game!!!!!!!");
+        //för varje spelare:
+        for(int i = 0; i < getPlayers().size(); i++) {
+            //find decksize
+            int decksize = getPlayers().get(i).getDeck().getSize();
+            int roundpoints=0;
+            //för varje kort:
+            for (int j = 0; j < decksize; j++) {
+                Value val = getPlayers().get(i).getDeck().getCard(j).getValue();
+                roundpoints=roundpoints+valToInt(val);
+            }
+            System.out.println("name: "+ getPlayers().get(i).getName()+" has in total "+ roundpoints +"points this round");
+        }
+    //    System.out.println("!!!!!!end countpoints in game!!!!!!!");
+    }
+
+
+    public int valToInt(Value v){
+        int index= v.ordinal();
+        if (index >= 13){
+            return 50;
+        }else if ((index >= 10) && (index < 13)){
+            return 20;
+        }else {
+            return index;
+        }
+    }
+
+
 
     public String toString()
     {

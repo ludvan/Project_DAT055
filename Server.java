@@ -146,10 +146,10 @@ public class Server extends Thread {
 
         game.deckAddCard(card);
         game.playerRemoveCard(currentPlayer, card);
-        countpoints();
+        game.countpoints();
 
         if(WeHaveAWinner()){
-            countpoints();
+ //           countpoints();
         }
 
         game.setCurrentTurn(game.nextTurn());
@@ -159,9 +159,8 @@ public class Server extends Thread {
     /**
      * adds upp every players points on hand
      *
-     *
      */
-    public void countpoints()
+/*    public void countpoints()
     {
         int roundpoints=0;
         //för varje spelare:
@@ -175,9 +174,11 @@ public class Server extends Thread {
                 //translate val to int och räkna upp
                 roundpoints=roundpoints+valToInt(val);
             }
-            System.out.println(game.getPlayers().get(i)+" has "+ roundpoints +"points");
+            System.out.println("name: "+game.getPlayers().get(i)+" has "+ roundpoints +"points");
         }
     }
+
+
 
     public int valToInt(Value v){
         int index= v.ordinal();
@@ -189,7 +190,7 @@ public class Server extends Thread {
             return index;
         }
     }
-
+ */
     /**
      * deciding if round is won
      *
