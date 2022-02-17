@@ -170,7 +170,7 @@ public class Game implements java.io.Serializable{
 
     }
 
-    public void countpoints()
+/*    public void countpoints()
     {
     //    System.out.println("!!!!!!!start countpoints in game!!!!!!!");
         //för varje spelare:
@@ -186,6 +186,26 @@ public class Game implements java.io.Serializable{
             System.out.println("name: "+ getPlayers().get(i).getName()+" has in total "+ roundpoints +"points this round");
         }
     //    System.out.println("!!!!!!end countpoints in game!!!!!!!");
+    }
+ */
+
+    public ArrayList countpoints()
+    {
+        ArrayList<Object> PlayerPointsList = new ArrayList<Object>();
+        String[][] pointsarray;
+        for(int i = 0; i < getPlayers().size(); i++) {
+            int decksize = getPlayers().get(i).getDeck().getSize();
+            int roundpoints=0;
+            for (int j = 0; j < decksize; j++) {
+                Value val = getPlayers().get(i).getDeck().getCard(j).getValue();
+                roundpoints=roundpoints+valToInt(val);
+            }
+            Object[] PlayerPoints={getPlayers().get(i).getName(), Integer.toString(roundpoints)};
+            PlayerPointsList.add(PlayerPoints);
+            System.out.println("name: "+ getPlayers().get(i).getName()+" has in total "+ roundpoints +"points this round");
+        }
+        System.out.println(PlayerPointsList);
+        return PlayerPointsList;
     }
 
 

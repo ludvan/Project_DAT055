@@ -1,3 +1,4 @@
+import javax.swing.*;
 import java.awt.*;
 import java.net.*;
 import java.io.*;
@@ -156,41 +157,10 @@ public class Server extends Thread {
         updateClientsGame(game);
     }
 
-    /**
-     * adds upp every players points on hand
-     *
-     */
-/*    public void countpoints()
-    {
-        int roundpoints=0;
-        //för varje spelare:
-        for(int i = 0; i < game.getPlayers().size(); i++) {
-            //find decksize
-            int decksize = game.getPlayers().get(i).getDeck().getSize();
-            //för varje kort
-            for (int j = 0; j < decksize; j++) {
-                //hitta kortets value
-                Value val = game.getPlayers().get(i).getDeck().getCard(j).getValue();
-                //translate val to int och räkna upp
-                roundpoints=roundpoints+valToInt(val);
-            }
-            System.out.println("name: "+game.getPlayers().get(i)+" has "+ roundpoints +"points");
-        }
-    }
+public void makeCurrentLeaderboard(){
+    int answer= JOptionPane.showConfirmDialog(null, "Do you want to play again?", "someone won!!!" , JOptionPane.YES_NO_OPTION);
+}
 
-
-
-    public int valToInt(Value v){
-        int index= v.ordinal();
-        if (index >= 13){
-            return 50;
-        }else if ((index >= 10) && (index < 13)){
-            return 20;
-        }else {
-            return index;
-        }
-    }
- */
     /**
      * deciding if round is won
      *
@@ -200,16 +170,36 @@ public class Server extends Thread {
     public boolean WeHaveAWinner(){
         int currentPlayer = game.getCurrentTurn();
 
+        String name=game.getPlayers().get(currentPlayer).getName();
+        ArrayList<Object> ppl=new ArrayList<Object>(Arrays.asList(game.countpoints()));
+
+        for (int i=0; i<ppl.size(); i++){
+            Object[] temp = ppl.get(i);
+            System.out.println(temp);
+            if(temp[1] == 0){
+                JOptionPane.showConfirmDialog(null, "Do you want to play again?", "someone won!!!" , JOptionPane.YES_NO_OPTION);
+                return true;
+            }}
+        System.out.println(name+" has not won!");
+
+        return false;
+    }
+
+/*    public boolean WeHaveAWinner(){
+        int currentPlayer = game.getCurrentTurn();
+
         String name=game.getPlayers().get(currentPlayer).getName();;
 
         if(game.getDeck().isEmpty()){
-            System.out.println(name+" has won!");
+          JOptionPane.showConfirmDialog(null, "Do you want to play again?", "someone won!!!" , JOptionPane.YES_NO_OPTION);
             return true;
         }
         System.out.println(name+" has not won!");
 
         return false;
     }
+
+ */
 
     public void run()
     {
