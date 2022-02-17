@@ -1,6 +1,8 @@
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Toolkit;
 import java.awt.event.*;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.swing.*;
@@ -71,22 +73,31 @@ public class Menu extends JFrame{
                     // vi vill inte skapa två servrar på samma klient
                     
                     // IP-adress, port, antal spelare
-                    String port;    //Denna behöver för tillfället vara 8989
-                    port = JOptionPane.showInputDialog("Please enter the port of the Server(Port 8989 is default):");
-                    String nbrOfPlayers;
-                    nbrOfPlayers = JOptionPane.showInputDialog("Please enter the amount of players in the game (2-10):");
-                    int a = Integer.parseInt(nbrOfPlayers);
-                    while(a > 10){
-                        JOptionPane.showMessageDialog(null,"Too many players, try again!");
+                    String port = "8989";    //Denna behöver för tillfället vara 8989
+                    String nbrOfPlayers = "";
+                    int a;
+                    a = 0;
+                    while(a > 10 || a < 2){
                         nbrOfPlayers = JOptionPane.showInputDialog("Please enter the amount of players in the game (2-10):");
-                        a = Integer.parseInt(nbrOfPlayers);   
+                        if(nbrOfPlayers == null){
+                            break;
+                        }
+                        //JOptionPane.showMessageDialog(null,"The amount of players needs to be between 2 and 10!");
+                        try {
+                            a = Integer.parseInt(nbrOfPlayers);
+                            if(a >= 2 && a <=10){
+                                break;
+                            }
+                        } catch (NumberFormatException z) {
+                            JOptionPane.showInputDialog(null, z);
+                        }
+                        JOptionPane.showMessageDialog(null,"The amount of players needs to be between 2 and 10!");
                     }
                     String open_server = "java Server " + port + " " + nbrOfPlayers;
                     if(serverProcess != null)
                         serverProcess.destroy();
-                    serverProcess = Runtime.getRuntime().exec(open_server);
-                    //serverProcess = Runtime.getRuntime().exec("java Server 8989 2"); 
-                } catch (Exception y) {
+                    serverProcess = Runtime.getRuntime().exec(open_server); 
+                } catch (IOException y) {
                     JOptionPane.showInputDialog(null, y + "");
                 }
             }
@@ -101,7 +112,11 @@ public class Menu extends JFrame{
                 try {
                     String port = "8989";
                     String nickname = JOptionPane.showInputDialog("Please Enter your nickname:");
-                    
+                    while(nickname == null || nickname.isEmpty()){
+                        Toolkit.getDefaultToolkit().beep();
+                        JOptionPane.showMessageDialog(null, "You need to enter a nickname to be able to play!");
+                        break;
+                    }
                     clientProcess.add(Runtime.getRuntime().exec("java ChatClient localhost " + port + " " + nickname));                 
                 } catch (Exception y) {
                     JOptionPane.showInputDialog(null, y + "");
