@@ -11,12 +11,12 @@ public class Server extends Thread {
     private String server_status; // håller koll på vad som skrivs ut från servern
     private int drawCardCounter; // används för att begränsa så att användaren inte kan plocka upp nmer än 3 kort
 
-    public Server(int _port)
+    public Server(int _port, int player_limit)
     {
         port = _port;
         game = new Game();
         clientThreads = new ArrayList<ClientThread>();
-        playerLimit = 2; // hårdkodat så länge
+        playerLimit = player_limit; // hårdkodat så länge
         in_match = false;
         drawCardCounter = 0;
     }
@@ -61,8 +61,27 @@ public class Server extends Thread {
     public void handleCard(TransmitData data)
     {
         int currentPlayer = game.getCurrentTurn();
-        // om användaren endast vill dra ett kort från discard deck
 
+        // om vi får in ett svart kort vill vi vänta på att 
+        // en färg väljs
+        if(data.getCard().getColor() == Col.black)
+        {
+            Card tmp = data.getCard();
+            game.playerRemoveCard(currentPlayer, tmp);
+            game.deckAddCard(tmp);
+            return;
+        }
+        // hanterar färgval om kortet är svart
+        if(data.getChooseColor() && game.getDeck().drawCard().getColor() == Col.black)
+        {
+            Col chosenColor = data.getChosenColor();
+            Card tmp = data.getCard();
+            game.getDeck().drawCard().setColor(chosenColor);
+            game.setCurrentTurn(game.nextTurn());
+            updateClientsGame(game);
+            return;
+        }
+        // om användaren endast vill dra ett kort från discard deck
         if(data.getDrawCard())
         {
             drawCardCounter++;
@@ -80,7 +99,7 @@ public class Server extends Thread {
             updateClientsGame(game);
             return;
         }
-
+        // kolla om vi kan lägga kortet
         Card card = data.getCard();
         if(!game.getDeck().isEmpty())
         {
@@ -91,8 +110,8 @@ public class Server extends Thread {
             }
         }
 
+        // om det 
         if(card.getValue() == Value.plus2){
-            /* Add two cards to the players hand */
             Card tmp = game.getDiscardDeck().drawCard();
             game.playerAddCard(game.nextTurn(), tmp);
             game.discardDeckRemove(tmp);
@@ -149,6 +168,7 @@ public class Server extends Thread {
                     server_status += "\n New user joined the lobby";
                     System.out.println("New user joined the lobby");
                     newUser.start();
+                    broadcast((Integer)playerLimit);
                 }             
             }
             /*
@@ -169,9 +189,11 @@ public class Server extends Thread {
         return server_status;
     }
     public static void main(String[] args) {
-        int port = 8989;
- 
-        Server server = new Server(port);
+        if(args.length < 2)
+            return;
+        int port = Integer.parseInt(args[0]);
+        int limit = Integer.parseInt(args[1]);
+        Server server = new Server(port, limit);
         server.run();
     }
 
@@ -211,6 +233,9 @@ public class Server extends Thread {
         game.addPlayer(user);
         server_status += "\n (" + game.getPlayers().size() + "/"+ playerLimit + ") users connected";
         System.out.println("(" + game.getPlayers().size() + "/"+ playerLimit + ") users connected");
+        //Skicka playerlista till spelare i lobby
+        broadcast(game.getPlayers());
+        
         if(game.getPlayers().size() == playerLimit)
         {
             in_match = true;

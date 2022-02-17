@@ -42,13 +42,22 @@ public class ChatClient {
             inputStream = new ObjectInputStream(socket.getInputStream());
 
             outputStream.writeObject(userName);
-            //outputStream.flush();
 
             // loop som lÃ¤ser frÃ¥n och skriver till servern
             try {
                 Object recieved;
                 while(true) {
                     recieved = inputStream.readObject();
+                    //instanceof ArrayList<Player> var ej tillåtet
+                    //OBS måste skrivas om ifall vi skickar andra ArrayList (tror/hoppas vi inte behöver)
+                    if(recieved instanceof Integer) {
+                    	board.setPlayerLimit((Integer)recieved);
+                    }
+                    if(recieved instanceof ArrayList) {
+                    	@SuppressWarnings("unchecked") //försökt hitta bättre lösning, kör så här så länge
+						ArrayList<Player> playerList = (ArrayList<Player>) recieved;
+                    	board.lobbyUpdate(playerList);
+                    }
                     // detta borde hanteras av en extern class kanske??
                     // todo skicka generaliserat medelande som egen class. detta skall innehÃ¥lla Ã¤ndringar mm
                     if(recieved instanceof Game)
@@ -75,19 +84,14 @@ public class ChatClient {
                             hasSelectCard = false;
                             while(!hasSelectCard)
                             {
-                                // busy wait medan anvÃ¤ndaren vÃ¤ljer kort
-                                System.out.println("waiting...");
+                                // vÃ¤nta medan anvÃ¤ndaren vÃ¤ljer kort
+                                try {
+                                    Thread.sleep(250);
+                                } catch (InterruptedException e) {
+                                    // TODO Auto-generated catch block
+                                    e.printStackTrace();
+                                }
                             }
-                            /*
-                            System.out.println("your turn! \n select card \n");
-                            // Det Ã¤r vÃ¥r tur att spela temporÃ¤r lÃ¶sning pÃ¥ att skicka ett kort
-                            String console_in = System.console().readLine();
-                            int selected_card = Integer.valueOf(console_in);
-
-                            Card selected = game.getPlayerDeck(game.getPlayerId()).getCard(selected_card);
-                            // lÃ¤gg till kortet i vÃ¥r send buffer
-                            sendToServer(selected);
-                            */
                         }
                         else
                         {
@@ -149,6 +153,19 @@ public class ChatClient {
         return this.game.getPlayerId() == game.getCurrentTurn();
     }
 
+    public boolean hasStackableCard()
+    {
+        boolean tmp = false;
+        for(int i = 0; i < game.getPlayerDeck(game.getPlayerId()).getSize(); i++)
+        {
+            if(Card.isStackable(game.getPlayerDeck(game.getPlayerId()).getCard(i), game.getDeck().drawCard()))
+            {
+                tmp = true;
+            }
+        }
+        return tmp;
+    }
+
     void setUserName(String userName) {
         this.userName = userName;
     }
@@ -158,18 +175,25 @@ public class ChatClient {
     }
  
     public static void main(String[] args) { 
-        /*
-        if(args.length < 1)
+        String hostname;
+        String username;
+        int port;
+        if(args.length < 3)
         {
-            System.out.println("Enter username");
-            return;
-        }*/
-        String hostname = "localhost";
-        int port = 8989;
-        System.out.println("Enter a username : ");
-        String username = System.console().readLine();
- 
+            System.out.println("Enter server ip write 'localhost' for running on same device");
+            hostname = System.console().readLine();
+            port = 8989;
+            System.out.println("Enter a username : ");
+            username = System.console().readLine();
+        }
+        else
+        {
+            hostname = args[0];
+            port = Integer.parseInt(args[1]);
+            username = args[2];
+        }
         ChatClient client = new ChatClient(hostname, port, username);
+
         client.execute();
     }
 }

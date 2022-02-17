@@ -1,14 +1,19 @@
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.*;
+import java.util.ArrayList;
+
 import javax.swing.*;
 public class Menu extends JFrame{
     
     private final int window_width = 1920;
     private final int window_height = 1080;
-    private Server server; // lagra server
+    private Process serverProcess;
+    private ArrayList<Process> clientProcess;
 
     public Menu(){
+        clientProcess = new ArrayList<Process>();
+
         setTitle("GameLauncher");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(window_width,window_height); //Kan komma att ändras
@@ -46,6 +51,11 @@ public class Menu extends JFrame{
         exit.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e){
+                // stäng ner alla processer
+                for (Process p : clientProcess) {
+                    p.destroy();
+                }
+                serverProcess.destroy();
                 System.exit(0);
             }
         });
@@ -58,8 +68,10 @@ public class Menu extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e){
                 try {
-                    server = new Server(8989);
-                    server.start();
+                    // vi vill inte skapa två servrar på samma klient
+                    if(serverProcess != null)
+                        serverProcess.destroy();
+                    serverProcess = Runtime.getRuntime().exec("java Server 8989 3"); 
                 } catch (Exception y) {
                     JOptionPane.showInputDialog(null, y + "");
                 }
@@ -73,7 +85,7 @@ public class Menu extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e){
                 try {
-                    ChatClient c = new ChatClient("hostname",8989,"liam");
+                    clientProcess.add(Runtime.getRuntime().exec("java ChatClient localhost 8989 Bob"));                   
                 } catch (Exception y) {
                     JOptionPane.showInputDialog(null, y + "");
                 }

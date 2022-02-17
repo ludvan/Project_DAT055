@@ -11,10 +11,13 @@ public class GameBoard extends JFrame {
 	private ChatClient client;
 	private int width;
 	private int height;
+	private Color backgroundColor = new Color(80, 0,0);
+	private Color handColor = new Color(150, 0,0);
+	private int playerLimit;
 
 	public GameBoard()
 	{
-		new JFrame();
+		//new JFrame();
 		setLayout(null);
 		width = 1200;
 		height = 600;
@@ -34,11 +37,13 @@ public class GameBoard extends JFrame {
 		setLayout(layout);
 		GridLayout center_layout = new GridLayout(1, 2);
 		JPanel center_panel = new JPanel();
+		center_panel.setBackground(backgroundColor);
 		center_panel.setLayout(center_layout);
 		// deck card
 		if(!game.getDeck().isEmpty())
 		{
 			GameCard gameDeck = new GameCard(game.getDeck().drawCard());
+			gameDeck.setBackground(backgroundColor);
 			center_panel.add(gameDeck);
 		}
 		// discard deck card
@@ -48,24 +53,32 @@ public class GameBoard extends JFrame {
 			discardDeck.addActionListener(new ActionListener(){
 				@Override
 				public void actionPerformed(ActionEvent e){
-					if(client.isClientTurn())
+					if(client.isClientTurn() && !client.hasStackableCard())
 					{
 						TransmitData data = new TransmitData(null, -100, Col.black, true, false);
 						client.sendToServer(data);
 					}
 				}
 			});
+			if(client.hasStackableCard() || !client.isClientTurn())
+				discardDeck.setOpacity(0.5f);
+			else
+				discardDeck.setOpacity(1f);
+
+			discardDeck.setBackground(backgroundColor);
 			center_panel.add(discardDeck);
 		}
 		add(center_panel, layout.CENTER);
 		// player hand
-		GridLayout handLayout = new GridLayout(2, 7);
+		GridLayout handLayout = new GridLayout(1, 10);
 		JPanel hand = new JPanel();
+		hand.setBackground(handColor);
 		hand.setLayout(handLayout);
 		for(int i = 0; i < game.getPlayerDeck(game.getPlayerId()).getSize(); i++)
 		{
 			Card card = game.getPlayerDeck(game.getPlayerId()).getCard(i);
 			GameCard card_button = new GameCard(card);
+			card_button.setBackground(handColor);
 			card_button.addActionListener(new ActionListener(){
 				@Override
 				public void actionPerformed(ActionEvent e){
@@ -78,61 +91,59 @@ public class GameBoard extends JFrame {
 					}
 				}
 			});
+			if(!client.isClientTurn())
+				card_button.setOpacity(0.5f);
 			hand.add(card_button);
 		}
 		add(hand, layout.SOUTH);
 
-		GridLayout opLayout = new GridLayout(1, game.getPlayers().size()-1);
+		GridLayout opLayout = new GridLayout(1, game.getPlayers().size());
 		JPanel opPanel = new JPanel();
+		opPanel.setBackground(handColor);
 		for(int i = 0; i < game.getPlayers().size(); i++)
 		{
+			GamePlayer player_display = new GamePlayer();
 			if(i!=game.getPlayerId())
-				opPanel.add(new JButton(game.getPlayers().get(i).getName() + " " + game.getPlayerDeck(i).getSize()));
+				player_display.setText(game.getPlayers().get(i).getName() + " " + game.getPlayerDeck(i).getSize());
+			else
+				player_display.setText(game.getPlayers().get(i).getName() + "(You) " + game.getPlayerDeck(i).getSize());
+
+			player_display.setActive(i==game.getCurrentTurn());
+			opPanel.add(player_display);
 		}
 		add(opPanel, layout.NORTH);
 		revalidate();
 		repaint();
-		//int players = game.getPlayers().size();
-		/*
-		for(int i = 0; i < players; i++)
-		{
-			Player player = game.getPlayers().get(i);
-			double angle = 90.0 + 360.0 * ((double)(i-game.getPlayerId())/players);
-			double rel_posx = ((Math.cos(Math.toRadians(angle)) + 1)/2);
-			double rel_posy = ((Math.sin(Math.toRadians(angle)) + 1)/2);
-			int posx = (int)(rel_posx*(width-300));
-			int posy = (int)(rel_posy*(height-150));
+	}
+	
+	public void lobbyUpdate(ArrayList<Player> players) {
+		getContentPane().removeAll();
 
-			JPanel panel = new JPanel();
-			GridLayout layout = new GridLayout(1, 4);
-			panel.setLayout(layout);
-			panel.setBounds(posx, posy, 164*4, 258/2);
-			for(int c = 0; c < player.getDeck().getSize(); i++)
-			{
-				if(game.getPlayerId() == i)
-				{
-					panel.add(new GameCard(player.getDeck().getCard(c)));
-				}
-				else
-				{
-					panel.add(new GameCard());
-				}
-				add(panel);
-			}
-			panel.revalidate();
-			panel.repaint();
+		BorderLayout layout = new BorderLayout();
+		setLayout(layout);
+		GridLayout lobbyLayout = new GridLayout(2, 5);
+		JPanel lobbyPanel = new JPanel();
+		lobbyPanel.setLayout(lobbyLayout);
+		lobbyPanel.setBackground(backgroundColor);
+		
+		//Lägg till spelare
+		for(int i = 0; i<players.size(); i++) {
+			GamePlayer lobbyDisplay = new GamePlayer(true);
+			lobbyDisplay.setText(players.get(i).getName());
+
+			lobbyPanel.add(lobbyDisplay);
+		}
+		
+		//Lägg till rutor utan spelare
+		for(int i = 0; i<playerLimit-players.size(); i++) {
+			GamePlayer lobbyDisplay = new GamePlayer();
+			lobbyDisplay.setText("Open slot");
 			
+			lobbyPanel.add(lobbyDisplay);
 		}
-		if(!game.getDeck().isEmpty())
-		{
-			GameCard gameDeck = new GameCard(game.getDeck().drawCard());
-			gameDeck.setLayout(null);
-			gameDeck.setBounds(width / 2 - 42, height / 2 - 65, 84, 129);
-			add(gameDeck);
-		}
+		add(lobbyPanel);
 		revalidate();
 		repaint();
-		*/
 	}
 
 	public void setClient(ChatClient _client)
@@ -154,9 +165,12 @@ public class GameBoard extends JFrame {
 	{
 		return game;
 	}
+	
+	public void setPlayerLimit(Integer players) {
+		playerLimit = players;
+	}
 	public static void main(String[] args){
-        GameBoard board = new GameBoard();
-        
+        GameBoard board = new GameBoard();       
     }
 	
 }
