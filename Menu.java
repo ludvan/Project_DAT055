@@ -1,3 +1,4 @@
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Toolkit;
@@ -9,6 +10,15 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Properties;
+
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
+import javax.swing.border.EmptyBorder;
 
 import javax.swing.*;
 public class Menu extends JFrame{
@@ -25,14 +35,17 @@ public class Menu extends JFrame{
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(window_width,window_height); //Kan komma att ändras
         JPanel p = new JPanel();
-        p.setLayout(null);
+        p.setBorder(new EmptyBorder(10,10,10,10));
+        p.setLayout(new GridBagLayout());
+        
         // "Uno" - texten
         JLabel label = new JLabel();
         label.setText("UNO");
         label.setFont(new Font("Yu Gothic UI Semibold", Font.PLAIN, 36));
-        label.setHorizontalAlignment(JLabel.CENTER);
-        Dimension size = label.getPreferredSize();
-        label.setBounds(window_width/2, 20, size.width, size.height);
+        
+        //Dimension size = label.getPreferredSize();
+        //label.setBounds(window_width/2, 20, size.width, size.height);
+
         // "PLAY" - Knappen
         JButton play = new JButton("PLAY");
         play.setFont(new Font("Yu Gothic UI Semibold", Font.PLAIN, 36));
@@ -87,17 +100,14 @@ public class Menu extends JFrame{
                         if(nbrOfPlayers == null){
                             break;
                         }
-                        //JOptionPane.showMessageDialog(null,"The amount of players needs to be between 2 and 10!");
                         try {
                             a = Integer.parseInt(nbrOfPlayers);
                             if(a >= 2 && a <=10){
                                 break;
                             }
                         } catch (NumberFormatException z) {
-                            JOptionPane.showMessageDialog(null, "Invalid input");
-                            //JOptionPane.showInputDialog(null, z);
+                            JOptionPane.showMessageDialog(null, "The amount of players needs to be between 2 and 10!");
                         }
-                        JOptionPane.showMessageDialog(null,"The amount of players needs to be between 2 and 10!");
                     }
                     String open_server = "java Server " + port + " " + nbrOfPlayers;
                     if(serverProcess != null)
@@ -132,39 +142,52 @@ public class Menu extends JFrame{
 
         
       //Change settings
-        File configFile = new File("config.properties"); //Open configuration file
+        File configFile = new File("config.properties"); //Open config file
         JButton config = new JButton("Change settings");
         config.setFont(new Font("Yu Gothic UI Semibold", Font.PLAIN, 36)); //17
         config.setBounds(window_width/2 - 100, 3*window_height/10, play_size.width, play_size.height);
         config.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e){
-            	try {
             	String port = JOptionPane.showInputDialog("Please Enter port:");;
                 String nickname = JOptionPane.showInputDialog("Please Enter your nickname:");
                 System.out.println("port " + port + " :: name " + nickname);
                 
-                //Write to config file:
-                Properties props = new Properties();
-                props.setProperty("port", port);
-                props.setProperty("nickname", nickname);
-                FileWriter writer = new FileWriter(configFile);
-                props.store(writer, "Configuration file");
-                writer.close();
-
-            	} catch (Exception y) {
-            		JOptionPane.showInputDialog(null, y + "");
-            	}
+                try {
+                    Properties props = new Properties();
+                    props.setProperty("port", port);
+                    props.setProperty("nickname", nickname);
+                    FileWriter writer = new FileWriter(configFile);
+                    props.store(writer, "host settings");
+                    writer.close();
+                } catch (FileNotFoundException ex) {
+                    // file does not exist
+                } catch (IOException ex) {
+                    // I/O error
+                }
             }
         });
         
-        
+        p.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
+        gbc.anchor = GridBagConstraints.NORTH;
         p.add(label);
-        p.add(play);
-        p.add(exit);
-        p.add(create);
-        p.add(join);
-        p.add(config);
+        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        JPanel buttons = new JPanel(new GridBagLayout());
+        //p.add(Box.createRigidArea(new Dimension(0,window_height / 10)));
+        buttons.add(play,gbc);
+        //p.add(Box.createRigidArea(new Dimension(0,window_height / 50)));
+        buttons.add(exit,gbc);
+        //p.add(Box.createRigidArea(new Dimension(0,window_height / 50)));
+        buttons.add(create,gbc);
+        //p.add(Box.createRigidArea(new Dimension(0,window_height / 50)));
+        buttons.add(join,gbc);
+        //p.add(Box.createRigidArea(new Dimension(0,window_height / 50)));
+        buttons.add(config,gbc);
+        gbc.weighty = 1;
+        p.add(buttons,gbc);
         add(p);
         setVisible(true);
     }
