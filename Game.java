@@ -170,42 +170,26 @@ public class Game implements java.io.Serializable{
 
     }
 
-/*    public void countpoints()
-    {
-    //    System.out.println("!!!!!!!start countpoints in game!!!!!!!");
-        //för varje spelare:
-        for(int i = 0; i < getPlayers().size(); i++) {
-            //find decksize
-            int decksize = getPlayers().get(i).getDeck().getSize();
-            int roundpoints=0;
-            //för varje kort:
-            for (int j = 0; j < decksize; j++) {
-                Value val = getPlayers().get(i).getDeck().getCard(j).getValue();
-                roundpoints=roundpoints+valToInt(val);
-            }
-            System.out.println("name: "+ getPlayers().get(i).getName()+" has in total "+ roundpoints +"points this round");
-        }
-    //    System.out.println("!!!!!!end countpoints in game!!!!!!!");
-    }
- */
 
-    public ArrayList countpoints()
+    public int[] countpoints()
     {
-        ArrayList<Object> PlayerPointsList = new ArrayList<Object>();
-        String[][] pointsarray;
-        for(int i = 0; i < getPlayers().size(); i++) {
+        int size=getPlayers().size();
+        int[] allPoints=new int[size];
+        for(int i = 0; i < size; i++) {
             int decksize = getPlayers().get(i).getDeck().getSize();
-            int roundpoints=0;
+            int roundpoints = 0;
             for (int j = 0; j < decksize; j++) {
                 Value val = getPlayers().get(i).getDeck().getCard(j).getValue();
-                roundpoints=roundpoints+valToInt(val);
+                roundpoints = roundpoints + valToInt(val);
             }
-            Object[] PlayerPoints={getPlayers().get(i).getName(), Integer.toString(roundpoints)};
-            PlayerPointsList.add(PlayerPoints);
-            System.out.println("name: "+ getPlayers().get(i).getName()+" has in total "+ roundpoints +"points this round");
+            allPoints[i] = roundpoints;
+            System.out.println("name: "+getPlayers().get(i).getName()+" points: "+ allPoints[i]);
         }
-        System.out.println(PlayerPointsList);
-        return PlayerPointsList;
+        for(int i = 0; i < size; i++) {
+            System.out.println(getPlayers().get(i).getName()+" has "+ allPoints[i]+" points");
+        }
+        return allPoints;
+
     }
 
 

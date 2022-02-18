@@ -149,9 +149,7 @@ public class Server extends Thread {
         game.playerRemoveCard(currentPlayer, card);
         game.countpoints();
 
-        if(WeHaveAWinner()){
- //           countpoints();
-        }
+        WeHaveAWinner();
 
         game.setCurrentTurn(game.nextTurn());
         updateClientsGame(game);
@@ -171,35 +169,26 @@ public void makeCurrentLeaderboard(){
         int currentPlayer = game.getCurrentTurn();
 
         String name=game.getPlayers().get(currentPlayer).getName();
-        ArrayList<Object> ppl=new ArrayList<Object>(Arrays.asList(game.countpoints()));
+        int[]pointsArr = game.countpoints();
+        //kontrollprint för arrayen
+        System.out.println("pointsArr is:");
+        for(int p = 0; p < pointsArr.length; p++) {
+            System.out.print(pointsArr[p]);
+        }
 
-        for (int i=0; i<ppl.size(); i++){
-            Object[] temp = ppl.get(i);
-            System.out.println(temp);
-            if(temp[1] == 0){
+        for (int i=0; i<game.countpoints().length; i++){
+            int temp = pointsArr[i];
+            //kontrollprinf för temp
+            System.out.println("temp is: "+temp);
+            if(temp == 0){
                 JOptionPane.showConfirmDialog(null, "Do you want to play again?", "someone won!!!" , JOptionPane.YES_NO_OPTION);
                 return true;
-            }}
-        System.out.println(name+" has not won!");
-
-        return false;
-    }
-
-/*    public boolean WeHaveAWinner(){
-        int currentPlayer = game.getCurrentTurn();
-
-        String name=game.getPlayers().get(currentPlayer).getName();;
-
-        if(game.getDeck().isEmpty()){
-          JOptionPane.showConfirmDialog(null, "Do you want to play again?", "someone won!!!" , JOptionPane.YES_NO_OPTION);
-            return true;
+            }
         }
         System.out.println(name+" has not won!");
 
         return false;
     }
-
- */
 
     public void run()
     {
