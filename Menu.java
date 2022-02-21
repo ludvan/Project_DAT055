@@ -4,6 +4,7 @@ import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.*;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -13,11 +14,7 @@ import java.util.Properties;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
+
 import javax.swing.border.EmptyBorder;
 
 import javax.swing.*;
@@ -126,28 +123,13 @@ public class Menu extends JFrame{
 
         
       //Change settings
-        File configFile = new File("config.properties"); //Open config file
+        //File configFile = new File("config.properties"); //Open config file
         JButton config = new JButton("Change settings");
         config.setFont(new Font("Yu Gothic UI Semibold", Font.PLAIN, 36));
         config.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e){
-            	String port = JOptionPane.showInputDialog("Please Enter port:");;
-                String nickname = JOptionPane.showInputDialog("Please Enter your nickname:");
-                System.out.println("port " + port + " :: name " + nickname);
-                
-                try {
-                    Properties props = new Properties();
-                    props.setProperty("port", port);
-                    props.setProperty("nickname", nickname);
-                    FileWriter writer = new FileWriter(configFile);
-                    props.store(writer, "host settings");
-                    writer.close();
-                } catch (FileNotFoundException ex) {
-                    // file does not exist
-                } catch (IOException ex) {
-                    // I/O error
-                }
+            	configWindow();
             }
         });
         
@@ -177,6 +159,44 @@ public class Menu extends JFrame{
         add(p);
         setVisible(true);
     }
+    
+    public static void configWindow() {
+		Properties properties = new Properties();
+	    try (FileInputStream fileInputStream = new FileInputStream("inst.properties")) {
+	    	properties.load(fileInputStream);
+	    } catch (Exception ex) {
+	        System.out.println("exeption " + ex.getMessage());
+	    }
+	    JTextField portField = new JTextField(properties.getProperty("port"));
+	    JTextField nicknameField = new JTextField(properties.getProperty("nickname"));
+
+	    JPanel configPanel = new JPanel();
+	    configPanel.setLayout(new BoxLayout(configPanel, BoxLayout.Y_AXIS));
+	    configPanel.add(new JLabel("Port:"));
+	    configPanel.add(portField);
+	    configPanel.add(Box.createVerticalStrut(15));
+	    configPanel.add(new JLabel("Nickname:"));
+	    configPanel.add(nicknameField);
+
+	    int result = JOptionPane.showConfirmDialog(null, configPanel, "Configuration", JOptionPane.OK_CANCEL_OPTION);
+	    
+	    if (result == JOptionPane.OK_OPTION) {
+	      try {
+	    	  File configFile = new File("inst.properties"); //Open configuration file
+		      Properties props = new Properties();
+		      props.setProperty("port", portField.getText());
+		      props.setProperty("nickname", nicknameField.getText());
+		      FileWriter fileWriter = new FileWriter(configFile); //io exception
+		      props.store(fileWriter, "Configuration file"); //har exceptions
+		      fileWriter.close(); //io exception
+	      }catch(ClassCastException e) {
+	    	  System.out.println(e.getMessage() + "contains keys or values that are not Strings");
+	      }catch(Exception y) {
+	    	  System.out.println(y.getMessage());
+	      }
+	    }
+  }
+
 
     public static void main(String[] args){
         Menu m = new Menu();
