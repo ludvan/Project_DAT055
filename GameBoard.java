@@ -14,15 +14,19 @@ public class GameBoard extends JFrame {
 	private Color backgroundColor = new Color(80, 0,0);
 	private Color handColor = new Color(150, 0,0);
 	private int playerLimit;
+	private LobbyView lobby;
 
 	public GameBoard()
 	{
 		//new JFrame();
-		setLayout(null);
+		//setLayout(null);
+		BorderLayout layout = new BorderLayout();
+		setLayout(layout);
 		width = 1200;
 		height = 600;
 		setSize(width, height);
 		setBackground(Color.white);
+		lobby = new LobbyView(backgroundColor);
 		setVisible(true);
 	}
 
@@ -126,30 +130,11 @@ public class GameBoard extends JFrame {
 	
 	public void lobbyUpdate(ArrayList<Player> players) {
 		getContentPane().removeAll();
-
-		BorderLayout layout = new BorderLayout();
-		setLayout(layout);
-		GridLayout lobbyLayout = new GridLayout(2, 5);
-		JPanel lobbyPanel = new JPanel();
-		lobbyPanel.setLayout(lobbyLayout);
-		lobbyPanel.setBackground(backgroundColor);
 		
-		//Lägg till spelare
-		for(int i = 0; i<players.size(); i++) {
-			GamePlayer lobbyDisplay = new GamePlayer(true);
-			lobbyDisplay.setText(players.get(i).getName());
-
-			lobbyPanel.add(lobbyDisplay);
-		}
 		
-		//Lägg till rutor utan spelare
-		for(int i = 0; i<playerLimit-players.size(); i++) {
-			GamePlayer lobbyDisplay = new GamePlayer();
-			lobbyDisplay.setText("Open slot");
-			
-			lobbyPanel.add(lobbyDisplay);
-		}
-		add(lobbyPanel);
+		lobby.update(players,playerLimit);
+		add(lobby);
+		
 		revalidate();
 		repaint();
 	}
