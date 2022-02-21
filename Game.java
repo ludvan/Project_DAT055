@@ -1,4 +1,3 @@
-import java.sql.SQLOutput;
 import java.util.*;
 
 public class Game implements java.io.Serializable{
@@ -26,7 +25,7 @@ public class Game implements java.io.Serializable{
         deck = new Deck();
         discardDeck = new Deck();
         players = new ArrayList<>();
-        player_id = -1; // -1 for the server version of game
+        player_id = -1; // -1 for the serber version of game
         turn = 0;
         reverse = false;
     }
@@ -134,7 +133,7 @@ public class Game implements java.io.Serializable{
     public void setCurrentTurn(int _turn)
     {
         turn = _turn; 
-        System.out.println("setCurrentTurn");
+        // System.out.println("setCurrentTurn");
     }
 
     public int nextTurn()
@@ -165,13 +164,8 @@ public class Game implements java.io.Serializable{
         reverse = val;
     }
 
-    public void getPlayerName(int player_id)
-    {
 
-    }
-
-
-    public int[] countpoints()
+/*    public int[] countpoints()
     {
         int size=getPlayers().size();
         int[] allPoints=new int[size];
@@ -179,19 +173,17 @@ public class Game implements java.io.Serializable{
             int decksize = getPlayers().get(i).getDeck().getSize();
             int roundpoints = 0;
             for (int j = 0; j < decksize; j++) {
-                Value val = getPlayers().get(i).getDeck().getCard(j).getValue();
-                roundpoints = roundpoints + valToInt(val);
+                    Value val = getPlayers().get(i).getDeck().getCard(j).getValue();
+                    roundpoints = roundpoints + valToInt(val);
+                }
+                allPoints[i] = roundpoints;
+                System.out.println("name: "+getPlayers().get(i).getName()+" points: "+ allPoints[i]);
             }
-            allPoints[i] = roundpoints;
-            System.out.println("name: "+getPlayers().get(i).getName()+" points: "+ allPoints[i]);
+            for(int i = 0; i < size; i++) {
+                System.out.println(getPlayers().get(i).getName()+" has "+ allPoints[i]+" points");
+            }
+            return allPoints;
         }
-        for(int i = 0; i < size; i++) {
-            System.out.println(getPlayers().get(i).getName()+" has "+ allPoints[i]+" points");
-        }
-        return allPoints;
-
-    }
-
 
     public int valToInt(Value v){
         int index= v.ordinal();
@@ -203,11 +195,8 @@ public class Game implements java.io.Serializable{
             return index;
         }
     }
-
-
-
-    public String toString()
-    {
+*/
+    public String toString() {
         String tmp = "";
         tmp += "dealer deck : \n" + deck.toString();
         tmp += "\n";

@@ -1,5 +1,4 @@
 import javax.swing.*;
-import java.awt.*;
 import java.net.*;
 import java.io.*;
 import java.util.*;
@@ -64,25 +63,6 @@ public class Server extends Thread {
     {
         int currentPlayer = game.getCurrentTurn();
 
-        // om vi får in ett svart kort vill vi vänta på att 
-        // en färg väljs
-        if(data.getCard().getColor() == Col.black)
-        {
-            Card tmp = data.getCard();
-            game.playerRemoveCard(currentPlayer, tmp);
-            game.deckAddCard(tmp);
-            return;
-        }
-        // hanterar färgval om kortet är svart
-        if(data.getChooseColor() && game.getDeck().drawCard().getColor() == Col.black)
-        {
-            Col chosenColor = data.getChosenColor();
-            Card tmp = data.getCard();
-            game.getDeck().drawCard().setColor(chosenColor);
-            game.setCurrentTurn(game.nextTurn());
-            updateClientsGame(game);
-            return;
-        }
         // om användaren endast vill dra ett kort från discard deck
         if(data.getDrawCard())
         {
@@ -95,6 +75,11 @@ public class Server extends Thread {
             if(drawCardCounter >= 3)
             {
                 game.setCurrentTurn(game.nextTurn());
+                drawCardCounter = 0;
+            }
+            // om det kort som dras går att lägga så vill vi återställa räknaren
+            if(Card.isStackable(tmp, game.getDeck().drawCard()))
+            {
                 drawCardCounter = 0;
             }
 
@@ -145,9 +130,16 @@ public class Server extends Thread {
         if(card.getValue() == Value.reverse)
             game.setReverse(!game.getReverse());
 
+
+        if(data.getChooseColor())
+        {
+            System.out.println("Color chosen : " + data.getChosenColor().toString());
+            card.setColor(data.getChosenColor());
+        }
         game.deckAddCard(card);
         game.playerRemoveCard(currentPlayer, card);
-        game.countpoints();
+        // om vi får in ett svart kort vill vi vänta på att 
+        // en färg väljs
 
         WeHaveAWinner();
 
@@ -155,40 +147,68 @@ public class Server extends Thread {
         updateClientsGame(game);
     }
 
-public void makeCurrentLeaderboard(){
-    int answer= JOptionPane.showConfirmDialog(null, "Do you want to play again?", "someone won!!!" , JOptionPane.YES_NO_OPTION);
-}
-
+    public void makeCurrentLeaderboard(){
+        int answer= JOptionPane.showConfirmDialog(null, "Do you want to play again?", "someone won!!!" , JOptionPane.YES_NO_OPTION);
+    }
     /**
      * deciding if round is won
      *
      * @return true if round is wo by current player else false
      */
-
     public boolean WeHaveAWinner(){
         int currentPlayer = game.getCurrentTurn();
-
         String name=game.getPlayers().get(currentPlayer).getName();
-        int[]pointsArr = game.countpoints();
+        int[]pointsArr = countpoints();
         //kontrollprint för arrayen
-        System.out.println("pointsArr is:");
+        System.out.print("pointsArr is:");
         for(int p = 0; p < pointsArr.length; p++) {
-            System.out.print(pointsArr[p]);
+            System.out.println(pointsArr[p]);
         }
-
-        for (int i=0; i<game.countpoints().length; i++){
+        for (int i=0; i<pointsArr.length; i++){
             int temp = pointsArr[i];
-            //kontrollprinf för temp
-            System.out.println("temp is: "+temp);
             if(temp == 0){
+
                 JOptionPane.showConfirmDialog(null, "Do you want to play again?", "someone won!!!" , JOptionPane.YES_NO_OPTION);
                 return true;
             }
         }
         System.out.println(name+" has not won!");
-
         return false;
     }
+
+    public int[] countpoints()
+    {
+        int size=getPlayers().size();
+        int[] allPoints=new int[size];
+        for(int i = 0; i < size; i++) {
+            int decksize = getPlayers().get(i).getDeck().getSize();
+            int roundpoints = 0;
+            for (int j = 0; j < decksize; j++) {
+                Value val = getPlayers().get(i).getDeck().getCard(j).getValue();
+                roundpoints = roundpoints + valToInt(val);
+            }
+            allPoints[i] = roundpoints;
+            System.out.println("forloop "+i+": name: "+getPlayers().get(i).getName()+" points: "+ allPoints[i]);
+        }
+        for(int i = 0; i < size; i++) {
+//            System.out.println(getPlayers().get(i).getName()+" has "+ allPoints[i]+" points");
+            System.out.print(allPoints[i]+" ");
+        }
+        System.out.println(" ");
+        return allPoints;
+    }
+
+    public int valToInt(Value v){
+        int index= v.ordinal();
+        if (index >= 13){
+            return 50;
+        }else if ((index >= 10) && (index < 13)){
+            return 20;
+        }else {
+            return index;
+        }
+    }
+
 
     public void run()
     {
@@ -209,14 +229,9 @@ public void makeCurrentLeaderboard(){
                     server_status += "\n New user joined the lobby";
                     System.out.println("New user joined the lobby");
                     newUser.start();
+                    broadcast((Integer)playerLimit);
                 }             
             }
-            /*
-            while(in_match)
-            {
-                // spel logik
-            }
-            */
         } catch (IOException ex) {
             server_status += "\n Error in the server: " + ex.getMessage();
             System.out.println("Error in the server: " + ex.getMessage());
@@ -273,6 +288,9 @@ public void makeCurrentLeaderboard(){
         game.addPlayer(user);
         server_status += "\n (" + game.getPlayers().size() + "/"+ playerLimit + ") users connected";
         System.out.println("(" + game.getPlayers().size() + "/"+ playerLimit + ") users connected");
+        //Skicka playerlista till spelare i lobby
+        broadcast(game.getPlayers());
+        
         if(game.getPlayers().size() == playerLimit)
         {
             in_match = true;
