@@ -24,6 +24,8 @@ public class GameBoard extends JFrame {
 		setSize(width, height);
 		setBackground(Color.white);
 		lobby = new LobbyView(backgroundColor);
+		GetDate date = new GetDate();
+		setTitle("UNO " + date.FetchDate());
 		setVisible(true);
 	}
 
