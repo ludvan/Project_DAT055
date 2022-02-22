@@ -164,8 +164,39 @@ public class Game implements java.io.Serializable{
         reverse = val;
     }
 
-    public String toString()
+
+/*    public int[] countpoints()
     {
+        int size=getPlayers().size();
+        int[] allPoints=new int[size];
+        for(int i = 0; i < size; i++) {
+            int decksize = getPlayers().get(i).getDeck().getSize();
+            int roundpoints = 0;
+            for (int j = 0; j < decksize; j++) {
+                    Value val = getPlayers().get(i).getDeck().getCard(j).getValue();
+                    roundpoints = roundpoints + valToInt(val);
+                }
+                allPoints[i] = roundpoints;
+                System.out.println("name: "+getPlayers().get(i).getName()+" points: "+ allPoints[i]);
+            }
+            for(int i = 0; i < size; i++) {
+                System.out.println(getPlayers().get(i).getName()+" has "+ allPoints[i]+" points");
+            }
+            return allPoints;
+        }
+
+    public int valToInt(Value v){
+        int index= v.ordinal();
+        if (index >= 13){
+            return 50;
+        }else if ((index >= 10) && (index < 13)){
+            return 20;
+        }else {
+            return index;
+        }
+    }
+*/
+    public String toString() {
         String tmp = "";
         tmp += "dealer deck : \n" + deck.toString();
         tmp += "\n";

@@ -39,6 +39,8 @@ public class Player implements Serializable
 
     public String toString()
     {
-        return " name : " + name + " deck : " + deck.toString();
+ //       return " name : " + name + " deck : " + deck.toString();
+        return "name : " + name + " deck : " + deck.toString();
+
     }
 }
