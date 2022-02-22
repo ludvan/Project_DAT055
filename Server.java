@@ -63,7 +63,11 @@ public class Server extends Thread {
     public void handleCard(TransmitData data)
     {
         int currentPlayer = game.getCurrentTurn();
-
+        
+        if(game.getDiscardDeck().getSize() == 0) {
+        	reShuffle();
+        }
+        
         // om vi får in ett svart kort vill vi vänta på att 
         // en färg väljs
         if(!data.getChooseColor() && !data.getDrawCard() && data.getCard().getColor() == Col.black)
@@ -119,6 +123,9 @@ public class Server extends Thread {
 
         // om det 
         if(card.getValue() == Value.plus2){
+        	if (game.getDiscardDeck().getSize() < 2) {
+        		reShuffle();
+        	}
             Card tmp = game.getDiscardDeck().drawCard();
             game.playerAddCard(game.nextTurn(), tmp);
             game.discardDeckRemove(tmp);
@@ -129,6 +136,9 @@ public class Server extends Thread {
             game.setCurrentTurn(game.nextTurn());
         }
         if(card.getValue() == Value.plus4){
+        	if (game.getDiscardDeck().getSize() < 4) {
+        		reShuffle();
+        	}
             Card tmp = game.getDiscardDeck().drawCard();
             game.playerAddCard(game.nextTurn(), tmp);
             game.discardDeckRemove(tmp);
@@ -165,6 +175,27 @@ public class Server extends Thread {
 
         game.setCurrentTurn(game.nextTurn());
         updateClientsGame(game);
+    }
+    
+    private void reShuffle() {
+    	Card topCard = game.getDeck().drawCard();
+    	Deck tmpDeck = game.getDeck();
+    	
+    	Deck newDeck = new Deck();
+    	newDeck.addCard(topCard);
+    	
+    	
+    	tmpDeck.removeCard(topCard);
+    	
+    	tmpDeck.revertBlack();
+    	
+    	game.setDeck(newDeck);
+    	game.setDiscardDeck(tmpDeck);
+    	
+    	//test-syfte
+    	JOptionPane.showMessageDialog(null, "reShuffle done");
+    	JOptionPane.showMessageDialog(null, game.getDiscardDeck().toString());
+    	JOptionPane.showMessageDialog(null, game.getDeck().toString());
     }
 
 

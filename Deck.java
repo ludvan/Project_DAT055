@@ -120,4 +120,12 @@ public class Deck implements Serializable
         tmp += "Deck size : " + cards.size();
         return tmp;
     }
+    
+    public void revertBlack() {
+    	for(int i = 0; i<cards.size(); i++) {
+    		if((cards.get(i).getValue() == Value.plus4 ||cards.get(i).getValue() == Value.pickColor ) && cards.get(i).getColor() != Col.black) {
+    			cards.get(i).setColor(Col.black);
+    		}
+    	}
+    }
 }
