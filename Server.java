@@ -3,6 +3,8 @@ import java.net.*;
 import java.io.*;
 import java.util.*;
 
+import static java.util.Arrays.sort;
+
 public class Server extends Thread {
     private int port;
     private int playerLimit;
@@ -147,9 +149,7 @@ public class Server extends Thread {
         updateClientsGame(game);
     }
 
-    public void makeCurrentLeaderboard(){
-        int answer= JOptionPane.showConfirmDialog(null, "Do you want to play again?", "someone won!!!" , JOptionPane.YES_NO_OPTION);
-    }
+
     /**
      * deciding if round is won
      *
@@ -160,21 +160,67 @@ public class Server extends Thread {
         String name=game.getPlayers().get(currentPlayer).getName();
         int[]pointsArr = countpoints();
         //kontrollprint för arrayen
-        System.out.print("pointsArr is:");
-        for(int p = 0; p < pointsArr.length; p++) {
-            System.out.println(pointsArr[p]);
+        System.out.println("pointsArr: ");
+        for(int m=0; m< pointsArr.length; m++) {
+            System.out.println(pointsArr[m]);
         }
         for (int i=0; i<pointsArr.length; i++){
             int temp = pointsArr[i];
             if(temp == 0){
+                System.out.println(name+" HAS WON!");
 
-                JOptionPane.showConfirmDialog(null, "Do you want to play again?", "someone won!!!" , JOptionPane.YES_NO_OPTION);
+                String[] allNames=new String[pointsArr.length];
+
+                for(int p = 0; p < game.getPlayers().size(); p++) {
+                    System.out.println("p: "+p);
+                    allNames[p] = (game.getPlayers().get(p).getName());
+                    System.out.println("Playername: "+allNames[p]);
+                }
+                System.out.println("allNames: ");
+                for(int m=0; m< allNames.length; m++) {
+                    System.out.println(allNames[m]);
+                }
+                int pointclone[] = pointsArr.clone();
+                Arrays.sort(pointclone);
+
+               System.out.println("pointclone: ");
+               for(int m=0; m< pointclone.length; m++) {
+                   System.out.println(pointclone[m]);
+               }
+                System.out.println("pointsArr: ");
+                for(int m=0; m< pointsArr.length; m++) {
+                    System.out.println(pointsArr[m]);
+                }
+                int x=0;
+                String LbString="Leaderboard \n";
+                //gå ignenom pointclone
+                for (int n=0; n<pointclone.length; n++){
+                    //leta efter index i pointarr
+                    for (int o=0; o < pointsArr.length; o++){
+                        if (pointclone[n]==pointsArr[0]){
+                            x=pointsArr[o];
+                        }
+                    }
+                    //find playername matching points
+                    String LbName=allNames[x];
+                    System.out.println("LbName: "+LbString);
+
+                    LbString=LbString+LbName+": "+pointclone[n]+"\n ";
+                    System.out.println("LbString: "+LbString);
+                }
+                LbString=LbString+"\n\n Do you want to play again?";
+
+
+
+
+                JOptionPane.showConfirmDialog(null, LbString, name+"has won!!!" , JOptionPane.YES_NO_OPTION);
                 return true;
             }
         }
         System.out.println(name+" has not won!");
         return false;
     }
+
 
     public int[] countpoints()
     {
@@ -188,13 +234,13 @@ public class Server extends Thread {
                 roundpoints = roundpoints + valToInt(val);
             }
             allPoints[i] = roundpoints;
-            System.out.println("forloop "+i+": name: "+getPlayers().get(i).getName()+" points: "+ allPoints[i]);
+//            System.out.println("forloop "+i+": name: "+getPlayers().get(i).getName()+" points: "+ allPoints[i]);
         }
+        System.out.print("allPoints: ");
         for(int i = 0; i < size; i++) {
 //            System.out.println(getPlayers().get(i).getName()+" has "+ allPoints[i]+" points");
-            System.out.print(allPoints[i]+" ");
+            System.out.println(allPoints[i]);
         }
-        System.out.println(" ");
         return allPoints;
     }
 
