@@ -10,7 +10,6 @@ public class Server extends Thread {
     private ArrayList<ClientThread> clientThreads;
     private boolean in_match;
     private Game game;
-    private String server_status; // håller koll på vad som skrivs ut från servern
     private int drawCardCounter; // används för att begränsa så att användaren inte kan plocka upp nmer än 3 kort
 
     public Server(int _port, int player_limit)
@@ -299,8 +298,6 @@ public class Server extends Thread {
         try (ServerSocket serverSocket = new ServerSocket(port)) 
         {
             // lobby
-            server_status += "\n Chat Server is listening on port " + port;
-            server_status += "\n Waiting for players to connect... ";
             System.out.println("Chat Server is listening on port " + port);
             System.out.println("Waiting for players to connect...");
             
@@ -310,29 +307,17 @@ public class Server extends Thread {
                     Socket socket = serverSocket.accept();
                     ClientThread newUser = new ClientThread(socket, this);
                     clientThreads.add(newUser);
-                    server_status += "\n New user joined the lobby";
                     System.out.println("New user joined the lobby");
                     newUser.start();
                     broadcast((Integer)playerLimit);
                 }             
             }
-            /*
-            while(in_match)
-            {
-                // spel logik
-            }
-            */
         } catch (IOException ex) {
-            server_status += "\n Error in the server: " + ex.getMessage();
             System.out.println("Error in the server: " + ex.getMessage());
             ex.printStackTrace();
         }
     }
 
-    public String getServerStatus()
-    {
-        return server_status;
-    }
     public static void main(String[] args) {
         if(args.length < 2)
             return;
@@ -376,14 +361,12 @@ public class Server extends Thread {
      */
     void addUser(Player user) {
         game.addPlayer(user);
-        server_status += "\n (" + game.getPlayers().size() + "/"+ playerLimit + ") users connected";
         System.out.println("(" + game.getPlayers().size() + "/"+ playerLimit + ") users connected");
         broadcast(game.getPlayers());
         
         if(game.getPlayers().size() == playerLimit)
         {
             in_match = true;
-            server_status += "\n Match full, dealing cards...";
             System.out.println("Match full, dealing cards...");
             dealCards();
         }
