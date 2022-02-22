@@ -38,7 +38,10 @@ public class ServerOutputView extends Thread {
                 try {
                     while((line = reader.readLine()) != null)
                     {
-                        text += line + "\n";
+                        if(line.contains("Error"))
+                            text += "<html><font color=red>" + line + "</font></html> \n";
+                        else
+                            text += line + "\n";
                         outputText.setText(text);
                         frame.repaint();
                     }
