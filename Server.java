@@ -2,7 +2,6 @@ import javax.swing.*;
 import java.net.*;
 import java.io.*;
 import java.util.*;
-
 import static java.util.Arrays.sort;
 
 public class Server extends Thread {
@@ -218,10 +217,20 @@ public class Server extends Thread {
         }
         LbString=LbString+"\n\n Do you want to play again?";
         System.out.println("THE BIG LbString: "+LbString);
-        //den här måste skickas till alla spelare:
-        JOptionPane.showConfirmDialog(null, LbString, str+" HAS WON!!!" , JOptionPane.YES_NO_OPTION);
+        updateClientsGWon(game, LbString, str);
     }
 
+    public void updateClientsGWon(Game new_game, String str1, String str2)
+    {
+        Game player_game = new_game.copy(new_game);
+        for(int i = 0; i < this.game.getPlayers().size(); i++)
+        {
+
+            player_game.setPlayerId(i);
+            send(player_game, clientThreads.get(i));
+           broadcast(JOptionPane.showConfirmDialog(null, str1, str2+" HAS WON!!!" , JOptionPane.YES_NO_OPTION));
+        }
+    }
 
     public int[] countpoints()
     {
