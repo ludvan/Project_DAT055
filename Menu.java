@@ -79,7 +79,7 @@ public class Menu extends JFrame{
                     int a;
                     a = 0;
                     while(a > 10 || a < 2){
-                        nbrOfPlayers = JOptionPane.showInputDialog(null, "Please enter the amount of players in the game (2-10):", configProperties.getProperty("nrPlayers").toString());
+                        nbrOfPlayers = JOptionPane.showInputDialog(null, "Please enter the amount of players in the game (2-10):", configProperties.getProperty("nrPlayers"));
                         if(nbrOfPlayers == null){
                             break;
                         }
