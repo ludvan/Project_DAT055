@@ -169,6 +169,54 @@ public class Server extends Thread {
             if(temp == 0){
                 System.out.println(name+" HAS WON!");
 
+                endingsequence(pointsArr, name);
+                return true;
+            }
+        }
+        System.out.println(name+" has not won!");
+        return false;
+    }
+
+    public void endingsequence(int[] arr, String str){
+
+        String[] allNames=new String[arr.length];
+
+        for(int j = 0; j < game.getPlayers().size(); j++) {
+            allNames[j] = (game.getPlayers().get(j).getName());
+        }
+
+        int pointclone[] = arr.clone();
+        Arrays.sort(pointclone);
+
+        String LbString="Leaderboard \n";
+        //gå ignenom pointclone för att hitta
+        for (int c=0; c<pointclone.length; c++){
+            for (int a=0; a < arr.length; a++){
+                if (pointclone[c]==arr[a]){
+                    LbString=LbString+allNames[a]+": "+pointclone[c]+"\n ";
+                }
+            }
+        }
+        LbString=LbString+"\n\n Do you want to play again?";
+        System.out.println("THE BIG LbString: "+LbString);
+        //den här måste skickas till alla spelare:
+        System.out.println(JOptionPane.showConfirmDialog(null, LbString, str+" HAS WON!!!" , JOptionPane.YES_NO_OPTION));
+    }
+
+/*    public boolean WeHaveAWinner(){
+        int currentPlayer = game.getCurrentTurn();
+        String name=game.getPlayers().get(currentPlayer).getName();
+        int[]pointsArr = countpoints();
+        //kontrollprint för arrayen
+        System.out.println("pointsArr: ");
+        for(int m=0; m< pointsArr.length; m++) {
+            System.out.println(pointsArr[m]);
+        }
+        for (int i=0; i<pointsArr.length; i++){
+            int temp = pointsArr[i];
+            if(temp == 0){
+                System.out.println(name+" HAS WON!");
+
                 String[] allNames=new String[pointsArr.length];
 
                 for(int j = 0; j < game.getPlayers().size(); j++) {
@@ -198,6 +246,7 @@ public class Server extends Thread {
         return false;
     }
 
+ */
 
  /*   public boolean WeHaveAWinner(){
         int currentPlayer = game.getCurrentTurn();
