@@ -171,55 +171,80 @@ public class Server extends Thread {
 
                 String[] allNames=new String[pointsArr.length];
 
-                for(int p = 0; p < game.getPlayers().size(); p++) {
-                    System.out.println("p: "+p);
-                    allNames[p] = (game.getPlayers().get(p).getName());
-                    System.out.println("Playername: "+allNames[p]);
+                for(int j = 0; j < game.getPlayers().size(); j++) {
+                    allNames[j] = (game.getPlayers().get(j).getName());
                 }
-                System.out.println("allNames: ");
-                for(int m=0; m< allNames.length; m++) {
-                    System.out.println(allNames[m]);
-                }
+
                 int pointclone[] = pointsArr.clone();
                 Arrays.sort(pointclone);
 
-               System.out.println("pointclone: ");
-               for(int m=0; m< pointclone.length; m++) {
-                   System.out.println(pointclone[m]);
-               }
-                System.out.println("pointsArr: ");
-                for(int m=0; m< pointsArr.length; m++) {
-                    System.out.println(pointsArr[m]);
-                }
-                int x=0;
                 String LbString="Leaderboard \n";
-                //gå ignenom pointclone
-                for (int n=0; n<pointclone.length; n++){
-                    //leta efter index i pointarr
-                    for (int o=0; o < pointsArr.length; o++){
-                        if (pointclone[n]==pointsArr[0]){
-                            x=pointsArr[o];
+                //gå ignenom pointclone för att hitta
+                for (int c=0; c<pointclone.length; c++){
+                    for (int a=0; a < pointsArr.length; a++){
+                        if (pointclone[c]==pointsArr[a]){
+                            LbString=LbString+allNames[a]+": "+pointclone[c]+"\n ";
                         }
                     }
-                    //find playername matching points
-                    String LbName=allNames[x];
-                    System.out.println("LbName: "+LbString);
-
-                    LbString=LbString+LbName+": "+pointclone[n]+"\n ";
-                    System.out.println("LbString: "+LbString);
                 }
                 LbString=LbString+"\n\n Do you want to play again?";
-
-
-
-
-                JOptionPane.showConfirmDialog(null, LbString, name+"has won!!!" , JOptionPane.YES_NO_OPTION);
+                System.out.println("THE BIG LbString: "+LbString);
+                //den här måste skickas till alla spelare:
+                System.out.println(JOptionPane.showConfirmDialog(null, LbString, name+" HAS WON!!!" , JOptionPane.YES_NO_OPTION));
                 return true;
             }
         }
         System.out.println(name+" has not won!");
         return false;
     }
+
+
+ /*   public boolean WeHaveAWinner(){
+        int currentPlayer = game.getCurrentTurn();
+        String name=game.getPlayers().get(currentPlayer).getName();
+        int[]pointsArr = countpoints();
+        //kontrollprint för arrayen
+        System.out.println("pointsArr: ");
+        for(int m=0; m< pointsArr.length; m++) {
+            System.out.println(pointsArr[m]);
+        }
+        for (int i=0; i<pointsArr.length; i++){
+            int temp = pointsArr[i];
+            if(temp == 0){
+                System.out.println(name+" HAS WON!");
+
+                String[] allNames=new String[pointsArr.length];
+
+                for(int p = 0; p < game.getPlayers().size(); p++) {
+                    allNames[p] = (game.getPlayers().get(p).getName());
+                }
+
+                int pointclone[] = pointsArr.clone();
+                Arrays.sort(pointclone);
+
+                String LbName;
+                String LbString="Leaderboard \n";
+                //gå ignenom pointclone för att hitta
+                for (int n=0; n<pointclone.length; n++){
+                    for (int o=0; o < pointsArr.length; o++){
+                        if (pointclone[n]==pointsArr[o]){
+                            LbName=allNames[o];
+                            LbString=LbString+LbName+": "+pointclone[n]+"\n ";
+                        }
+                    }
+                }
+                LbString=LbString+"\n\n Do you want to play again?";
+                System.out.println("THE BIG LbString: "+LbString);
+                //den här måste skickas till alla spelare:
+                JOptionPane.showConfirmDialog(null, LbString, name+" HAS WON!!!" , JOptionPane.YES_NO_OPTION);
+                return true;
+            }
+        }
+        System.out.println(name+" has not won!");
+        return false;
+    }
+
+  */
 
 
     public int[] countpoints()
