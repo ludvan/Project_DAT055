@@ -9,6 +9,8 @@ public class TransmitData implements Serializable {
 	private Col chosenColor;
 	private boolean drawCard; // indikerar att användaren vill dra ett kort från discard deck
 	private boolean chooseColor;
+	private String winner;
+	private int[] pointArr;
 
 	public TransmitData(Card c, int id, Col chosenColor, boolean drawCard, boolean chooseColor) {
 		this.card = c;
@@ -16,6 +18,10 @@ public class TransmitData implements Serializable {
 		this.chosenColor = chosenColor;
 		this.drawCard = drawCard;
 		this.chooseColor = chooseColor;
+	}
+	public TransmitData(String str, int[] arr){
+		this.winner = str;
+		this.pointArr= arr;
 	}
 	
 	public void setCard(Card c) {
@@ -59,4 +65,10 @@ public class TransmitData implements Serializable {
 	{
 		return drawCard;
 	}
+
+	public void setWinner(String str){winner = str;}
+	public String getWinner(){return winner; }
+
+	public void setPointArr(int[] arr){pointArr= arr.clone(); }
+	public int[] getPointArr(){ return pointArr; }
 }

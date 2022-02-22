@@ -1,3 +1,4 @@
+import javax.swing.*;
 import java.net.*;
 import java.io.*;
 import java.util.*;
@@ -76,7 +77,10 @@ public class ChatClient {
                         // System.out.println(recieved);
                     }
                     // detta sker n√§r clienten √§r i en match
-                    
+                    if (recieved instanceof TransmitData) {
+                            someoneWon(((TransmitData) recieved).getWinner() , ((TransmitData) recieved).getPointArr());
+                    }
+
                     if(in_match)
                     {
                         if(isClientTurn())
@@ -173,7 +177,41 @@ public class ChatClient {
     String getUserName() {
         return userName;
     }
- 
+
+    public void someoneWon(String str, int[] arr){
+        String[] allNames=new String[arr.length];
+
+        for(int j = 0; j < game.getPlayers().size(); j++) {
+            allNames[j] = (game.getPlayers().get(j).getName());
+        }
+        //Sortera arrayclone i stigandeordning
+        int pointclone[] = arr.clone();
+        Arrays.sort(pointclone);
+
+        //skapar stringen till JOptionpane
+        String LbString="Leaderboard \n";
+        //gÂ ignenom pointclone fˆr att hitta
+        for (int c=0; c<pointclone.length; c++){
+            for (int a=0; a < arr.length; a++){
+                if (pointclone[c]==arr[a]){
+                    LbString=LbString+allNames[a]+": "+pointclone[c]+"\n ";
+                }
+            }
+        }
+        game.setCurrentTurn(-2);
+        LbString=LbString+"\n\n Do you want to play again?";
+        System.out.println("THE BIG LbString: "+LbString);
+        String title;
+        if (str.equals(userName)){
+            title="CONGRATULATIONS!!! YOU WON!!!";
+        }else{
+            title = str+" has won!";
+        }
+        int answer = JOptionPane.showConfirmDialog(null, LbString, title , JOptionPane.YES_NO_OPTION);
+
+    }
+
+
     public static void main(String[] args) { 
         String hostname;
         String username;

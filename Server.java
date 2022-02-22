@@ -168,10 +168,14 @@ public class Server extends Thread {
         // om vi får in ett svart kort vill vi vänta på att
         // en färg väljs
 
-        WeHaveAWinner();
-
-        game.setCurrentTurn(game.nextTurn());
-        updateClientsGame(game);
+//        WeHaveAWinner();
+        if(!WeHaveAWinner()) {
+            game.setCurrentTurn(game.nextTurn());
+            updateClientsGame(game);
+        }else{
+            game.setCurrentTurn(-2);
+            updateClientsGame(game);
+        }
     }
     
     private void reShuffle() {
@@ -213,8 +217,9 @@ public class Server extends Thread {
             int temp = pointsArr[i];
             if(temp == 0){
                 System.out.println(name+" HAS WON!");
+                TransmitData data=new TransmitData(name, pointsArr);
+                broadcast(data);
 
-                endingsequence(pointsArr, name);
                 return true;
             }
         }
@@ -222,17 +227,18 @@ public class Server extends Thread {
         return false;
     }
 
-    public void endingsequence(int[] arr, String str){
+ /*   public void endingsequence(int[] arr, String str){
 
         String[] allNames=new String[arr.length];
 
         for(int j = 0; j < game.getPlayers().size(); j++) {
             allNames[j] = (game.getPlayers().get(j).getName());
         }
-
+        //Sortera arrayclone i stigandeordning
         int pointclone[] = arr.clone();
         Arrays.sort(pointclone);
 
+        //skapa stringen till JOptionpane
         String LbString="Leaderboard \n";
         //gå ignenom pointclone för att hitta
         for (int c=0; c<pointclone.length; c++){
@@ -242,6 +248,7 @@ public class Server extends Thread {
                 }
             }
         }
+        game.setCurrentTurn(-1);
         LbString=LbString+"\n\n Do you want to play again?";
         System.out.println("THE BIG LbString: "+LbString);
         updateClientsGWon(game, LbString, str);
@@ -259,6 +266,8 @@ public class Server extends Thread {
         }
     }
 
+  */
+
     public int[] countpoints()
     {
         int size=getPlayers().size();
@@ -271,12 +280,6 @@ public class Server extends Thread {
                 roundpoints = roundpoints + valToInt(val);
             }
             allPoints[i] = roundpoints;
-//            System.out.println("forloop "+i+": name: "+getPlayers().get(i).getName()+" points: "+ allPoints[i]);
-        }
-        System.out.print("allPoints: ");
-        for(int i = 0; i < size; i++) {
-//            System.out.println(getPlayers().get(i).getName()+" has "+ allPoints[i]+" points");
-            System.out.println(allPoints[i]);
         }
         return allPoints;
     }
