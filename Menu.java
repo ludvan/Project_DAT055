@@ -113,12 +113,12 @@ public class Menu extends JFrame{
                 try {
                     String port = "8989";
                     String nickname = JOptionPane.showInputDialog(null, "Please Enter your nickname:", configProperties.getProperty("nickname"));
-                    while(nickname == null || nickname.isEmpty()){
+                    if(nickname == null || nickname.isEmpty()){
                         Toolkit.getDefaultToolkit().beep();
                         JOptionPane.showMessageDialog(null, "You need to enter a nickname to be able to play!");
-                        break;
-                    }
-                    clientProcess.add(Runtime.getRuntime().exec("java ChatClient localhost " + port + " " + nickname));                 
+                    } else {
+                        clientProcess.add(Runtime.getRuntime().exec("java ChatClient localhost " + port + " " + nickname));
+                    }                 
                 } catch (Exception y) {
                     JOptionPane.showInputDialog(null, y + "");
                 }
@@ -161,6 +161,18 @@ public class Menu extends JFrame{
         gbc.weighty = 1;
         p.add(buttons,gbc);
         add(p);
+        WindowListener exitListener = new WindowAdapter(){
+            @Override
+            public void windowClosing(WindowEvent e){
+                int confirm = JOptionPane.showOptionDialog(
+                    null, "Are You Sure to Close Application?",
+                    "Exit Confirmation", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
+                if(confirm == 0){
+                    System.exit(0);
+                }
+            }
+        };
+        this.addWindowListener(exitListener);
         setVisible(true);
     }
     
@@ -222,7 +234,6 @@ public class Menu extends JFrame{
 	    }
 	    return properties;
     }
-
 
     public static void main(String[] args){
         Menu m = new Menu();
