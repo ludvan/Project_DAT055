@@ -123,35 +123,33 @@ public class Server extends Thread {
 
         // om det 
         if(card.getValue() == Value.plus2){
-        	if (game.getDiscardDeck().getSize() < 2) {
-        		reShuffle();
-        	}
             Card tmp = game.getDiscardDeck().drawCard();
             game.playerAddCard(game.nextTurn(), tmp);
             game.discardDeckRemove(tmp);
+            if(game.getDiscardDeck().getSize() == 0) {
+        		reShuffle();
+        	}
             tmp = game.getDiscardDeck().drawCard();
             game.playerAddCard(game.nextTurn(), tmp);
             game.discardDeckRemove(tmp);
-            System.out.println(game.nextTurn() + " drew 2 cards");
+            //System.out.println(game.nextTurn() + " drew 2 cards");
             game.setCurrentTurn(game.nextTurn());
         }
         if(card.getValue() == Value.plus4){
-        	if (game.getDiscardDeck().getSize() < 4) {
-        		reShuffle();
+        	Card tmp = game.getDiscardDeck().drawCard();
+            game.playerAddCard(game.nextTurn(), tmp);
+            game.discardDeckRemove(tmp);
+            
+        	for(int i = 0; i<3; i++) {
+        		if(game.getDiscardDeck().getSize() == 0) {
+            		reShuffle();
+            	}
+        		tmp = game.getDiscardDeck().drawCard();
+                game.playerAddCard(game.nextTurn(), tmp);
+                game.discardDeckRemove(tmp); 
         	}
-            Card tmp = game.getDiscardDeck().drawCard();
-            game.playerAddCard(game.nextTurn(), tmp);
-            game.discardDeckRemove(tmp);
-            tmp = game.getDiscardDeck().drawCard();
-            game.playerAddCard(game.nextTurn(), tmp);
-            game.discardDeckRemove(tmp);     
-            tmp = game.getDiscardDeck().drawCard();
-            game.playerAddCard(game.nextTurn(), tmp);
-            game.discardDeckRemove(tmp);            
-            tmp = game.getDiscardDeck().drawCard();
-            game.playerAddCard(game.nextTurn(), tmp);
-            game.discardDeckRemove(tmp);
-            System.out.println(game.nextTurn() + " drew 4 cards");
+            
+            //System.out.println(game.nextTurn() + " drew 4 cards");
             game.setCurrentTurn(game.nextTurn());
         }
 
@@ -163,7 +161,7 @@ public class Server extends Thread {
 
         if(data.getChooseColor())
         {
-            System.out.println("Color chosen : " + data.getChosenColor().toString());
+            //System.out.println("Color chosen : " + data.getChosenColor().toString());
             card.setColor(data.getChosenColor());
         }
         game.deckAddCard(card);
@@ -180,14 +178,13 @@ public class Server extends Thread {
     private void reShuffle() {
     	Card topCard = game.getDeck().drawCard();
     	Deck tmpDeck = game.getDeck();
-    	
     	Deck newDeck = new Deck();
+    	
     	newDeck.addCard(topCard);
-    	
-    	
     	tmpDeck.removeCard(topCard);
     	
     	tmpDeck.revertBlack();
+    	Deck.shuffle(tmpDeck);
     	
     	game.setDeck(newDeck);
     	game.setDiscardDeck(tmpDeck);
