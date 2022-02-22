@@ -42,7 +42,6 @@ public class ClientThread extends Thread {
                     {
                         // System.out.println("Card recieved");
                         server.handleCard((TransmitData)recieved);
-//                        server.WeHaveAWinner((TransmitData)recieved);
                     }
                     // System.out.println("something recieved");
                 }

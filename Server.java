@@ -67,7 +67,7 @@ public class Server extends Thread {
 
         // om vi får in ett svart kort vill vi vänta på att 
         // en färg väljs
-        if(data.getCard().getColor() == Col.black)
+        if(!data.getChooseColor() && !data.getDrawCard() && data.getCard().getColor() == Col.black)
         {
             Card tmp = data.getCard();
             game.playerRemoveCard(currentPlayer, tmp);
@@ -75,7 +75,7 @@ public class Server extends Thread {
             return;
         }
         // hanterar färgval om kortet är svart
-        if(data.getChooseColor() && game.getDeck().drawCard().getColor() == Col.black)
+        if(data.getChooseColor() && !data.getDrawCard() && game.getDeck().drawCard().getColor() == Col.black)
         {
             Col chosenColor = data.getChosenColor();
             Card tmp = data.getCard();
