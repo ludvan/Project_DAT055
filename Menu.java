@@ -162,6 +162,18 @@ public class Menu extends JFrame{
         p.add(buttons,gbc);
         add(p);
         setVisible(true);
+        Runtime.getRuntime().addShutdownHook(new Thread()
+        {
+            @Override
+            public void run() {
+                // stäng ner alla processer
+                for (Process p : clientProcess) {
+                    p.destroy();
+                }
+                if(serverProcess != null)
+                    serverProcess.destroy();
+            }
+        });
     }
     
     public static void configWindow() {
