@@ -63,6 +63,13 @@ public class Menu extends JFrame{
             }
         });
         // Create Server button
+        Properties configProperties = new Properties();
+	    try (FileInputStream fileInputStream = new FileInputStream("inst.properties")) {
+	    	configProperties.load(fileInputStream);
+	    } catch (Exception ex) {
+	        System.out.println("exeption " + ex.getMessage());
+	    }
+
         JButton create = new JButton("CREATE SERVER");
         create.setFont(new Font("Yu Gothic UI Semibold",Font.PLAIN,36));
         create.addActionListener(new ActionListener(){
@@ -77,7 +84,7 @@ public class Menu extends JFrame{
                     int a;
                     a = 0;
                     while(a > 10 || a < 2){
-                        nbrOfPlayers = JOptionPane.showInputDialog("Please enter the amount of players in the game (2-10):");
+                        nbrOfPlayers = JOptionPane.showInputDialog(null, "Please enter the amount of players in the game (2-10):", configProperties.getProperty("nrPlayers"));
                         if(nbrOfPlayers == null){
                             break;
                         }
@@ -108,7 +115,7 @@ public class Menu extends JFrame{
             public void actionPerformed(ActionEvent e){
                 try {
                     String port = "8989";
-                    String nickname = JOptionPane.showInputDialog("Please Enter your nickname:");
+                    String nickname = JOptionPane.showInputDialog(null, "Please Enter your nickname:", configProperties.getProperty("nickname"));
                     while(nickname == null || nickname.isEmpty()){
                         Toolkit.getDefaultToolkit().beep();
                         JOptionPane.showMessageDialog(null, "You need to enter a nickname to be able to play!");
@@ -169,6 +176,7 @@ public class Menu extends JFrame{
 	    }
 	    JTextField portField = new JTextField(properties.getProperty("port"));
 	    JTextField nicknameField = new JTextField(properties.getProperty("nickname"));
+	    JTextField nrPlayersField = new JTextField(properties.getProperty("nrPlayers"));
 
 	    JPanel configPanel = new JPanel();
 	    configPanel.setLayout(new BoxLayout(configPanel, BoxLayout.Y_AXIS));
@@ -177,8 +185,23 @@ public class Menu extends JFrame{
 	    configPanel.add(Box.createVerticalStrut(15));
 	    configPanel.add(new JLabel("Nickname:"));
 	    configPanel.add(nicknameField);
+	    configPanel.add(Box.createVerticalStrut(15));
+	    configPanel.add(new JLabel("Nr of players:"));
+	    configPanel.add(nrPlayersField);
 
 	    int result = JOptionPane.showConfirmDialog(null, configPanel, "Configuration", JOptionPane.OK_CANCEL_OPTION);
+	    
+	    if(portField.getText() == null || portField.getText().isEmpty() || nicknameField.getText() == null || 
+	    		nicknameField.getText().isEmpty() || nrPlayersField.getText() == null || nrPlayersField.getText().isEmpty()){
+            Toolkit.getDefaultToolkit().beep();
+            JOptionPane.showMessageDialog(null, "You need to enter a nickname, port, and number of players!");
+            return;
+        }
+	    if(Integer.parseInt(nrPlayersField.getText()) > 10 || Integer.parseInt(nrPlayersField.getText()) < 2) {
+	    	Toolkit.getDefaultToolkit().beep();
+            JOptionPane.showMessageDialog(null, "The amount of players needs to be between 2 and 10!");
+            return;
+	    }
 	    
 	    if (result == JOptionPane.OK_OPTION) {
 	      try {
@@ -186,6 +209,7 @@ public class Menu extends JFrame{
 		      Properties props = new Properties();
 		      props.setProperty("port", portField.getText());
 		      props.setProperty("nickname", nicknameField.getText());
+		      props.setProperty("nrPlayers", nrPlayersField.getText());
 		      FileWriter fileWriter = new FileWriter(configFile); //io exception
 		      props.store(fileWriter, "Configuration file"); //har exceptions
 		      fileWriter.close(); //io exception
