@@ -18,10 +18,7 @@ public class GameBoard extends JFrame {
 
 	public GameBoard()
 	{
-		//new JFrame();
-		//setLayout(null);
-		BorderLayout layout = new BorderLayout();
-		setLayout(layout);
+		setLayout(new BorderLayout());
 		width = 1200;
 		height = 600;
 		setSize(width, height);
@@ -38,7 +35,7 @@ public class GameBoard extends JFrame {
 		getContentPane().removeAll();
 
 		BorderLayout layout = new BorderLayout();
-		setLayout(layout);
+		
 		GridLayout center_layout = new GridLayout(1, 2);
 		JPanel center_panel = new JPanel();
 		center_panel.setBackground(backgroundColor);
