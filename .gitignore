@@ -3,3 +3,4 @@
 .classpath
 .project
 gojava.bat
+*.properties
