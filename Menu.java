@@ -97,6 +97,8 @@ public class Menu extends JFrame{
                     if(serverProcess != null)
                         serverProcess.destroy();
                     serverProcess = Runtime.getRuntime().exec(open_server); 
+                    ServerOutputView sov = new ServerOutputView();
+                    sov.setProcess(serverProcess);
                 } catch (IOException y) {
                     JOptionPane.showInputDialog(null, y + "");
                 }
