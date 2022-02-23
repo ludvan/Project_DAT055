@@ -11,6 +11,7 @@ public class Server extends Thread {
     private boolean in_match;
     private Game game;
     private int drawCardCounter; // används för att begränsa så att användaren inte kan plocka upp nmer än 3 kort
+    private String HighscoreValues;
 
     public Server(int _port, int player_limit)
     {
@@ -210,7 +211,12 @@ public class Server extends Thread {
             int temp = pointsArr[i];
             if(temp == 0){
                 System.out.println(name+" HAS WON!");
-                TransmitData data=new TransmitData(name, pointsArr);
+                if (HighscoreValues==null){
+                    HighscoreValues=this.getHighscoreValues();
+                }
+                updateHighscoreValues(name);
+                System.out.println("updated HighscoreValues: "+HighscoreValues);
+                TransmitData data=new TransmitData(name, pointsArr, HighscoreValues);
                 broadcast(data);
 
                 return true;
@@ -220,49 +226,7 @@ public class Server extends Thread {
         return false;
     }
 
- /*   public void endingsequence(int[] arr, String str){
-
-        String[] allNames=new String[arr.length];
-
-        for(int j = 0; j < game.getPlayers().size(); j++) {
-            allNames[j] = (game.getPlayers().get(j).getName());
-        }
-        //Sortera arrayclone i stigandeordning
-        int pointclone[] = arr.clone();
-        Arrays.sort(pointclone);
-
-        //skapa stringen till JOptionpane
-        String LbString="Leaderboard \n";
-        //gå ignenom pointclone för att hitta
-        for (int c=0; c<pointclone.length; c++){
-            for (int a=0; a < arr.length; a++){
-                if (pointclone[c]==arr[a]){
-                    LbString=LbString+allNames[a]+": "+pointclone[c]+"\n ";
-                }
-            }
-        }
-        game.setCurrentTurn(-1);
-        LbString=LbString+"\n\n Do you want to play again?";
-        System.out.println("THE BIG LbString: "+LbString);
-        updateClientsGWon(game, LbString, str);
-    }
-
-    public void updateClientsGWon(Game new_game, String str1, String str2)
-    {
-        Game player_game = new_game.copy(new_game);
-        for(int i = 0; i < this.game.getPlayers().size(); i++)
-        {
-
-            player_game.setPlayerId(i);
-            send(player_game, clientThreads.get(i));
-           broadcast(JOptionPane.showConfirmDialog(null, str1, str2+" HAS WON!!!" , JOptionPane.YES_NO_OPTION));
-        }
-    }
-
-  */
-
-    public int[] countpoints()
-    {
+    public int[] countpoints() {
         int size=getPlayers().size();
         int[] allPoints=new int[size];
         for(int i = 0; i < size; i++) {
@@ -288,6 +252,99 @@ public class Server extends Thread {
         }
     }
 
+    public String getHighscoreValues() {
+       try{
+           FileReader readfile=new FileReader("highscore.txt");
+           BufferedReader reader= new BufferedReader(readfile);
+           String text="";
+           String s;
+           while ((s=reader.readLine())!= null) {
+               text = text + s;
+               System.out.println(text);
+           }
+           reader.close();
+//           System.out.println("getHighscorevalues: "+text);
+            return text;
+       }catch(IOException e){
+           return "Cannot read from highscore file";
+       }
+    }
+
+    public void updateHighscoreValues(String str){
+
+        System.out.println("HighscoreValues before new calculation: "+HighscoreValues);
+        //läsa in från HighscoreValues
+        //dela upp vid \n
+        String[] entries= HighscoreValues.split(";");
+        String temp1="";
+        boolean changed=false;
+        System.out.println("antal entries: "+entries.length);
+        for (int i = 0; i<entries.length; i++){
+            System.out.println(entries[i]);
+        }
+        for (int i=0; i<entries.length; i++){
+            //dela upp vid : och jämför namn
+            if (str.equals(entries[i].split(":")[0])){
+                //öka påängen med 1
+                int newPoints=Integer.parseInt(entries[i].split(":")[1]);
+                newPoints=newPoints+1;
+                String x= Integer.toString(newPoints);
+                temp1=temp1+str+":"+x+";";
+                changed=true;
+            }else{
+                temp1=temp1+entries[i]+";";
+            }
+        }
+        if (changed =true){
+            String[] order=temp1.split(";");
+            int size=order.length;
+            sortStringArray(order, size);
+            for (int l=0; l<order.length;l++){
+                System.out.println(order[l]);
+            }            HighscoreValues=new String();
+            for (int k=0; k< entries.length; k++){
+                HighscoreValues=HighscoreValues+order[k]+";";
+            }
+        }else
+        if(changed==false){HighscoreValues=HighscoreValues+ str+":1;";}
+
+
+        //kolla om filen finns, ggf. skapa den
+        File Higscorefile=new File("highscore.txt");
+        if (!Higscorefile.exists()){
+            try{
+                Higscorefile.createNewFile();
+            }catch(IOException e){
+                System.out.println("Cant create file");
+            }
+        }
+        // write to file
+        FileWriter writeFile=null;
+        BufferedWriter writer= null;
+        try{
+            writeFile= new FileWriter(Higscorefile);
+            writer=new BufferedWriter(writeFile);
+            writer.write(this.HighscoreValues);
+            writer.close();
+        } catch (IOException e) {
+            System.out.println("Cant write to file");
+        }
+        System.out.println("after new calculation: "+HighscoreValues);
+
+    }
+    public void sortStringArray(String[] stringArr, int size) {
+    String temp=null;
+
+    for (int i=0; i<size;i++) {
+        for (int j=1; j<size;j++) {
+            System.out.println(Integer.parseInt(stringArr[j-1].split(":")[1])+"<"+Integer.parseInt(stringArr[j].split(":")[1]));
+        if (Integer.parseInt(stringArr[j-1].split(":")[1])<Integer.parseInt(stringArr[j].split(":")[1])){
+            temp= stringArr[j-1];
+            stringArr[j-1]=stringArr[j];
+            stringArr[j]=temp;
+        }
+        }
+    }}
 
     public void run()
     {

@@ -11,6 +11,7 @@ public class TransmitData implements Serializable {
 	private boolean chooseColor;
 	private String winner;
 	private int[] pointArr;
+	private String highscores;
 
 	public TransmitData(Card c, int id, Col chosenColor, boolean drawCard, boolean chooseColor) {
 		this.card = c;
@@ -19,9 +20,10 @@ public class TransmitData implements Serializable {
 		this.drawCard = drawCard;
 		this.chooseColor = chooseColor;
 	}
-	public TransmitData(String str, int[] arr){
-		this.winner = str;
-		this.pointArr= arr;
+	public TransmitData(String str1, int[] arr, String str2){
+		this.winner = str1;
+		this.pointArr = arr;
+		this.highscores = str2;
 	}
 	
 	public void setCard(Card c) {
@@ -71,4 +73,7 @@ public class TransmitData implements Serializable {
 
 	public void setPointArr(int[] arr){pointArr= arr.clone(); }
 	public int[] getPointArr(){ return pointArr; }
+
+	public void setHighscore(String str){highscores = str;}
+	public String getHighscores(){return highscores; }
 }

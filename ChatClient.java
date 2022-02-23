@@ -78,7 +78,7 @@ public class ChatClient {
                     }
                     // detta sker n√§r clienten √§r i en match
                     if (recieved instanceof TransmitData) {
-                            someoneWon(((TransmitData) recieved).getWinner() , ((TransmitData) recieved).getPointArr());
+                            someoneWon(((TransmitData) recieved).getWinner() , ((TransmitData) recieved).getPointArr(), ((TransmitData) recieved).getHighscores());
                     }
 
                     if(in_match)
@@ -178,7 +178,7 @@ public class ChatClient {
         return userName;
     }
 
-    public void someoneWon(String str, int[] arr){
+    public void someoneWon(String str1, int[] arr, String str2){
         String[] allNames=new String[arr.length];
 
         for(int j = 0; j < game.getPlayers().size(); j++) {
@@ -202,15 +202,29 @@ public class ChatClient {
         LbString=LbString+"\n\n Do you want to play again?";
         System.out.println("THE BIG LbString: "+LbString);
         String title;
-        if (str.equals(userName)){
+        if (str1.equals(userName)){
             title="CONGRATULATIONS!!! YOU WON!!!";
         }else{
-            title = str+" has won!";
+            title = str1+" has won!";
         }
-        int answer = JOptionPane.showConfirmDialog(null, LbString, title , JOptionPane.YES_NO_OPTION);
+        JOptionPane.showMessageDialog(null, LbString, title , JOptionPane.PLAIN_MESSAGE);
 
+        //h‰r behˆver vi en fˆrdrˆjning eller nÂt sÂ Highscoren kommer efter man klickat pÂ leaderboard
+
+        String HSString=makeItMultiline(str2);
+        System.out.println(HSString);
+        JOptionPane.showMessageDialog(null, HSString, title , JOptionPane.PLAIN_MESSAGE);
     }
 
+    public String makeItMultiline(String str){
+        String[] part= str.split(";");
+        String temp="";
+        for (int i=0; i<part.length; i++){
+            temp=temp+part[i]+"\n";
+        }
+
+        return temp;
+    }
 
     public static void main(String[] args) { 
         String hostname;
