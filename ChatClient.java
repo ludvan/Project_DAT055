@@ -15,6 +15,7 @@ public class ChatClient {
     private Socket socket;
     private ArrayList<Object> sendBuffer; // buffra det vi vill skicka
     private boolean hasSelectCard = false;
+    private String HighscoreValues;
  
     public ChatClient(String hostname, int port, String username) {
         this.hostname = hostname;
@@ -78,7 +79,7 @@ public class ChatClient {
                     }
                     // detta sker n√§r clienten √§r i en match
                     if (recieved instanceof TransmitData) {
-                            someoneWon(((TransmitData) recieved).getWinner() , ((TransmitData) recieved).getPointArr(), ((TransmitData) recieved).getHighscores());
+                            someoneWon(((TransmitData) recieved).getWinner() , ((TransmitData) recieved).getPointArr());
                     }
 
                     if(in_match)
@@ -178,7 +179,7 @@ public class ChatClient {
         return userName;
     }
 
-    public void someoneWon(String str1, int[] arr, String str2){
+    public void someoneWon(String str1, int[] arr){
         String[] allNames=new String[arr.length];
 
         for(int j = 0; j < game.getPlayers().size(); j++) {
@@ -199,8 +200,7 @@ public class ChatClient {
             }
         }
         game.setCurrentTurn(-2);
-        LbString=LbString+"\n\n Do you want to play again?";
-        System.out.println("THE BIG LbString: "+LbString);
+        //LbString=LbString+"\n\n Do you want to play again?";
         String title;
         if (str1.equals(userName)){
             title="CONGRATULATIONS!!! YOU WON!!!";
@@ -209,20 +209,119 @@ public class ChatClient {
         }
         JOptionPane.showMessageDialog(null, LbString, title , JOptionPane.PLAIN_MESSAGE);
 
-        //h‰r behˆver vi en fˆrdrˆjning eller nÂt sÂ Highscoren kommer efter man klickat pÂ leaderboard
+        if (HighscoreValues==null){
+            this.getHighscoreValues();
+            updateHighscoreValues(str1);
+        HighscoreValues=makeItMultiline(HighscoreValues);
+        JOptionPane.showMessageDialog(null, HighscoreValues, "local player statistics" , JOptionPane.PLAIN_MESSAGE);
+    }}
 
-        String HSString=makeItMultiline(str2);
-        System.out.println(HSString);
-        JOptionPane.showMessageDialog(null, HSString, title , JOptionPane.PLAIN_MESSAGE);
+    public void getHighscoreValues() {
+        try{
+            FileReader readfile=new FileReader("highscore.txt");
+            BufferedReader reader= new BufferedReader(readfile);
+            String s=reader.readLine();
+            reader.close();
+            HighscoreValues=s;
+         }catch(IOException e){
+            System.out.println("Cannot read from highscore file");
+        }
     }
+
+    public void updateHighscoreValues(String str){
+        if(HighscoreValues==null || HighscoreValues.isEmpty()){
+            HighscoreValues = str + ":1;";
+        }else {
+            String[] entries = HighscoreValues.split(";");
+            String temp1 = "";
+            boolean changed = false;
+            System.out.println("changes is:" + changed);
+            System.out.println("antal entries: " + entries.length);
+            for (int i = 0; i < entries.length; i++) {
+                System.out.println("entries[" + i + "] is: " + entries[i]);
+            }
+            for (int i = 0; i < entries.length; i++) {
+                //dela upp vid : och j‰mfˆr namn
+                if (str.equals(entries[i].split(":")[0])) {
+                    //ˆka pÂ‰ngen med 1
+                    int newPoints = Integer.parseInt(entries[i].split(":")[1]);
+                    newPoints = newPoints + 1;
+                    System.out.println("newpoints is: " + newPoints);
+                    String x = Integer.toString(newPoints);
+                    System.out.println("x is: " + x);
+                    temp1 = temp1 + str + ":" + x + ";";
+                    System.out.println("temp1 is: " + temp1);
+                    changed = true;
+                    System.out.println("changes is: " + changed);
+                } else {
+                    temp1 = temp1 + entries[i] + ";";
+                }
+            }
+            if (changed == true) {
+                System.out.println("changes was set true");
+                String[] order = temp1.split(";");
+                int size = order.length;
+                sortStringArray(order, size);
+                System.out.println("order arrayen sorterat: ");
+                for (int l = 0; l < order.length; l++) {
+                    System.out.println(order[l]);
+                }
+                HighscoreValues = new String();
+                for (int k = 0; k < entries.length; k++) {
+                    HighscoreValues = HighscoreValues + order[k] + ";";
+                    System.out.println("highscorevalues after if changed true: " + HighscoreValues);
+                }
+            } else if (changed == false) {
+                System.out.println("changed was set false");
+                HighscoreValues = HighscoreValues + str + ":1;";
+                System.out.println("highscorevalues after if changed false: " + HighscoreValues);
+            }
+        }
+
+        //kolla om filen finns, ggf. skapa den
+        File Higscorefile=new File("highscore.txt");
+        if (!Higscorefile.exists()){
+            try{
+                Higscorefile.createNewFile();
+            }catch(IOException e){
+                System.out.println("Cant create file");
+            }
+        }
+        // write to file
+        FileWriter writeFile=null;
+        BufferedWriter writer= null;
+        try{
+            writeFile= new FileWriter(Higscorefile);
+            writer=new BufferedWriter(writeFile);
+            writer.write(this.HighscoreValues);
+            writer.close();
+        } catch (IOException e) {
+            System.out.println("Can't write to file");
+        }
+        System.out.println("after new calculation: "+HighscoreValues);
+
+    }
+
+    public void sortStringArray(String[] stringArr, int size) {
+        String temp=null;
+
+        for (int i=0; i<size;i++) {
+            for (int j=1; j<size;j++) {
+                System.out.println(Integer.parseInt(stringArr[j-1].split(":")[1])+"<"+Integer.parseInt(stringArr[j].split(":")[1]));
+                if (Integer.parseInt(stringArr[j-1].split(":")[1])<Integer.parseInt(stringArr[j].split(":")[1])){
+                    temp= stringArr[j-1];
+                    stringArr[j-1]=stringArr[j];
+                    stringArr[j]=temp;
+                }
+            }
+        }}
 
     public String makeItMultiline(String str){
         String[] part= str.split(";");
         String temp="";
         for (int i=0; i<part.length; i++){
-            temp=temp+part[i]+"\n";
+            temp=temp+part[i]+" matches won\n";
         }
-
         return temp;
     }
 

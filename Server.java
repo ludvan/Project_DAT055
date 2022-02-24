@@ -211,12 +211,7 @@ public class Server extends Thread {
             int temp = pointsArr[i];
             if(temp == 0){
                 System.out.println(name+" HAS WON!");
-                if (HighscoreValues==null){
-                    HighscoreValues=this.getHighscoreValues();
-                }
-                updateHighscoreValues(name);
-                System.out.println("updated HighscoreValues: "+HighscoreValues);
-                TransmitData data=new TransmitData(name, pointsArr, HighscoreValues);
+                TransmitData data=new TransmitData(name, pointsArr);
                 broadcast(data);
 
                 return true;
@@ -252,99 +247,7 @@ public class Server extends Thread {
         }
     }
 
-    public String getHighscoreValues() {
-       try{
-           FileReader readfile=new FileReader("highscore.txt");
-           BufferedReader reader= new BufferedReader(readfile);
-           String text="";
-           String s;
-           while ((s=reader.readLine())!= null) {
-               text = text + s;
-               System.out.println(text);
-           }
-           reader.close();
-//           System.out.println("getHighscorevalues: "+text);
-            return text;
-       }catch(IOException e){
-           return "Cannot read from highscore file";
-       }
-    }
 
-    public void updateHighscoreValues(String str){
-
-        System.out.println("HighscoreValues before new calculation: "+HighscoreValues);
-        //läsa in från HighscoreValues
-        //dela upp vid \n
-        String[] entries= HighscoreValues.split(";");
-        String temp1="";
-        boolean changed=false;
-        System.out.println("antal entries: "+entries.length);
-        for (int i = 0; i<entries.length; i++){
-            System.out.println(entries[i]);
-        }
-        for (int i=0; i<entries.length; i++){
-            //dela upp vid : och jämför namn
-            if (str.equals(entries[i].split(":")[0])){
-                //öka påängen med 1
-                int newPoints=Integer.parseInt(entries[i].split(":")[1]);
-                newPoints=newPoints+1;
-                String x= Integer.toString(newPoints);
-                temp1=temp1+str+":"+x+";";
-                changed=true;
-            }else{
-                temp1=temp1+entries[i]+";";
-            }
-        }
-        if (changed =true){
-            String[] order=temp1.split(";");
-            int size=order.length;
-            sortStringArray(order, size);
-            for (int l=0; l<order.length;l++){
-                System.out.println(order[l]);
-            }            HighscoreValues=new String();
-            for (int k=0; k< entries.length; k++){
-                HighscoreValues=HighscoreValues+order[k]+";";
-            }
-        }else
-        if(changed==false){HighscoreValues=HighscoreValues+ str+":1;";}
-
-
-        //kolla om filen finns, ggf. skapa den
-        File Higscorefile=new File("highscore.txt");
-        if (!Higscorefile.exists()){
-            try{
-                Higscorefile.createNewFile();
-            }catch(IOException e){
-                System.out.println("Cant create file");
-            }
-        }
-        // write to file
-        FileWriter writeFile=null;
-        BufferedWriter writer= null;
-        try{
-            writeFile= new FileWriter(Higscorefile);
-            writer=new BufferedWriter(writeFile);
-            writer.write(this.HighscoreValues);
-            writer.close();
-        } catch (IOException e) {
-            System.out.println("Cant write to file");
-        }
-        System.out.println("after new calculation: "+HighscoreValues);
-
-    }
-    public void sortStringArray(String[] stringArr, int size) {
-    String temp=null;
-
-    for (int i=0; i<size;i++) {
-        for (int j=1; j<size;j++) {
-            System.out.println(Integer.parseInt(stringArr[j-1].split(":")[1])+"<"+Integer.parseInt(stringArr[j].split(":")[1]));
-        if (Integer.parseInt(stringArr[j-1].split(":")[1])<Integer.parseInt(stringArr[j].split(":")[1])){
-            temp= stringArr[j-1];
-            stringArr[j-1]=stringArr[j];
-            stringArr[j]=temp;
-        }
-        }
-    }}
 
     public void run()
     {
