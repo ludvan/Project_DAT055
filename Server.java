@@ -2,6 +2,8 @@ import javax.swing.*;
 import java.net.*;
 import java.io.*;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
+
 import static java.util.Arrays.sort;
 
 public class Server extends Thread {
@@ -264,9 +266,10 @@ public class Server extends Thread {
                     ClientThread newUser = new ClientThread(socket, this);
                     clientThreads.add(newUser);
                     System.out.println("New user joined the lobby");
-                    newUser.start();
                     broadcast((Integer)playerLimit);
-                }             
+                    newUser.start();  
+                }
+                
             }
         } catch (IOException ex) {
             System.out.println("Error in the server: " + ex.getMessage());
