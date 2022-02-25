@@ -3,8 +3,6 @@ import java.net.*;
 import java.io.*;
 import java.util.*;
 
-import static java.util.Arrays.sort;
-
 public class Server extends Thread {
     private int port;
     private int playerLimit;
@@ -12,7 +10,6 @@ public class Server extends Thread {
     private boolean in_match;
     private Game game;
     private int drawCardCounter; // används för att begränsa så att användaren inte kan plocka upp nmer än 3 kort
-    private String HighscoreValues;
 
     public Server(int _port, int player_limit)
     {
@@ -125,12 +122,10 @@ public class Server extends Thread {
         // om det 
         if(card.getValue() == Value.plus2){
         	penaltyDraw(2);
-            //System.out.println(game.nextTurn() + " drew 2 cards");
             game.setCurrentTurn(game.nextTurn());
         }
         if(card.getValue() == Value.plus4){
         	penaltyDraw(4);
-            //System.out.println(game.nextTurn() + " drew 4 cards");
             game.setCurrentTurn(game.nextTurn());
         }
 
@@ -139,18 +134,13 @@ public class Server extends Thread {
         if(card.getValue() == Value.reverse)
             game.setReverse(!game.getReverse());
 
-
         if(data.getChooseColor())
         {
-            //System.out.println("Color chosen : " + data.getChosenColor().toString());
             card.setColor(data.getChosenColor());
         }
         game.deckAddCard(card);
         game.playerRemoveCard(currentPlayer, card);
-        // om vi får in ett svart kort vill vi vänta på att
-        // en färg väljs
 
-//        WeHaveAWinner();
         if(!WeHaveAWinner()) {
             game.setCurrentTurn(game.nextTurn());
             updateClientsGame(game);

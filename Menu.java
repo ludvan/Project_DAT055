@@ -24,7 +24,7 @@ public class Menu extends JFrame{
     private final int window_height = 1080;
     private Process serverProcess;
     private ArrayList<Process> clientProcess;
-
+    
     public Menu(){
         try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
