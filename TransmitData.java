@@ -11,7 +11,6 @@ public class TransmitData implements Serializable {
 	private boolean chooseColor;
 	private String winner;
 	private int[] pointArr;
-	private String highscores;
 
 	public TransmitData(Card c, int id, Col chosenColor, boolean drawCard, boolean chooseColor) {
 		this.card = c;

@@ -50,13 +50,13 @@ public class ChatClient {
                 Object recieved;
                 while(true) {
                     recieved = inputStream.readObject();
-                    //instanceof ArrayList<Player> var ej tillåtet
-                    //OBS måste skrivas om ifall vi skickar andra ArrayList (tror/hoppas vi inte behöver)
+                    //instanceof ArrayList<Player> var ej tillï¿½tet
+                    //OBS mï¿½ste skrivas om ifall vi skickar andra ArrayList (tror/hoppas vi inte behï¿½ver)
                     if(recieved instanceof Integer) {
                     	board.setPlayerLimit((Integer)recieved);
                     }
                     if(recieved instanceof ArrayList) {
-                    	@SuppressWarnings("unchecked") //försökt hitta bättre lösning, kör så här så länge
+                    	@SuppressWarnings("unchecked") //fï¿½rsï¿½kt hitta bï¿½ttre lï¿½sning, kï¿½r sï¿½ hï¿½r sï¿½ lï¿½nge
 						ArrayList<Player> playerList = (ArrayList<Player>) recieved;
                     	board.lobbyUpdate(playerList);
                     }
@@ -77,9 +77,9 @@ public class ChatClient {
                     {
                         // System.out.println(recieved);
                     }
-                    // detta sker nÃ¤r clienten Ã¤r i en match
+                    // Om vi har vunnit
                     if (recieved instanceof TransmitData) {
-                            someoneWon(((TransmitData) recieved).getWinner() , ((TransmitData) recieved).getPointArr());
+                        someoneWon(((TransmitData) recieved).getWinner() , ((TransmitData) recieved).getPointArr());
                     }
 
                     if(in_match)
@@ -191,7 +191,7 @@ public class ChatClient {
 
         //skapar stringen till JOptionpane
         String LbString="Leaderboard \n";
-        //gå ignenom pointclone för att hitta
+        //gï¿½ ignenom pointclone fï¿½r att hitta
         for (int c=0; c<pointclone.length; c++){
             for (int a=0; a < arr.length; a++){
                 if (pointclone[c]==arr[a]){
@@ -212,9 +212,10 @@ public class ChatClient {
         if (HighscoreValues==null){
             this.getHighscoreValues();
             updateHighscoreValues(str1);
-        HighscoreValues=makeItMultiline(HighscoreValues);
-        JOptionPane.showMessageDialog(null, HighscoreValues, "local player statistics" , JOptionPane.PLAIN_MESSAGE);
-    }}
+            HighscoreValues=makeItMultiline(HighscoreValues);
+            JOptionPane.showMessageDialog(null, HighscoreValues, "local player statistics" , JOptionPane.PLAIN_MESSAGE);
+        }
+    }
 
     public void getHighscoreValues() {
         try{
@@ -241,9 +242,9 @@ public class ChatClient {
                 System.out.println("entries[" + i + "] is: " + entries[i]);
             }
             for (int i = 0; i < entries.length; i++) {
-                //dela upp vid : och jämför namn
+                //dela upp vid : och jï¿½mfï¿½r namn
                 if (str.equals(entries[i].split(":")[0])) {
-                    //öka påängen med 1
+                    //ï¿½ka pï¿½ï¿½ngen med 1
                     int newPoints = Integer.parseInt(entries[i].split(":")[1]);
                     newPoints = newPoints + 1;
                     System.out.println("newpoints is: " + newPoints);
