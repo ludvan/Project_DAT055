@@ -63,24 +63,7 @@ public class Server extends Thread {
         	unoPressed = true;
         	return;
         }
-
-        // om vi får in ett svart kort vill vi vänta på att
-        // en färg väljs
-        if (!data.getChooseColor() && data.getCard().getColor() == Col.black) {
-            Card tmp = data.getCard();
-            game.playerRemoveCard(currentPlayer, tmp);
-            game.deckAddCard(tmp);
-            return;
-        }
-        // hanterar färgval om kortet är svart
-        if (data.getChooseColor() && game.getDeck().drawCard().getColor() == Col.black) {
-            Col chosenColor = data.getChosenColor();
-            Card tmp = data.getCard();
-            game.getDeck().drawCard().setColor(chosenColor);
-            game.setCurrentTurn(game.nextTurn());
-            updateClientsGame(game);
-            return;
-        }
+        
         // om användaren endast vill dra ett kort från discard deck
         if (data.getDrawCard()) {
         	if (game.getDiscardDeck().getSize() == 0) {
@@ -127,7 +110,7 @@ public class Server extends Thread {
             game.setCurrentTurn(game.nextTurn());
         if (card.getValue() == Value.reverse)
             game.setReverse(!game.getReverse());
-
+        //om vi valt f�rg
         if (data.getChooseColor()) {
             card.setColor(data.getChosenColor());
         }

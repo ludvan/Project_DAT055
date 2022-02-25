@@ -24,10 +24,11 @@ public class TransmitData implements Serializable {
 		this.has_pressed_uno = uno;
 	}
 
-	public TransmitData(Col chosenColor, boolean chooseColor) {
+	public TransmitData(Col chosenColor, boolean chooseColor, Card ca) {
 		this.chosenColor = chosenColor;
 		this.drawCard = false;
 		this.chooseColor = chooseColor;
+		this.card = ca;
 	}
 
 	public TransmitData(boolean uno) {
