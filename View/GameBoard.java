@@ -146,25 +146,25 @@ public class GameBoard extends JFrame {
 			player_display.setActive(i==game.getCurrentTurn());
 			opPanel.add(player_display);
 		}
-		for(int i = 0; i < game.getPlayers().size(); i++){
+		
 			if(game.getPlayerId() == game.getCurrentTurn()){
-				if(game.getPlayerDeck(i).getSize() == 2){
+				if(game.getPlayerDeck(game.getPlayerId()).getSize() == 2){
 					unoButton.setVisible(true);
 					unoButton.addActionListener(new ActionListener(){
 						public void actionPerformed(ActionEvent e){
 							TransmitData data;
 							if(e.getSource() == unoButton){
 								JOptionPane.showMessageDialog(null, "You said UNO!!!");
-								data = new TransmitData(true);
+								data = new TransmitData(false);
 							} else {
 								JOptionPane.showMessageDialog(null, "You forgot to say UNO!!");
-								data = new TransmitData(false);
+								data = new TransmitData(true);
 							}
 						}
 					});
 				}
 			}
-		}
+		
 		add(north, layout.NORTH);
 		revalidate();
 		repaint();
