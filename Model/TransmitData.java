@@ -1,4 +1,5 @@
 package Model;
+
 import java.io.Serializable;
 
 /*
@@ -20,56 +21,65 @@ public class TransmitData implements Serializable {
 		this.drawCard = drawCard;
 		this.chooseColor = chooseColor;
 	}
-	public TransmitData(String str1, int[] arr){
+
+	public TransmitData(String str1, int[] arr) {
 		this.winner = str1;
 		this.pointArr = arr;
 	}
-	
+
 	public void setCard(Card c) {
 		this.card = c;
 	}
-	public Card getCard()
-	{
+
+	public Card getCard() {
 		return card;
 	}
-	
+
 	public void setPlayerId(int id) {
 		this.playerId = id;
 	}
-	public int getPlayerId()
-	{
+
+	public int getPlayerId() {
 		return playerId;
 	}
-	
+
 	public void setChosenColor(Col chosenColor) {
 		this.chosenColor = chosenColor;
 	}
-	public Col getChosenColor()
-	{
+
+	public Col getChosenColor() {
 		return chosenColor;
 	}
 
-	public void setChooseColor(boolean c)
-	{
+	public void setChooseColor(boolean c) {
 		chooseColor = c;
 	}
-	public boolean getChooseColor()
-	{
+
+	public boolean getChooseColor() {
 		return chooseColor;
 	}
 
-	public void setDrawCard(boolean b)
-	{
+	public void setDrawCard(boolean b) {
 		drawCard = b;
 	}
-	public boolean getDrawCard()
-	{
+
+	public boolean getDrawCard() {
 		return drawCard;
 	}
 
-	public void setWinner(String str){winner = str;}
-	public String getWinner(){return winner; }
+	public void setWinner(String str) {
+		winner = str;
+	}
 
-	public void setPointArr(int[] arr){pointArr= arr.clone(); }
-	public int[] getPointArr(){ return pointArr; }
+	public String getWinner() {
+		return winner;
+	}
+
+	public void setPointArr(int[] arr) {
+		pointArr = arr.clone();
+	}
+
+	public int[] getPointArr() {
+		return pointArr;
+	}
 }

@@ -1,57 +1,52 @@
 package Model;
+
 import java.io.*;
 import java.net.*;
- 
+
 public class ClientThread extends Thread {
     private Socket socket;
     private Server server;
     private ObjectOutputStream oos;
     private ObjectInputStream ois;
- 
+
     public ClientThread(Socket _socket, Server _server) {
         this.socket = _socket;
         this.server = _server;
         try {
             ois = new ObjectInputStream(socket.getInputStream());
             oos = new ObjectOutputStream(socket.getOutputStream());
-        } 
-        catch (IOException ex) {
+        } catch (IOException ex) {
             System.out.println("Error in ClientThread constructor: " + ex.getMessage());
             ex.printStackTrace();
         }
     }
- 
+
     public void run() {
         try {
             // om vi inte är i en match, lägg till nya spelare
-            if(!server.inMatch())
-            {
+            if (!server.inMatch()) {
                 // skapa ny användare och lägg till i servern
-                String username = (String)ois.readObject();
+                String username = (String) ois.readObject();
                 Player newUser = new Player(username);
                 server.addUser(newUser);
                 /*
-                String serverMessage = "New user connected: " + username;
-                server.broadcast(serverMessage);  
-                */      
+                 * String serverMessage = "New user connected: " + username;
+                 * server.broadcast(serverMessage);
+                 */
             }
-            while(true)
-            {
+            while (true) {
                 try {
                     Object recieved = ois.readObject();
-                    if(recieved instanceof TransmitData)
-                    {
+                    if (recieved instanceof TransmitData) {
                         // System.out.println("Card recieved");
-                        server.handleCard((TransmitData)recieved);
+                        server.handleCard((TransmitData) recieved);
                     }
                     // System.out.println("something recieved");
-                }
-                catch(ClassNotFoundException e)
-                {
+                } catch (ClassNotFoundException e) {
                     System.out.println("Error recieving card : " + e.getMessage());
                 }
             }
-            //socket.close();            
+            // socket.close();
         } catch (IOException ex) {
             System.out.println("Error in UserThread: " + ex.getMessage());
             ex.printStackTrace();
@@ -61,7 +56,6 @@ public class ClientThread extends Thread {
         }
     }
 
-    
     /**
      * Sends a message to the client.
      */

@@ -1,7 +1,6 @@
 package Model;
 
-public enum Value 
-{
+public enum Value {
     zero,
     one,
     two,

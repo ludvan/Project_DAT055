@@ -1,16 +1,17 @@
 package View;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-
 import javax.swing.*;
+
 public class ServerOutputView extends Thread {
     private Process serverProcess;
     private BufferedReader reader;
     private JTextArea outputText;
     private JFrame frame;
 
-    public ServerOutputView(){
+    public ServerOutputView() {
         outputText = new JTextArea();
         outputText.setEditable(false);
         outputText.setText("reading server...");
@@ -21,24 +22,19 @@ public class ServerOutputView extends Thread {
         frame.setVisible(true);
     }
 
-    public void setProcess(Process serverProcess)
-    {
+    public void setProcess(Process serverProcess) {
         this.serverProcess = serverProcess;
         this.reader = new BufferedReader(new InputStreamReader(serverProcess.getInputStream()));
         start();
     }
 
-    public void run()
-    {
+    public void run() {
         String text = "";
-        while(true)
-        {
+        while (true) {
             String line;
-            if(reader != null)
-            {
+            if (reader != null) {
                 try {
-                    while((line = reader.readLine()) != null)
-                    {
+                    while ((line = reader.readLine()) != null) {
                         text += line + "\n";
                         outputText.setText(text);
                         frame.repaint();
@@ -48,9 +44,5 @@ public class ServerOutputView extends Thread {
                 }
             }
         }
-    }
-
-    public static void main(String[] args){
-
     }
 }

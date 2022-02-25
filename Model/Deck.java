@@ -1,34 +1,28 @@
 package Model;
+
 import java.util.ArrayList;
 import java.io.Serializable;
 import java.util.*;
 
-public class Deck implements Serializable
-{
+public class Deck implements Serializable {
     private ArrayList<Card> cards;
 
-    public Deck()
-    {
+    public Deck() {
         cards = new ArrayList<Card>();
     }
 
-    public Deck(Card[] _cards)
-    {
+    public Deck(Card[] _cards) {
         cards = new ArrayList<Card>();
-        for(int i = 0; i < _cards.length; i++)
-        {
+        for (int i = 0; i < _cards.length; i++) {
             addCard(_cards[i]);
         }
     }
 
-    public void fillDeck()
-    {
+    public void fillDeck() {
         // lägg till alla kort förutom de svarta
-        for(int c = 0; c < 4; c++)
-        {
+        for (int c = 0; c < 4; c++) {
             Col color = Col.values()[c];
-            for(int v = 1; v <= 12; v++)
-            {
+            for (int v = 1; v <= 12; v++) {
                 Value value = Value.values()[v];
                 Card tmp = new Card(value, color);
                 addCard(tmp);
@@ -47,86 +41,72 @@ public class Deck implements Serializable
         addCard(new Card(Value.pickColor, Col.black));
     }
 
-    public static void shuffle(Deck deck)
-    {
+    public static void shuffle(Deck deck) {
         Collections.shuffle(deck.cards);
     }
 
-    public void addCard(Card card)
-    {
+    public void addCard(Card card) {
         cards.add(card);
     }
 
-    public void removeCard(Card card)
-    {
-        if(!isEmpty())
-        {
-            for(int i = 0; i < cards.size(); i++)
-            {
+    public void removeCard(Card card) {
+        if (!isEmpty()) {
+            for (int i = 0; i < cards.size(); i++) {
                 Card tmp = cards.get(i);
-                if(Card.equals(card, tmp))
-                {
+                if (Card.equals(card, tmp)) {
                     cards.remove(i);
                     return;
                 }
             }
             throw new IllegalArgumentException("Can't remove card, card is not in deck!");
-        }
-        else
+        } else
             throw new IllegalArgumentException("Can't remove card, deck is empty!");
     }
 
-    public Card drawCard()
-    {
-        if(isEmpty())
+    public Card drawCard() {
+        if (isEmpty())
             return null;
-        return cards.get(cards.size()-1);
+        return cards.get(cards.size() - 1);
     }
 
-    public Card getCard(int i)
-    {
-        if(i > cards.size())
+    public Card getCard(int i) {
+        if (i > cards.size())
             throw new IllegalArgumentException("Index of of range!");
         else
             return cards.get(i);
     }
 
-    public int getSize()
-    {
+    public int getSize() {
         return cards.size();
     }
 
-    public boolean isEmpty()
-    {
+    public boolean isEmpty() {
         return cards.size() == 0;
     }
 
-    public boolean inDeck(Card card)
-    {
-        for(int i = 0; i < cards.size(); i++)
-        {
-            if(Card.equals(card, cards.get(i)))
+    public boolean inDeck(Card card) {
+        for (int i = 0; i < cards.size(); i++) {
+            if (Card.equals(card, cards.get(i)))
                 return true;
         }
         return false;
     }
 
-    public String toString()
-    {
+    public String toString() {
         String tmp = "";
-        for(int i = 0; i < cards.size(); i++)
-        {
+        for (int i = 0; i < cards.size(); i++) {
             tmp += cards.get(i).toString() + "\n";
         }
         tmp += "Deck size : " + cards.size();
         return tmp;
     }
-    
+
     public void revertBlack() {
-    	for(int i = 0; i<cards.size(); i++) {
-    		if((cards.get(i).getValue() == Value.plus4 ||cards.get(i).getValue() == Value.pickColor ) && cards.get(i).getColor() != Col.black) {
-    			cards.get(i).setColor(Col.black);
-    		}
-    	}
+        for (int i = 0; i < cards.size(); i++) {
+            if ((cards.get(i).getValue() == Value.plus4 || cards.get(i).getValue() == Value.pickColor)
+                    && cards.get(i).getColor() != Col.black) {
+                cards.get(i).setColor(Col.black);
+            }
+        }
     }
 }

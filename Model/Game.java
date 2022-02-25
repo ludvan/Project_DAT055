@@ -1,7 +1,8 @@
 package Model;
+
 import java.util.*;
 
-public class Game implements java.io.Serializable{
+public class Game implements java.io.Serializable {
     private Deck deck;
     private Deck discardDeck;
     private int player_id; // används för att hålla koll på spelarens kort
@@ -9,8 +10,7 @@ public class Game implements java.io.Serializable{
     private int turn;
     private boolean reverse;
 
-    public Game copy(Game game)
-    {
+    public Game copy(Game game) {
         Game tmp = new Game();
         tmp.setDeck(game.getDeck());
         tmp.setDiscardDeck(game.getDiscardDeck());
@@ -21,8 +21,7 @@ public class Game implements java.io.Serializable{
         return tmp;
     }
 
-    public Game()
-    {
+    public Game() {
         deck = new Deck();
         discardDeck = new Deck();
         players = new ArrayList<>();
@@ -31,8 +30,7 @@ public class Game implements java.io.Serializable{
         reverse = false;
     }
 
-    public Game(Game clone)
-    {
+    public Game(Game clone) {
         deck = clone.getDeck();
         discardDeck = clone.getDiscardDeck();
         players = clone.getPlayers();
@@ -41,127 +39,102 @@ public class Game implements java.io.Serializable{
         reverse = clone.getReverse();
     }
 
-    public void setPlayerId(int id)
-    {
+    public void setPlayerId(int id) {
         player_id = id;
     }
 
-    public int getPlayerId()
-    {
+    public int getPlayerId() {
         return player_id;
     }
 
-    public ArrayList<Player> getPlayers()
-    {
+    public ArrayList<Player> getPlayers() {
         return players;
     }
 
-    public void addPlayer(Player player)
-    {
+    public void addPlayer(Player player) {
         this.players.add(player);
     }
 
-    public void removePlayer(Player player)
-    {
+    public void removePlayer(Player player) {
         this.players.remove(player);
     }
 
-    public void setPlayers(ArrayList<Player> players)
-    {
+    public void setPlayers(ArrayList<Player> players) {
         this.players = players;
     }
 
-    public Deck getPlayerDeck(int player)
-    {
+    public Deck getPlayerDeck(int player) {
         return players.get(player).getDeck();
     }
 
-    public void playerAddCard(int player, Card card)
-    {
+    public void playerAddCard(int player, Card card) {
         players.get(player).getDeck().addCard(card);
     }
 
-    public void playerRemoveCard(int player, Card card)
-    {
+    public void playerRemoveCard(int player, Card card) {
         players.get(player).getDeck().removeCard(card);
     }
 
-    public void setDeck(Deck deck)
-    {
+    public void setDeck(Deck deck) {
         this.deck = deck;
     }
 
-    public Deck getDeck()
-    {
+    public Deck getDeck() {
         return this.deck;
     }
 
-    public void deckAddCard(Card card)
-    {
+    public void deckAddCard(Card card) {
         deck.addCard(card);
     }
 
-    public void deckRemove(Card card)
-    {
+    public void deckRemove(Card card) {
         deck.removeCard(card);
     }
 
-    public void setDiscardDeck(Deck deck)
-    {
+    public void setDiscardDeck(Deck deck) {
         this.discardDeck = deck;
     }
 
-    public Deck getDiscardDeck()
-    {
+    public Deck getDiscardDeck() {
         return this.discardDeck;
     }
 
-    public void discardDeckAddCard(Card card)
-    {
+    public void discardDeckAddCard(Card card) {
         discardDeck.addCard(card);
     }
 
-    public void discardDeckRemove(Card card)
-    {
+    public void discardDeckRemove(Card card) {
         discardDeck.removeCard(card);
     }
 
-    public int getCurrentTurn()
-    {
+    public int getCurrentTurn() {
         return turn;
     }
 
-    public void setCurrentTurn(int _turn)
-    {
-        turn = _turn; 
+    public void setCurrentTurn(int _turn) {
+        turn = _turn;
         // System.out.println("setCurrentTurn");
     }
 
-    public int nextTurn()
-    {
+    public int nextTurn() {
         int t = turn;
-        if(!reverse)
-        {
+        if (!reverse) {
             t++;
-        }
-        else
-        {
+        } else {
             t--;
         }
-        if(t < 0)
-            t = players.size()-1;
-        if(t > players.size()-1)
+        if (t < 0)
+            t = players.size() - 1;
+        if (t > players.size() - 1)
             t = 0;
         return t;
     }
 
-    public boolean getReverse()
-    {
+    public boolean getReverse() {
         return reverse;
     }
 
-    public void setReverse(boolean val)
-    {
+    public void setReverse(boolean val) {
         reverse = val;
     }
 

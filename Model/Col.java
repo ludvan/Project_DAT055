@@ -1,7 +1,6 @@
 package Model;
 
-public enum Col 
-{
+public enum Col {
     red,
     green,
     yellow,
