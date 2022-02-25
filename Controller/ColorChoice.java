@@ -1,4 +1,10 @@
+package Controller;
 import javax.swing.*;
+
+import Model.Card;
+import Model.ChatClient;
+import Model.Col;
+import Model.TransmitData;
 
 public class ColorChoice{
 	private ChatClient choiceClient;
@@ -7,7 +13,7 @@ public class ColorChoice{
 	//Ordning i str�ng viktig
 	private String[] options = {"red","blue","yellow","green"};
 
-	ColorChoice(ChatClient currentClient, Card card){
+	public ColorChoice(ChatClient currentClient, Card card){
 		choiceClient = currentClient;
 		currentCard = card;
 		ChooseColor();

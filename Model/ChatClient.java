@@ -199,7 +199,6 @@ public class ChatClient {
                 }
             }
         }
-        game.setCurrentTurn(-2);
         //LbString=LbString+"\n\n Do you want to play again?";
         String title;
         if (str1.equals(userName)){

@@ -1,3 +1,4 @@
+package Controller;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -16,6 +17,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 
 import javax.swing.border.EmptyBorder;
+
+import View.ServerOutputView;
 
 import javax.swing.*;
 public class Menu extends JFrame{
@@ -44,21 +47,6 @@ public class Menu extends JFrame{
         setSize(window_width,window_height); //Kan komma att ändras
         JPanel p = new JPanel();
 
-        // "PLAY" - Knappen
-        JButton play = new JButton("PLAY");
-        play.setFont(new Font("Yu Gothic UI Semibold", Font.PLAIN, 36));
-        play.addActionListener(new ActionListener(){
-            @Override
-            public void actionPerformed(ActionEvent e){
-                //TODO: När man stänger ner spelet så stängs även launchern ner
-                try {
-                    UnoWindow w = new UnoWindow();
-                    w.setVisible(true);
-                } catch (Exception y) {
-                    JOptionPane.showMessageDialog(null, y + "");
-                }
-            }
-        });
         // "EXIT" - Knappen
         JButton exit = new JButton("EXIT");
         exit.setFont(new Font("Yu Gothic UI Semibold", Font.PLAIN, 36)); //17
@@ -161,8 +149,6 @@ public class Menu extends JFrame{
         gbc.anchor = GridBagConstraints.CENTER;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         JPanel buttons = new JPanel(new GridBagLayout());
-        buttons.add(Box.createRigidArea(new Dimension(0,window_height / 10)));
-        buttons.add(play,gbc);
         buttons.add(Box.createRigidArea(new Dimension(0,window_height / 10)));
         buttons.add(exit,gbc);
         buttons.add(Box.createRigidArea(new Dimension(0,window_height / 10)));

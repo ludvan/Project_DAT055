@@ -1,8 +1,19 @@
+package View;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 
 import javax.swing.*;
+
+import GetDate;
+import Controller.ColorChoice;
+import Controller.GameCard;
+import Model.Card;
+import Model.ChatClient;
+import Model.Col;
+import Model.Game;
+import Model.Player;
+import Model.TransmitData;
 
 
 public class GameBoard extends JFrame {
