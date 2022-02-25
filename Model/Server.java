@@ -66,13 +66,8 @@ public class Server extends Thread {
         
         // om användaren endast vill dra ett kort från discard deck
         if (data.getDrawCard()) {
-        	if (game.getDiscardDeck().getSize() == 0) {
-                reShuffle();
-            }
             drawCardCounter++;
-            Card tmp = game.getDiscardDeck().drawCard();
-            game.playerAddCard(currentPlayer, tmp);
-            game.discardDeckRemove(tmp);
+            playerDraw(1,currentPlayer);
 
             // användaren har dragit så många kort hen kan gå vidare
             if (drawCardCounter >= 3) {
@@ -80,7 +75,7 @@ public class Server extends Thread {
                 drawCardCounter = 0;
             }
             // om det kort som dras går att lägga så vill vi återställa räknaren
-            if (Card.isStackable(tmp, game.getDeck().drawCard())) {
+            if (Card.isStackable(game.getDiscardDeck().drawCard(), game.getDeck().drawCard())) {
                 drawCardCounter = 0;
             }
 
@@ -114,14 +109,9 @@ public class Server extends Thread {
         if (data.getChooseColor()) {
             card.setColor(data.getChosenColor());
         }
-        //Straffkort om uno ej trycktes
+        //Dra 4 straffkort om uno ej trycktes
         if(!unoPressed && game.getPlayerDeck(currentPlayer).getSize() == 2) {
-        	Card tmp = game.getDiscardDeck().drawCard();
-            game.playerAddCard(currentPlayer, tmp);
-            game.discardDeckRemove(tmp);
-            tmp = game.getDiscardDeck().drawCard();
-            game.playerAddCard(currentPlayer, tmp);
-            game.discardDeckRemove(tmp);
+        	playerDraw(4,currentPlayer);
         }
         
         game.deckAddCard(card);
@@ -134,6 +124,19 @@ public class Server extends Thread {
             game.setCurrentTurn(-2);
             updateClientsGame(game);
         }
+    }
+    
+    private void playerDraw(int number, int player) {
+    	Card tmp;
+    	for(int i=0; i<number;i++) {
+    		if (game.getDiscardDeck().getSize() == 0) {
+                reShuffle();
+            }
+    		tmp = game.getDiscardDeck().drawCard();
+            game.playerAddCard(player, tmp);
+            game.discardDeckRemove(tmp);
+    	}
+    	
     }
 
     private void penaltyDraw(int number) {
