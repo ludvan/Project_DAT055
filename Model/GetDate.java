@@ -1,3 +1,4 @@
+package Model;
 /*
  * This class fetches the current date in Sweden as a String from https://www.vilketdatum.se/
  */

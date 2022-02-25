@@ -1,9 +1,12 @@
+package View;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
 import java.util.ArrayList;
 
 import javax.swing.JPanel;
+
+import Model.Player;
 
 public class LobbyView extends JPanel {
 
@@ -22,7 +25,7 @@ public class LobbyView extends JPanel {
     public void update(ArrayList<Player> players, int limit) {
         
     	removeAll();
-    	//Lägg till spelare
+    	//Lï¿½gg till spelare
         for(int i = 0; i<players.size(); i++) {
             GamePlayer lobbyDisplay = new GamePlayer(true);
             lobbyDisplay.setText(players.get(i).getName());
@@ -30,7 +33,7 @@ public class LobbyView extends JPanel {
             add(lobbyDisplay);
         }
 
-        //Lägg till rutor utan spelare
+        //Lï¿½gg till rutor utan spelare
         for(int i = 0; i<limit-players.size(); i++) {
             GamePlayer lobbyDisplay = new GamePlayer();
             lobbyDisplay.setText("Open slot");

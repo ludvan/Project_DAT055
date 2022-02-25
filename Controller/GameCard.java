@@ -1,6 +1,9 @@
+package Controller;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+
+import Model.Card;
 
 public class GameCard extends JButton
 {

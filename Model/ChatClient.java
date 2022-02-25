@@ -1,4 +1,8 @@
+package Model;
 import javax.swing.*;
+
+import View.GameBoard;
+
 import java.net.*;
 import java.io.*;
 import java.util.*;

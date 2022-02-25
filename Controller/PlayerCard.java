@@ -1,4 +1,7 @@
+package Controller;
 import javax.swing.JButton;
+
+import Model.Card;
 
 public class PlayerCard extends JButton {
 	private Card cardInfo;

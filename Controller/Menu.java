@@ -1,24 +1,11 @@
 package Controller;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Toolkit;
+
 import java.awt.event.*;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Properties;
-
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-
-import javax.swing.border.EmptyBorder;
-
-import View.ServerOutputView;
+import java.io.*;
+import java.util.*;
+import java.awt.*;
+import Model.*;
+import View.*;
 
 import javax.swing.*;
 public class Menu extends JFrame{
@@ -92,7 +79,7 @@ public class Menu extends JFrame{
                             JOptionPane.showMessageDialog(null, "The amount of players needs to be between 2 and 10!");
                         }
                     }
-                    String open_server = "java Server " + port + " " + nbrOfPlayers;
+                    String open_server = "java Model/Server " + port + " " + nbrOfPlayers;
                     if(serverProcess != null)
                         serverProcess.destroy();
                     serverProcess = Runtime.getRuntime().exec(open_server); 
@@ -118,7 +105,7 @@ public class Menu extends JFrame{
                         Toolkit.getDefaultToolkit().beep();
                         JOptionPane.showMessageDialog(null, "You need to enter a nickname to be able to play!");
                     } else {
-                        clientProcess.add(Runtime.getRuntime().exec("java ChatClient localhost " + port + " " + nickname));
+                        clientProcess.add(Runtime.getRuntime().exec("java Model/ChatClient localhost " + port + " " + nickname));
                     }                 
                 } catch (Exception y) {
                     JOptionPane.showInputDialog(null, y + "");
