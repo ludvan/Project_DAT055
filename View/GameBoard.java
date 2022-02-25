@@ -125,6 +125,7 @@ public class GameBoard extends JFrame {
 		JPanel opPanel = new JPanel();
 		opPanel.setBackground(handColor);
 		JButton unoButton = new JButton("UNO!!");
+		unoButton.setVisible(false);
 		JPanel unoPanel =  new JPanel(new BorderLayout(1,1));
 		JPanel north = new JPanel();
 		unoPanel.setBackground(Color.green);
@@ -144,6 +145,25 @@ public class GameBoard extends JFrame {
 
 			player_display.setActive(i==game.getCurrentTurn());
 			opPanel.add(player_display);
+		}
+		for(int i = 0; i < game.getPlayers().size(); i++){
+			if(game.getPlayerId() == game.getCurrentTurn()){
+				if(game.getPlayerDeck(i).getSize() == 2){
+					unoButton.setVisible(true);
+					unoButton.addActionListener(new ActionListener(){
+						public void actionPerformed(ActionEvent e){
+							TransmitData data;
+							if(e.getSource() == unoButton){
+								JOptionPane.showMessageDialog(null, "You said UNO!!!");
+								data = new TransmitData(true);
+							} else {
+								JOptionPane.showMessageDialog(null, "You forgot to say UNO!!");
+								data = new TransmitData(false);
+							}
+						}
+					});
+				}
+			}
 		}
 		add(north, layout.NORTH);
 		revalidate();
