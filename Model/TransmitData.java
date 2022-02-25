@@ -13,13 +13,25 @@ public class TransmitData implements Serializable {
 	private boolean chooseColor;
 	private String winner;
 	private int[] pointArr;
+	private boolean has_pressed_uno;
 
-	public TransmitData(Card c, int id, Col chosenColor, boolean drawCard, boolean chooseColor) {
+	public TransmitData(Card c, int id, Col chosenColor, boolean drawCard, boolean chooseColor, boolean uno) {
 		this.card = c;
 		this.playerId = id;
 		this.chosenColor = chosenColor;
 		this.drawCard = drawCard;
 		this.chooseColor = chooseColor;
+		this.has_pressed_uno = uno;
+	}
+
+	public TransmitData(Col chosenColor, boolean chooseColor) {
+		this.chosenColor = chosenColor;
+		this.drawCard = false;
+		this.chooseColor = chooseColor;
+	}
+
+	public TransmitData(boolean uno) {
+		this.has_pressed_uno = uno;
 	}
 
 	public TransmitData(String str1, int[] arr) {
@@ -81,5 +93,15 @@ public class TransmitData implements Serializable {
 
 	public int[] getPointArr() {
 		return pointArr;
+	}
+
+	public boolean getPressedUno()
+	{
+		return has_pressed_uno;
+	}
+
+	public void setPressedUno(boolean uno)
+	{
+		has_pressed_uno = uno;
 	}
 }

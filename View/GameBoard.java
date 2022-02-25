@@ -56,7 +56,7 @@ public class GameBoard extends JFrame {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					if (client.isClientTurn() && !client.hasStackableCard()) {
-						TransmitData data = new TransmitData(null, -100, Col.black, true, false);
+						TransmitData data = new TransmitData(null, -100, Col.black, true, false, false);
 						client.sendToServer(data);
 					}
 				}
@@ -86,7 +86,7 @@ public class GameBoard extends JFrame {
 					if (client.isClientTurn()) {
 						if (card_button.getCard().getColor() != Col.black) {
 							// System.out.println("Card selected : " + card_button.getCard().toString());
-							TransmitData data = new TransmitData(card_button.getCard(), -100, Col.black, false, false);
+							TransmitData data = new TransmitData(card_button.getCard(), -100, Col.black, false, false, false);
 							client.sendToServer(data);
 						} else {
 							// för svarta kort måste en färg bestämmas

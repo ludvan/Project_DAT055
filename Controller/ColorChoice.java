@@ -47,7 +47,7 @@ public class ColorChoice {
 			}
 
 			// skickar det valda kortet till servern
-			TransmitData data = new TransmitData(currentCard, -100, chosenColor, false, true);
+			TransmitData data = new TransmitData(chosenColor, true);
 			choiceClient.sendToServer(data);
 		}
 
