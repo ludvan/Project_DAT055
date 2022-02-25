@@ -94,11 +94,11 @@ public class Server extends Thread {
 
         // om det
         if (card.getValue() == Value.plus2) {
-            penaltyDraw(2);
+            playerDraw(2,game.nextTurn());
             game.setCurrentTurn(game.nextTurn());
         }
         if (card.getValue() == Value.plus4) {
-            penaltyDraw(4);
+            playerDraw(4,game.nextTurn());
             game.setCurrentTurn(game.nextTurn());
         }
 
@@ -115,6 +115,8 @@ public class Server extends Thread {
         	playerDraw(4,currentPlayer);
         }
         
+        unoPressed = false;
+        
         game.deckAddCard(card);
         game.playerRemoveCard(currentPlayer, card);
 
@@ -129,6 +131,7 @@ public class Server extends Thread {
     
     private void playerDraw(int number, int player) {
     	Card tmp;
+    	
     	for(int i=0; i<number;i++) {
     		if (game.getDiscardDeck().getSize() == 0) {
                 reShuffle();
@@ -136,21 +139,10 @@ public class Server extends Thread {
     		tmp = game.getDiscardDeck().drawCard();
             game.playerAddCard(player, tmp);
             game.discardDeckRemove(tmp);
+            Deck.shuffle(game.getDiscardDeck());
     	}
     	
-    }
-
-    private void penaltyDraw(int number) {
-        Card tmp;
-        for (int i = 0; i < number; i++) {
-            if (game.getDiscardDeck().getSize() == 0) {
-                reShuffle();
-            }
-            tmp = game.getDiscardDeck().drawCard();
-            game.playerAddCard(game.nextTurn(), tmp);
-            game.discardDeckRemove(tmp);
-        }
-
+    	
     }
 
     private void reShuffle() {

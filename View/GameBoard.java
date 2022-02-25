@@ -155,10 +155,11 @@ public class GameBoard extends JFrame {
 							TransmitData data;
 							if(e.getSource() == unoButton){
 								JOptionPane.showMessageDialog(null, "You said UNO!!!");
-								data = new TransmitData(false);
+								data = new TransmitData(true);
+								client.sendToServer(data);
 							} else {
 								JOptionPane.showMessageDialog(null, "You forgot to say UNO!!");
-								data = new TransmitData(true);
+								data = new TransmitData(false);
 							}
 						}
 					});
