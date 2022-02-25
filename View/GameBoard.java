@@ -205,6 +205,13 @@ public class GameBoard extends JFrame {
 	public void setPlayerLimit(Integer players) {
 		playerLimit = players;
 	}
+
+	public void closeBoard(int i){
+		if(i==0)
+		setVisible(false);
+		dispose();
+	}
+
 	public static void main(String[] args){
         GameBoard board = new GameBoard();       
     }

@@ -201,7 +201,11 @@ public class ChatClient {
             this.getHighscoreValues();
             updateHighscoreValues(str1);
             HighscoreValues = makeItMultiline(HighscoreValues);
-            JOptionPane.showMessageDialog(null, HighscoreValues, "local player statistics", JOptionPane.PLAIN_MESSAGE);
+            int answer=JOptionPane.showConfirmDialog(null, HighscoreValues, "local player statistics", JOptionPane.PLAIN_MESSAGE);
+//            if (answer==0){
+                board.closeBoard(answer);
+
+ //           }
         }
     }
 
