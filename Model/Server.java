@@ -58,9 +58,7 @@ public class Server extends Thread {
     public void handleCard(TransmitData data) {
         int currentPlayer = game.getCurrentTurn();
 
-        if (game.getDiscardDeck().getSize() == 0) {
-            reShuffle();
-        }
+        
 
         // om vi får in ett svart kort vill vi vänta på att
         // en färg väljs
@@ -81,6 +79,9 @@ public class Server extends Thread {
         }
         // om användaren endast vill dra ett kort från discard deck
         if (data.getDrawCard()) {
+        	if (game.getDiscardDeck().getSize() == 0) {
+                reShuffle();
+            }
             drawCardCounter++;
             Card tmp = game.getDiscardDeck().drawCard();
             game.playerAddCard(currentPlayer, tmp);
