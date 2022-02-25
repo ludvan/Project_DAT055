@@ -220,14 +220,14 @@ public class Server extends Thread {
             int roundpoints = 0;
             for (int j = 0; j < decksize; j++) {
                 Value val = getPlayers().get(i).getDeck().getCard(j).getValue();
-                roundpoints = roundpoints + valToInt(val);
+                roundpoints = roundpoints + valToScore(val);
             }
             allPoints[i] = roundpoints;
         }
         return allPoints;
     }
 
-    public int valToInt(Value v){
+    public int valToScore(Value v){
         int index= v.ordinal();
         if (index >= 13){
             return 50;
