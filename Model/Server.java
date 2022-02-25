@@ -61,6 +61,7 @@ public class Server extends Thread {
 
         if(data.getPressedUno()) {
         	unoPressed = true;
+        	updateClientsGame(game);
         	return;
         }
         
