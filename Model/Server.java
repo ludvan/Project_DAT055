@@ -12,7 +12,8 @@ public class Server extends Thread {
     private boolean in_match;
     private Game game;
     private int drawCardCounter; // används för att begränsa så att användaren inte kan plocka upp nmer än 3 kort
-
+    private boolean unoPressed;
+    
     public Server(int _port, int player_limit) {
         port = _port;
         game = new Game();
@@ -58,18 +59,21 @@ public class Server extends Thread {
     public void handleCard(TransmitData data) {
         int currentPlayer = game.getCurrentTurn();
 
-        
+        if(data.getPressedUno()) {
+        	unoPressed = true;
+        	return;
+        }
 
         // om vi får in ett svart kort vill vi vänta på att
         // en färg väljs
-        if (!data.getChooseColor() && !data.getDrawCard() && data.getCard().getColor() == Col.black) {
+        if (!data.getChooseColor() && data.getCard().getColor() == Col.black) {
             Card tmp = data.getCard();
             game.playerRemoveCard(currentPlayer, tmp);
             game.deckAddCard(tmp);
             return;
         }
         // hanterar färgval om kortet är svart
-        if (data.getChooseColor() && !data.getDrawCard() && game.getDeck().drawCard().getColor() == Col.black) {
+        if (data.getChooseColor() && game.getDeck().drawCard().getColor() == Col.black) {
             Col chosenColor = data.getChosenColor();
             Card tmp = data.getCard();
             game.getDeck().drawCard().setColor(chosenColor);
@@ -127,6 +131,16 @@ public class Server extends Thread {
         if (data.getChooseColor()) {
             card.setColor(data.getChosenColor());
         }
+        //Straffkort om uno ej trycktes
+        if(!unoPressed && game.getPlayerDeck(currentPlayer).getSize() == 2) {
+        	Card tmp = game.getDiscardDeck().drawCard();
+            game.playerAddCard(currentPlayer, tmp);
+            game.discardDeckRemove(tmp);
+            tmp = game.getDiscardDeck().drawCard();
+            game.playerAddCard(currentPlayer, tmp);
+            game.discardDeckRemove(tmp);
+        }
+        
         game.deckAddCard(card);
         game.playerRemoveCard(currentPlayer, card);
 
