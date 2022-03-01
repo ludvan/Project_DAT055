@@ -125,7 +125,21 @@ public class GameBoard extends JFrame {
 		JPanel opPanel = new JPanel();
 		opPanel.setBackground(handColor);
 		JButton unoButton = new JButton("UNO!!");
-		unoButton.setVisible(false);
+		unoButton.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				TransmitData data;
+				if(e.getSource() == unoButton){
+					JOptionPane.showMessageDialog(null, "You said UNO!!!");
+					data = new TransmitData(true);
+					client.sendToServer(data);
+				} else {
+					JOptionPane.showMessageDialog(null, "You forgot to say UNO!!");
+					data = new TransmitData(false);
+				}
+			}
+		});
+		unoButton.setEnabled(false);
+		unoButton.setVisible(true);
 		JPanel unoPanel =  new JPanel(new BorderLayout(1,1));
 		JPanel north = new JPanel();
 		unoPanel.setBackground(Color.green);
@@ -147,24 +161,11 @@ public class GameBoard extends JFrame {
 			opPanel.add(player_display);
 		}
 		
-			if(game.getPlayerId() == game.getCurrentTurn()){
-				if(game.getPlayerDeck(game.getPlayerId()).getSize() == 2){
-					unoButton.setVisible(true);
-					unoButton.addActionListener(new ActionListener(){
-						public void actionPerformed(ActionEvent e){
-							TransmitData data;
-							if(e.getSource() == unoButton){
-								JOptionPane.showMessageDialog(null, "You said UNO!!!");
-								data = new TransmitData(true);
-								client.sendToServer(data);
-							} else {
-								JOptionPane.showMessageDialog(null, "You forgot to say UNO!!");
-								data = new TransmitData(false);
-							}
-						}
-					});
-				}
+		if(game.getPlayerId() == game.getCurrentTurn()){
+			if(game.getPlayerDeck(game.getPlayerId()).getSize() == 2){
+				unoButton.setEnabled(true);
 			}
+		}
 		
 		add(north, layout.NORTH);
 		revalidate();
