@@ -166,9 +166,10 @@ public class Server extends Thread {
     }
 
     /**
-     * deciding if round is won
+     * deciding if round is won by counting the remaining points on a players hand at the end of their turn
      *
      * @return true if round is wo by current player else false
+     * @author Christina Meisoll
      */
     public boolean WeHaveAWinner() {
         int currentPlayer = game.getCurrentTurn();
@@ -193,6 +194,12 @@ public class Server extends Thread {
         return false;
     }
 
+    /**
+     * counts points in every players hand deck
+     *
+     * @return allPoints - an integer array containing each players points in the same order as the players
+     * @author Christina Meisoll
+     */
     public int[] countpoints() {
         int size = getPlayers().size();
         int[] allPoints = new int[size];
@@ -208,6 +215,13 @@ public class Server extends Thread {
         return allPoints;
     }
 
+    /**
+     * converts a cards value from type Value to type int
+     *
+     * @param v - a cards value of type Value
+     * @return the corresponding integer to the given value
+     * @author Christina Meisoll
+     */
     public int valToScore(Value v) {
         int index = v.ordinal();
         if (index >= 13) {
