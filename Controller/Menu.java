@@ -5,51 +5,35 @@ import java.io.*;
 import java.util.*;
 import java.awt.*;
 import View.*;
-
 import javax.swing.*;
 
 public class Menu extends JFrame {
 
-    private final int window_width = 1920;
-    private final int window_height = 1080;
+    private int window_width = 1920;
+    private int window_height = 1080;
     private Process serverProcess;
     private ArrayList<Process> clientProcess;
 
     public Menu() {
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (ClassNotFoundException e1) {
-            e1.printStackTrace();
-        } catch (InstantiationException e1) {
-            e1.printStackTrace();
-        } catch (IllegalAccessException e1) {
-            e1.printStackTrace();
-        } catch (UnsupportedLookAndFeelException e1) {
-            e1.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (UnsupportedLookAndFeelException e) {
+            e.printStackTrace();
         }
         clientProcess = new ArrayList<Process>();
 
         setTitle("GameLauncher");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(window_width, window_height); // Kan komma att ändras
+        setSize(window_width, window_height);
         JPanel p = new JPanel();
 
-        // "EXIT" - Knappen
-        JButton exit = new JButton("EXIT");
-        exit.setFont(new Font("Yu Gothic UI Semibold", Font.PLAIN, 36)); // 17
-        exit.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // stäng ner alla processer
-                for (Process p : clientProcess) {
-                    p.destroy();
-                }
-                serverProcess.destroy();
-                System.exit(0);
-            }
-        });
         // Create Server button
-        // Properties configProperties;
         JButton create = new JButton("CREATE SERVER");
         create.setFont(new Font("Yu Gothic UI Semibold", Font.PLAIN, 36));
         create.addActionListener(new ActionListener() {
@@ -57,20 +41,16 @@ public class Menu extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 Properties configProperties = createProperty("inst.properties");
                 try {
-                    // vi vill inte skapa två servrar på samma klient
-
-                    // IP-adress, port, antal spelare
-                    String port = "8989"; // Denna behöver för tillfället vara 8989
+                    String port = "8989"; // All communication is run on port 8989
                     String nbrOfPlayers = "";
-                    int a;
-                    a = 0;
+                    int a = 0;
                     while (a > 10 || a < 2) {
                         nbrOfPlayers = JOptionPane.showInputDialog(null,
                                 "Please enter the amount of players in the game (2-10):",
                                 configProperties.getProperty("nrPlayers"));
-                        if (nbrOfPlayers == null) {
+                        if (nbrOfPlayers == null)
                             break;
-                        }
+
                         try {
                             a = Integer.parseInt(nbrOfPlayers);
                             if (a >= 2 && a <= 10) {
@@ -87,13 +67,13 @@ public class Menu extends JFrame {
                     serverProcess = Runtime.getRuntime().exec(open_server);
                     ServerOutputView sov = new ServerOutputView();
                     sov.setProcess(serverProcess);
-                } catch (IOException y) {
-                    JOptionPane.showInputDialog(null, y + "");
+                } catch (IOException e2) {
+                    e2.printStackTrace();
                 }
             }
         });
+
         // Join Server button
-        // Properties configProperties = createProperty("inst.properties");
         JButton join = new JButton("JOIN SERVER");
         join.setFont(new Font("Yu Gothic UI Semibold", Font.PLAIN, 36));
         join.addActionListener(new ActionListener() {
@@ -104,12 +84,18 @@ public class Menu extends JFrame {
                     String port = "8989";
                     String nickname = JOptionPane.showInputDialog(null, "Please Enter your nickname:",
                             configProperties.getProperty("nickname"));
+                    String ip = JOptionPane.showInputDialog(null, "Please Enter the host's ip-adress:",
+                            "xxx.xxx.xxx.xxx");
                     if (nickname == null || nickname.isEmpty()) {
                         Toolkit.getDefaultToolkit().beep();
-                        JOptionPane.showMessageDialog(null, "You need to enter a nickname to be able to play!");
+                        JOptionPane.showMessageDialog(null, "Invalid nickname");
+                    } else if (ip == null || ip.isEmpty()) {
+                        Toolkit.getDefaultToolkit().beep();
+                        JOptionPane.showMessageDialog(null, "Invalid host ip-adress");
                     } else {
                         clientProcess.add(
-                                Runtime.getRuntime().exec("java Model/ChatClient localhost " + port + " " + nickname));
+                                Runtime.getRuntime()
+                                        .exec("java Model/ChatClient" + " " + ip + " " + port + " " + nickname));
                     }
                 } catch (Exception y) {
                     JOptionPane.showInputDialog(null, y + "");
@@ -118,8 +104,7 @@ public class Menu extends JFrame {
         });
 
         // Change settings
-        // File configFile = new File("config.properties"); //Open config file
-        JButton config = new JButton("Change settings");
+        JButton config = new JButton("SETTINGS");
         config.setFont(new Font("Yu Gothic UI Semibold", Font.PLAIN, 36));
         config.addActionListener(new ActionListener() {
             @Override
@@ -128,11 +113,29 @@ public class Menu extends JFrame {
             }
         });
 
+        // Create Exit button
+        JButton exit = new JButton("EXIT");
+        exit.setFont(new Font("Yu Gothic UI Semibold", Font.PLAIN, 36));
+        exit.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Close all processes
+                if (clientProcess.size() != 0) {
+                    for (Process p : clientProcess) {
+                        p.destroy();
+                    }
+                }
+                if (serverProcess != null)
+                    serverProcess.destroy();
+                System.exit(0);
+            }
+        });
+
         p.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridwidth = GridBagConstraints.REMAINDER;
         gbc.anchor = GridBagConstraints.NORTH;
-        // "UNO" - texten
+        // Title
         JLabel text = new JLabel("UNO");
         text.setFont(new Font("Yu Gothic UI Semibold", Font.PLAIN, 36));
         p.add(text, gbc);
@@ -140,35 +143,28 @@ public class Menu extends JFrame {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         JPanel buttons = new JPanel(new GridBagLayout());
         buttons.add(Box.createRigidArea(new Dimension(0, window_height / 10)));
-        buttons.add(exit, gbc);
-        buttons.add(Box.createRigidArea(new Dimension(0, window_height / 10)));
         buttons.add(create, gbc);
         buttons.add(Box.createRigidArea(new Dimension(0, window_height / 10)));
         buttons.add(join, gbc);
         buttons.add(Box.createRigidArea(new Dimension(0, window_height / 10)));
         buttons.add(config, gbc);
+        buttons.add(Box.createRigidArea(new Dimension(0, window_height / 10)));
+        buttons.add(exit, gbc);
         gbc.weighty = 1;
         p.add(buttons, gbc);
         add(p);
-        WindowListener exitListener = new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                int confirm = JOptionPane.showOptionDialog(
-                        null, "Are You Sure to Close Application?",
-                        "Exit Confirmation", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
-                if (confirm == 0) {
-                    System.exit(0);
-                }
-            }
-        };
-        this.addWindowListener(exitListener);
         setVisible(true);
+
+        // Shutdownhook to ensure that no process created in runtime are left running
+        // once the application is closed
         Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override
             public void run() {
-                // stäng ner alla processer
-                for (Process p : clientProcess) {
-                    p.destroy();
+                // Shutdown all processes
+                if (clientProcess.size() != 0) {
+                    for (Process p : clientProcess) {
+                        p.destroy();
+                    }
                 }
                 if (serverProcess != null)
                     serverProcess.destroy();
@@ -176,16 +172,7 @@ public class Menu extends JFrame {
         });
     }
 
-    public static void configWindow() {
-        /*
-         * Properties properties = new Properties();
-         * try (FileInputStream fileInputStream = new
-         * FileInputStream("inst.properties")) {
-         * properties.load(fileInputStream);
-         * } catch (Exception ex) {
-         * System.out.println("exeption " + ex.getMessage());
-         * }
-         */
+    static void configWindow() {
         Properties properties = createProperty("inst.properties");
         JTextField nicknameField = new JTextField(properties.getProperty("nickname"));
         JTextField nrPlayersField = new JTextField(properties.getProperty("nrPlayers"));
@@ -229,17 +216,17 @@ public class Menu extends JFrame {
         }
     }
 
-    public static Properties createProperty(String filename) {
+    static Properties createProperty(String filename) {
         Properties properties = new Properties();
         try (FileInputStream fileInputStream = new FileInputStream(filename)) {
             properties.load(fileInputStream);
         } catch (Exception ex) {
-            System.out.println("exeption " + ex.getMessage());
+            ex.printStackTrace();
         }
         return properties;
     }
 
     public static void main(String[] args) {
-        Menu m = new Menu();
+        Menu menu = new Menu();
     }
 }

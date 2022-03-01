@@ -7,6 +7,7 @@ public class Card implements Serializable {
     private Col color;
 
     public Card(Value val, Col col) {
+        // Check for illegal color/value combos
         if (col == Col.black) {
             if (val != Value.plus4 && val != Value.pickColor)
                 throw new IllegalArgumentException("Card can't be created, Illegal value / color combination!");
@@ -30,6 +31,7 @@ public class Card implements Serializable {
         color = c;
     }
 
+    // Checks if one card is stackable on another
     public static boolean isStackable(Card a, Card b) {
         boolean tmp = false;
         if (a.value == b.value)
@@ -41,6 +43,7 @@ public class Card implements Serializable {
         return tmp;
     }
 
+    // checks if one card equals another card
     public static boolean equals(Card a, Card b) {
         if (a.color == Col.black || b.color == Col.black) {
             return a.value == b.value;

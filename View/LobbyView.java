@@ -12,17 +12,15 @@ public class LobbyView extends JPanel {
         BorderLayout layout = new BorderLayout();
         setLayout(layout);
         GridLayout lobbyLayout = new GridLayout(2, 5);
-        // playerLimit = limit;
         setLayout(lobbyLayout);
         setBackground(color);
         setVisible(true);
-
     }
 
     public void update(ArrayList<Player> players, int limit) {
 
         removeAll();
-        // L�gg till spelare
+        // Add player
         for (int i = 0; i < players.size(); i++) {
             GamePlayer lobbyDisplay = new GamePlayer(true);
             lobbyDisplay.setText(players.get(i).getName());
@@ -30,7 +28,7 @@ public class LobbyView extends JPanel {
             add(lobbyDisplay);
         }
 
-        // L�gg till rutor utan spelare
+        // Add blank positions
         for (int i = 0; i < limit - players.size(); i++) {
             GamePlayer lobbyDisplay = new GamePlayer();
             lobbyDisplay.setText("Open slot");

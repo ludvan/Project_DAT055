@@ -23,30 +23,25 @@ public class ClientThread extends Thread {
 
     public void run() {
         try {
-            // om vi inte är i en match, lägg till nya spelare
+            // If we arent in a match, add new users to the lobby
             if (!server.inMatch()) {
-                // skapa ny användare och lägg till i servern
+                // If someone has connected, add them 
                 String username = (String) ois.readObject();
                 Player newUser = new Player(username);
                 server.addUser(newUser);
-                /*
-                 * String serverMessage = "New user connected: " + username;
-                 * server.broadcast(serverMessage);
-                 */
             }
+            // Loop that runs while in a match. 
             while (true) {
                 try {
                     Object recieved = ois.readObject();
+                    // If we recieve transmitData, then we have to handle it
                     if (recieved instanceof TransmitData) {
-                        // System.out.println("Card recieved");
                         server.handleCard((TransmitData) recieved);
                     }
-                    // System.out.println("something recieved");
                 } catch (ClassNotFoundException e) {
-                    System.out.println("Error recieving card : " + e.getMessage());
+                    System.out.println("Error recieving : " + e.getMessage());
                 }
             }
-            // socket.close();
         } catch (IOException ex) {
             System.out.println("Error in UserThread: " + ex.getMessage());
             ex.printStackTrace();
@@ -56,9 +51,7 @@ public class ClientThread extends Thread {
         }
     }
 
-    /**
-     * Sends a message to the client.
-     */
+    // Sends an object to the client
     void sendObject(Object message) {
         try {
             oos.writeObject(message);

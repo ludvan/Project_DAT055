@@ -11,14 +11,14 @@ public class Server extends Thread {
     private ArrayList<ClientThread> clientThreads;
     private boolean in_match;
     private Game game;
-    private int drawCardCounter; // används för att begränsa så att användaren inte kan plocka upp nmer än 3 kort
+    private int drawCardCounter; // Used to limit the amount of drawn cards
     private boolean unoPressed;
-    
+
     public Server(int _port, int player_limit) {
         port = _port;
         game = new Game();
         clientThreads = new ArrayList<ClientThread>();
-        playerLimit = player_limit; // hårdkodat så länge
+        playerLimit = player_limit;
         in_match = false;
         drawCardCounter = 0;
     }
@@ -27,13 +27,14 @@ public class Server extends Thread {
         return game;
     }
 
+    // This function deals cards to the players in the beginning of the match.
     public void dealCards() {
         Deck tmp = new Deck();
         tmp.fillDeck();
         Deck.shuffle(tmp);
         game.setDiscardDeck(tmp);
 
-        // dela ut 7 kort var
+        // Deal 7 cards per player
         int cpp = 0;
         while (cpp < 7) {
             for (int i = 0; i < game.getPlayers().size(); i++) {
@@ -50,32 +51,30 @@ public class Server extends Thread {
         Card top_card = game.getDiscardDeck().drawCard();
         game.deckAddCard(top_card);
         game.discardDeckRemove(top_card);
-
-        // I spelarnas game vill vi sätta player_id till unika värden så
-        // att spelarna kan hålla koll på vilka kort som är sina
         updateClientsGame(game);
     }
 
+    // Handles a card
     public void handleCard(TransmitData data) {
         int currentPlayer = game.getCurrentTurn();
 
-        if(data.getPressedUno()) {
-        	unoPressed = true;
-        	updateClientsGame(game);
-        	return;
+        if (data.getPressedUno()) {
+            unoPressed = true;
+            updateClientsGame(game);
+            return;
         }
-        
-        // om användaren endast vill dra ett kort från discard deck
+
+        // Check if the user wants to draw a card
         if (data.getDrawCard()) {
             drawCardCounter++;
-            playerDraw(1,currentPlayer);
+            playerDraw(1, currentPlayer);
 
-            // användaren har dragit så många kort hen kan gå vidare
+            // The user has drawn 3 cards. Move on
             if (drawCardCounter >= 3) {
                 game.setCurrentTurn(game.nextTurn());
                 drawCardCounter = 0;
             }
-            // om det kort som dras går att lägga så vill vi återställa räknaren
+            // If the card that was drawn was stackable, then we reset the counter
             if (Card.isStackable(game.getDiscardDeck().drawCard(), game.getDeck().drawCard())) {
                 drawCardCounter = 0;
             }
@@ -83,7 +82,7 @@ public class Server extends Thread {
             updateClientsGame(game);
             return;
         }
-        // kolla om vi kan lägga kortet
+        // Check if we can place a card
         Card card = data.getCard();
         if (!game.getDeck().isEmpty()) {
             if (!Card.isStackable(card, game.getDeck().drawCard())) {
@@ -92,13 +91,13 @@ public class Server extends Thread {
             }
         }
 
-        // om det
+        // If we can place a card do the following
         if (card.getValue() == Value.plus2) {
-            playerDraw(2,game.nextTurn());
+            playerDraw(2, game.nextTurn());
             game.setCurrentTurn(game.nextTurn());
         }
         if (card.getValue() == Value.plus4) {
-            playerDraw(4,game.nextTurn());
+            playerDraw(4, game.nextTurn());
             game.setCurrentTurn(game.nextTurn());
         }
 
@@ -106,17 +105,17 @@ public class Server extends Thread {
             game.setCurrentTurn(game.nextTurn());
         if (card.getValue() == Value.reverse)
             game.setReverse(!game.getReverse());
-        //om vi valt f�rg
+        // if a color was chosen (only for black cards)
         if (data.getChooseColor()) {
             card.setColor(data.getChosenColor());
         }
-        //Dra 4 straffkort om uno ej trycktes
-        if(!unoPressed && game.getPlayerDeck(currentPlayer).getSize() == 2) {
-        	playerDraw(4,currentPlayer);
+        // draw 4 penalty cards if uno wasnt pressed when player only had one card left
+        if (!unoPressed && game.getPlayerDeck(currentPlayer).getSize() == 2) {
+            playerDraw(4, currentPlayer);
         }
-        
+
         unoPressed = false;
-        
+
         game.deckAddCard(card);
         game.playerRemoveCard(currentPlayer, card);
 
@@ -128,23 +127,24 @@ public class Server extends Thread {
             updateClientsGame(game);
         }
     }
-    
+
+    // player draws number amount of cards
     private void playerDraw(int number, int player) {
-    	Card tmp;
-    	
-    	for(int i=0; i<number;i++) {
-    		if (game.getDiscardDeck().getSize() == 0) {
+        Card tmp;
+
+        for (int i = 0; i < number; i++) {
+            if (game.getDiscardDeck().getSize() == 0) {
                 reShuffle();
             }
-    		tmp = game.getDiscardDeck().drawCard();
+            tmp = game.getDiscardDeck().drawCard();
             game.playerAddCard(player, tmp);
             game.discardDeckRemove(tmp);
             Deck.shuffle(game.getDiscardDeck());
-    	}
-    	
-    	
+        }
+
     }
 
+    // Reshuffles deck
     private void reShuffle() {
         Card topCard = game.getDeck().drawCard();
         Deck tmpDeck = game.getDeck();
@@ -208,6 +208,7 @@ public class Server extends Thread {
         return allPoints;
     }
 
+    // Converts a cards value to a score
     public int valToScore(Value v) {
         int index = v.ordinal();
         if (index >= 13) {
@@ -220,11 +221,12 @@ public class Server extends Thread {
     }
 
     public void run() {
+        // The below line will be true if someone is waiting to be let into the server
         try (ServerSocket serverSocket = new ServerSocket(port)) {
-            // lobby
             System.out.println("Chat Server is listening on port " + port);
             System.out.println("Waiting for players to connect...");
 
+            // Lobby, wait for players to join
             if (!in_match) {
                 while (game.getPlayers().size() < playerLimit) {
                     Socket socket = serverSocket.accept();
@@ -251,16 +253,19 @@ public class Server extends Thread {
         server.run();
     }
 
+    // Sends object to specific player
     public void send(Object object, ClientThread user) {
         user.sendObject(object);
     }
 
+    // Sends object to all players
     public void broadcast(Object object) {
         for (ClientThread aUser : clientThreads) {
             aUser.sendObject(object);
         }
     }
 
+    // Sends object to all players except one
     public void broadcast(Object object, ClientThread excludeUser) {
         for (ClientThread aUser : clientThreads) {
             if (aUser != excludeUser) {
@@ -269,17 +274,17 @@ public class Server extends Thread {
         }
     }
 
+    // Updates the clients game
     public void updateClientsGame(Game new_game) {
         Game player_game = new_game.copy(new_game);
+        // the player_id variable of the game class can't be the same for every player
         for (int i = 0; i < this.game.getPlayers().size(); i++) {
             player_game.setPlayerId(i);
             send(player_game, clientThreads.get(i));
         }
     }
 
-    /**
-     * Stores username of the newly connected client.
-     */
+    // Stores username of the newly connected client.
     void addUser(Player user) {
         game.addPlayer(user);
         System.out.println("(" + game.getPlayers().size() + "/" + playerLimit + ") users connected");
@@ -292,9 +297,7 @@ public class Server extends Thread {
         }
     }
 
-    /**
-     * When a client is disconneted, removes the associated username and UserThread
-     */
+    // When a client is disconneted, removes the associated username and UserThread
     void removeUser(Player user, ClientThread aUser) {
         game.removePlayer(user);
         clientThreads.remove(aUser);
@@ -306,10 +309,7 @@ public class Server extends Thread {
         return this.game.getPlayers();
     }
 
-    /**
-     * Returns true if there are other users connected (not count the currently
-     * connected user)
-     */
+    // Returns true if there are other users connected
     boolean hasUsers() {
         return !this.game.getPlayers().isEmpty();
     }

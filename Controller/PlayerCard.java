@@ -1,3 +1,4 @@
+/*
 package Controller;
 
 import javax.swing.JButton;
@@ -16,3 +17,4 @@ public class PlayerCard extends JButton {
 	}
 
 }
+*/

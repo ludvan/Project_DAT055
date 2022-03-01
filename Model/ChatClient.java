@@ -1,24 +1,22 @@
 package Model;
 
 import javax.swing.*;
-
 import View.GameBoard;
-
 import java.net.*;
 import java.io.*;
 import java.util.*;
 
 public class ChatClient {
     private GameBoard board;
-    private String hostname; // serverns ip
+    private String hostname;
     private int port;
     private String userName;
-    private Game game; // lokal kopia av spel state
+    private Game game;
     private boolean in_match;
     private ObjectOutputStream outputStream;
     private ObjectInputStream inputStream;
     private Socket socket;
-    private ArrayList<Object> sendBuffer; // buffra det vi vill skicka
+    private ArrayList<Object> sendBuffer;
     private boolean hasSelectCard = false;
     private String HighscoreValues;
 
@@ -33,42 +31,37 @@ public class ChatClient {
         board.setClient(this);
     }
 
+    // Adds object to sendbuffer
     public void sendToServer(Object object) {
-        // System.out.println("sending " + object.toString() + " to server...");
         sendBuffer.add(object);
         hasSelectCard = true;
     }
 
     public void execute() {
         try {
-            // skapa en socket och skicka användarnamn till servern som lägger till
-            // användaren i en lista
-            // och startar en tråd för användaren
+            // Create socket, and send username to server
             socket = new Socket(hostname, port);
             outputStream = new ObjectOutputStream(socket.getOutputStream());
             inputStream = new ObjectInputStream(socket.getInputStream());
-
             outputStream.writeObject(userName);
 
-            // loop som läser från och skriver till servern
+            // Loop that reads and writes to the server
             try {
                 Object recieved;
                 while (true) {
                     recieved = inputStream.readObject();
-                    // instanceof ArrayList<Player> var ej till�tet
-                    // OBS m�ste skrivas om ifall vi skickar andra ArrayList (tror/hoppas vi inte
-                    // beh�ver)
+
+                    // If-statements that handle all types of data sent from server. Could be solved
+                    // better by for example using the TransmitData class
                     if (recieved instanceof Integer) {
                         board.setPlayerLimit((Integer) recieved);
                     }
                     if (recieved instanceof ArrayList) {
-                        @SuppressWarnings("unchecked") // f�rs�kt hitta b�ttre l�sning, k�r s� h�r s� l�nge
+                        @SuppressWarnings("unchecked") // Not good. Could be sent via an extension of Transmitdata
+                                                       // instead
                         ArrayList<Player> playerList = (ArrayList<Player>) recieved;
                         board.lobbyUpdate(playerList);
                     }
-                    // detta borde hanteras av en extern class kanske??
-                    // todo skicka generaliserat medelande som egen class. detta skall innehålla
-                    // ändringar mm
                     if (recieved instanceof Game) {
                         if (!in_match) {
                             setGame((Game) recieved);
@@ -76,10 +69,7 @@ public class ChatClient {
                             updateGame((Game) recieved);
                         }
                     }
-                    if (recieved instanceof String) {
-                        // System.out.println(recieved);
-                    }
-                    // Om vi har vunnit
+                    // TransmitData is used to check wether or not someone has won
                     if (recieved instanceof TransmitData) {
                         someoneWon(((TransmitData) recieved).getWinner(), ((TransmitData) recieved).getPointArr());
                     }
@@ -88,83 +78,83 @@ public class ChatClient {
                         if (isClientTurn()) {
                             hasSelectCard = false;
                             while (!hasSelectCard) {
-                                // vänta medan användaren väljer kort
+                                // Wait while the user whose turn it is selects a card
                                 try {
                                     Thread.sleep(250);
                                 } catch (InterruptedException e) {
-                                    // TODO Auto-generated catch block
                                     e.printStackTrace();
                                 }
                             }
-                        } else {
-                            // System.out.println("wait for your turn \n");
                         }
                     }
 
-                    // om vi har något att skicka, skicka det (detta sker om vi vill skicka kort mm)
-                    // OBS för debug har buffern endast ett object åt gången
+                    // If the send buffer isnt empty, then send the object
                     if (sendBuffer.size() != 0) {
                         try {
                             outputStream.writeObject(sendBuffer.get(0));
                             outputStream.reset();
-                            // System.out.print("client sent " + sendBuffer.get(0).toString() + " in
-                            // ChatClient");
-                            sendBuffer.clear();// sendBuffer.remove(0);
+                            sendBuffer.clear();
                         } catch (IOException ex) {
-                            // System.out.println("I/O Error: " + ex.getMessage());
+                            ex.printStackTrace();
                         }
                     }
                 }
             } catch (IOException ex) {
-                // System.out.println("I/O Error: " + ex.getMessage());
+                ex.printStackTrace();
             } catch (ClassNotFoundException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
             outputStream.close();
             inputStream.close();
             socket.close();
         } catch (UnknownHostException ex) {
-            // System.out.println("Server not found: " + ex.getMessage());
+            // If the ip-adress is invalid or something else has gone wrong
+            System.out.println("Server not found: " + ex.getMessage());
         } catch (IOException ex) {
-            // System.out.println("I/O Error: " + ex.getMessage());
+            ex.printStackTrace();
         }
     }
 
-    void setGame(Game new_game) {
+    // Called once when the match has begun to sync all players games
+    private void setGame(Game new_game) {
         this.game = new Game();
-        game = game.copy(new_game);
+        game = new_game;
         in_match = true;
         board.setGame(game);
         board.update();
     }
 
-    void updateGame(Game new_game) {
-        // System.out.println(new_game.toString());
+    // Used to update every players game once something is changed
+    private void updateGame(Game new_game) {
         game = game.copy(new_game);
         board.setGame(game);
         board.update();
     }
 
+    // Check if its our turn
     public boolean isClientTurn() {
         return this.game.getPlayerId() == game.getCurrentTurn();
     }
 
+    // Check if we have any stackable card
     public boolean hasStackableCard() {
         boolean tmp = false;
+        // loop through every card on this client and check if its stackable on the
+        // dealers deck
         for (int i = 0; i < game.getPlayerDeck(game.getPlayerId()).getSize(); i++) {
             if (Card.isStackable(game.getPlayerDeck(game.getPlayerId()).getCard(i), game.getDeck().drawCard())) {
                 tmp = true;
             }
         }
+        // else return false
         return tmp;
     }
 
-    void setUserName(String userName) {
+    public void setUserName(String userName) {
         this.userName = userName;
     }
 
-    String getUserName() {
+    public String getUserName() {
         return userName;
     }
 
@@ -201,11 +191,12 @@ public class ChatClient {
             this.getHighscoreValues();
             updateHighscoreValues(str1);
             HighscoreValues = makeItMultiline(HighscoreValues);
-            int answer=JOptionPane.showConfirmDialog(null, HighscoreValues, "local player statistics", JOptionPane.PLAIN_MESSAGE);
-//            if (answer==0){
-                board.closeBoard(answer);
+            int answer = JOptionPane.showConfirmDialog(null, HighscoreValues, "local player statistics",
+                    JOptionPane.PLAIN_MESSAGE);
+            // if (answer==0){
+            board.closeBoard(answer);
 
- //           }
+            // }
         }
     }
 

@@ -5,11 +5,12 @@ import java.util.*;
 public class Game implements java.io.Serializable {
     private Deck deck;
     private Deck discardDeck;
-    private int player_id; // används för att hålla koll på spelarens kort
+    private int player_id;
     private ArrayList<Player> players;
     private int turn;
     private boolean reverse;
 
+    // Returns a copy of a game
     public Game copy(Game game) {
         Game tmp = new Game();
         tmp.setDeck(game.getDeck());
@@ -25,16 +26,17 @@ public class Game implements java.io.Serializable {
         deck = new Deck();
         discardDeck = new Deck();
         players = new ArrayList<>();
-        player_id = -1; // -1 for the serber version of game
+        player_id = -1; // -1 for the server version of game
         turn = 0;
         reverse = false;
     }
 
+    // Creates game from another game
     public Game(Game clone) {
         deck = clone.getDeck();
         discardDeck = clone.getDiscardDeck();
         players = clone.getPlayers();
-        player_id = clone.getPlayerId(); // -1 for the serber version of game
+        player_id = clone.getPlayerId(); // -1 for the server version of game
         turn = clone.getCurrentTurn();
         reverse = clone.getReverse();
     }
@@ -111,18 +113,17 @@ public class Game implements java.io.Serializable {
         return turn;
     }
 
-    public void setCurrentTurn(int _turn) {
-        turn = _turn;
-        // System.out.println("setCurrentTurn");
+    public void setCurrentTurn(int turn) {
+        this.turn = turn;
     }
 
+    // return the next turn
     public int nextTurn() {
         int t = turn;
-        if (!reverse) {
+        if (!reverse)
             t++;
-        } else {
+        else
             t--;
-        }
         if (t < 0)
             t = players.size() - 1;
         if (t > players.size() - 1)

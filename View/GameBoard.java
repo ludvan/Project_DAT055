@@ -1,4 +1,5 @@
 package View;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
@@ -7,20 +8,18 @@ import javax.swing.*;
 import Model.*;
 import Controller.*;
 
-
 public class GameBoard extends JFrame {
 
 	private Game game;
 	private ChatClient client;
 	private int width;
 	private int height;
-	private Color backgroundColor = new Color(80, 0,0);
-	private Color handColor = new Color(150, 0,0);
+	private Color backgroundColor = new Color(80, 0, 0);
+	private Color handColor = new Color(150, 0, 0);
 	private int playerLimit;
 	private LobbyView lobby;
 
-	public GameBoard()
-	{
+	public GameBoard() {
 		setLayout(new BorderLayout());
 		width = 1200;
 		height = 600;
@@ -31,21 +30,20 @@ public class GameBoard extends JFrame {
 		setTitle("UNO " + date.FetchDate());
 		setVisible(true);
 		try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (ClassNotFoundException e1) {
-            e1.printStackTrace();
-        } catch (InstantiationException e1) {
-            e1.printStackTrace();
-        } catch (IllegalAccessException e1) {
-            e1.printStackTrace();
-        } catch (UnsupportedLookAndFeelException e1) {
-            e1.printStackTrace();
-        }
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (ClassNotFoundException e1) {
+			e1.printStackTrace();
+		} catch (InstantiationException e1) {
+			e1.printStackTrace();
+		} catch (IllegalAccessException e1) {
+			e1.printStackTrace();
+		} catch (UnsupportedLookAndFeelException e1) {
+			e1.printStackTrace();
+		}
 	}
 
-	public void update()
-	{
-		if(game == null)
+	public void update() {
+		if (game == null)
 			return;
 
 		getContentPane().removeAll();
@@ -56,17 +54,15 @@ public class GameBoard extends JFrame {
 		center_panel.setBackground(backgroundColor);
 		center_panel.setLayout(center_layout);
 		// deck card
-		if(!game.getDeck().isEmpty())
-		{
+		if (!game.getDeck().isEmpty()) {
 			GameCard gameDeck = new GameCard(game.getDeck().drawCard());
 			gameDeck.setBackground(backgroundColor);
 			center_panel.add(gameDeck);
 		}
 		// discard deck card
-		if(!game.getDiscardDeck().isEmpty())
-		{
+		if (!game.getDiscardDeck().isEmpty()) {
 			GameCard discardDeck = new GameCard();
-			discardDeck.addActionListener(new ActionListener(){
+			discardDeck.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					if (client.isClientTurn() && !client.hasStackableCard()) {
@@ -75,7 +71,7 @@ public class GameBoard extends JFrame {
 					}
 				}
 			});
-			if(client.hasStackableCard() || !client.isClientTurn())
+			if (client.hasStackableCard() || !client.isClientTurn())
 				discardDeck.setOpacity(0.5f);
 			else
 				discardDeck.setOpacity(1f);
@@ -89,33 +85,29 @@ public class GameBoard extends JFrame {
 		JPanel hand = new JPanel();
 		hand.setBackground(handColor);
 		hand.setLayout(handLayout);
-		for(int i = 0; i < game.getPlayerDeck(game.getPlayerId()).getSize(); i++)
-		{
+		for (int i = 0; i < game.getPlayerDeck(game.getPlayerId()).getSize(); i++) {
 			Card card = game.getPlayerDeck(game.getPlayerId()).getCard(i);
 			GameCard card_button = new GameCard(card);
 			card_button.setBackground(handColor);
-			card_button.addActionListener(new ActionListener(){
+			card_button.addActionListener(new ActionListener() {
 				@Override
-				public void actionPerformed(ActionEvent e){
+				public void actionPerformed(ActionEvent e) {
 					// System.out.println("button pressed!");
-					if(client.isClientTurn())
-					{
-						if(card_button.getCard().getColor() != Col.black)
-						{
+					if (client.isClientTurn()) {
+						if (card_button.getCard().getColor() != Col.black) {
 							// System.out.println("Card selected : " + card_button.getCard().toString());
-							TransmitData data = new TransmitData(card_button.getCard(), -100, Col.black, false, false, false);
+							TransmitData data = new TransmitData(card_button.getCard(), -100, Col.black, false, false,
+									false);
 							client.sendToServer(data);
-						}
-						else
-						{
+						} else {
 							// för svarta kort måste en färg bestämmas
 							ColorChoice colorMenu = new ColorChoice(client, card_button.getCard());
 						}
 					}
 				}
 			});
-			
-			if(!client.isClientTurn())
+
+			if (!client.isClientTurn())
 				card_button.setOpacity(0.5f);
 			hand.add(card_button);
 		}
@@ -125,10 +117,10 @@ public class GameBoard extends JFrame {
 		JPanel opPanel = new JPanel();
 		opPanel.setBackground(handColor);
 		JButton unoButton = new JButton("UNO!!");
-		unoButton.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent e){
+		unoButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
 				TransmitData data;
-				if(e.getSource() == unoButton){
+				if (e.getSource() == unoButton) {
 					JOptionPane.showMessageDialog(null, "You said UNO!!!");
 					data = new TransmitData(true);
 					client.sendToServer(data);
@@ -140,81 +132,75 @@ public class GameBoard extends JFrame {
 		});
 		unoButton.setEnabled(false);
 		unoButton.setVisible(true);
-		JPanel unoPanel =  new JPanel(new BorderLayout(1,1));
+		JPanel unoPanel = new JPanel(new BorderLayout(1, 1));
 		JPanel north = new JPanel();
 		unoPanel.setBackground(Color.green);
-		
+
 		unoPanel.add(unoButton);
 		opPanel.setBackground(handColor);
 		north.setBackground(handColor);
-		north.add(unoPanel,BorderLayout.EAST);
+		north.add(unoPanel, BorderLayout.EAST);
 		north.add(opPanel);
-		for(int i = 0; i < game.getPlayers().size(); i++)
-		{
+		for (int i = 0; i < game.getPlayers().size(); i++) {
 			GamePlayer player_display = new GamePlayer();
-			if(i!=game.getPlayerId())
+			if (i != game.getPlayerId())
 				player_display.setText(game.getPlayers().get(i).getName() + " " + game.getPlayerDeck(i).getSize());
 			else
 				player_display.setText(game.getPlayers().get(i).getName() + "(You) " + game.getPlayerDeck(i).getSize());
 
-			player_display.setActive(i==game.getCurrentTurn());
+			player_display.setActive(i == game.getCurrentTurn());
 			opPanel.add(player_display);
 		}
-		
-		if(game.getPlayerId() == game.getCurrentTurn()){
-			if(game.getPlayerDeck(game.getPlayerId()).getSize() == 2){
+
+		if (game.getPlayerId() == game.getCurrentTurn()) {
+			if (game.getPlayerDeck(game.getPlayerId()).getSize() == 2) {
 				unoButton.setEnabled(true);
 			}
 		}
-		
+
 		add(north, layout.NORTH);
 		revalidate();
 		repaint();
 	}
-	
+
 	public void lobbyUpdate(ArrayList<Player> players) {
 		getContentPane().removeAll();
-		
-		
-		lobby.update(players,playerLimit);
+
+		lobby.update(players, playerLimit);
 		add(lobby);
-		
+
 		revalidate();
 		repaint();
 	}
 
-	public void setClient(ChatClient _client)
-	{
+	public void setClient(ChatClient _client) {
 		client = _client;
 	}
 
-	public ChatClient getClient()
-	{
+	public ChatClient getClient() {
 		return client;
 	}
 
-	public void setGame(Game _game)
-	{
+	public void setGame(Game _game) {
 		game = _game;
 	}
 
-	public Game getGame()
-	{
+	public Game getGame() {
 		return game;
 	}
-	
+
 	public void setPlayerLimit(Integer players) {
 		playerLimit = players;
 	}
 
-	public void closeBoard(int i){
-		if(i==0)
-		setVisible(false);
+	public void closeBoard(int i) {
+		if (i == 0)
+			setVisible(false);
 		dispose();
 	}
 
-	public static void main(String[] args){
-        GameBoard board = new GameBoard();       
-    }
-	
+	public static void main(String[] args) {
+		GameBoard board = new GameBoard();
+	}
+
 }

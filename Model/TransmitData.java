@@ -2,14 +2,11 @@ package Model;
 
 import java.io.Serializable;
 
-/*
- * Klass f�r data som ska skickas fr�n klient till server
-*/
 public class TransmitData implements Serializable {
 	private Card card;
 	private int playerId;
 	private Col chosenColor;
-	private boolean drawCard; // indikerar att användaren vill dra ett kort från discard deck
+	private boolean drawCard;
 	private boolean chooseColor;
 	private String winner;
 	private int[] pointArr;
@@ -96,13 +93,11 @@ public class TransmitData implements Serializable {
 		return pointArr;
 	}
 
-	public boolean getPressedUno()
-	{
+	public boolean getPressedUno() {
 		return has_pressed_uno;
 	}
 
-	public void setPressedUno(boolean uno)
-	{
+	public void setPressedUno(boolean uno) {
 		has_pressed_uno = uno;
 	}
 }

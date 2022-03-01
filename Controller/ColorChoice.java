@@ -1,7 +1,6 @@
 package Controller;
 
 import javax.swing.*;
-
 import Model.Card;
 import Model.ChatClient;
 import Model.Col;
@@ -11,7 +10,6 @@ public class ColorChoice {
 	private ChatClient choiceClient;
 	private Card currentCard;
 	private Col chosenColor;
-	// Ordning i str�ng viktig
 	private String[] options = { "red", "blue", "yellow", "green" };
 
 	public ColorChoice(ChatClient currentClient, Card card) {
@@ -20,11 +18,12 @@ public class ColorChoice {
 		ChooseColor();
 	}
 
-	public void ChooseColor() {
+	// For black cards. sends color selected by user to the server.
+	private void ChooseColor() {
 		int answer = JOptionPane.showOptionDialog(null, "Choose a color", "", JOptionPane.DEFAULT_OPTION,
 				JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
 
-		// answer = -1 om man st�nger f�nstret ist�llet f�r att v�lja n�got
+		// -1 means the user has closed the window. This isn't allowed, create a new window
 		if (answer == -1) {
 			ChooseColor();
 		} else {
@@ -41,16 +40,11 @@ public class ColorChoice {
 				case 3:
 					chosenColor = Col.green;
 					break;
-				default:
-					throw new IllegalArgumentException("Unknown input");
-
 			}
 
-			// skickar det valda kortet till servern
+			// Sends the color to the server
 			TransmitData data = new TransmitData(chosenColor, true, currentCard);
 			choiceClient.sendToServer(data);
 		}
-
 	}
-
 }

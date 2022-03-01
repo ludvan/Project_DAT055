@@ -19,7 +19,8 @@ public class Deck implements Serializable {
     }
 
     public void fillDeck() {
-        // lägg till alla kort förutom de svarta
+        // creates a standard UNO deck of 108 cards
+        // first create all basic cards
         for (int c = 0; c < 4; c++) {
             Col color = Col.values()[c];
             for (int v = 1; v <= 12; v++) {
@@ -30,7 +31,7 @@ public class Deck implements Serializable {
             }
             addCard(new Card(Value.zero, color));
         }
-        // lägg till de svarta
+        // then add all wildcards
         addCard(new Card(Value.plus4, Col.black));
         addCard(new Card(Value.plus4, Col.black));
         addCard(new Card(Value.plus4, Col.black));
@@ -50,6 +51,7 @@ public class Deck implements Serializable {
     }
 
     public void removeCard(Card card) {
+        // Remove all cards that match 'card's value and color
         if (!isEmpty()) {
             for (int i = 0; i < cards.size(); i++) {
                 Card tmp = cards.get(i);
@@ -63,12 +65,14 @@ public class Deck implements Serializable {
             throw new IllegalArgumentException("Can't remove card, deck is empty!");
     }
 
+    // Returns the card on top of the deck
     public Card drawCard() {
         if (isEmpty())
             return null;
         return cards.get(cards.size() - 1);
     }
 
+    // Returns card by index
     public Card getCard(int i) {
         if (i > cards.size())
             throw new IllegalArgumentException("Index of of range!");
@@ -84,6 +88,7 @@ public class Deck implements Serializable {
         return cards.size() == 0;
     }
 
+    // Check if a given card is in the deck
     public boolean inDeck(Card card) {
         for (int i = 0; i < cards.size(); i++) {
             if (Card.equals(card, cards.get(i)))
