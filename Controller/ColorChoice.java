@@ -6,12 +6,22 @@ import Model.ChatClient;
 import Model.Col;
 import Model.TransmitData;
 
+/**
+ * @author ?
+ * @version 22-02-25
+ */
 public class ColorChoice {
 	private ChatClient choiceClient;
 	private Card currentCard;
 	private Col chosenColor;
 	private String[] options = { "red", "blue", "yellow", "green" };
 
+	/**
+	 * Creates a dialog box for changing the color of a card and sends the chosen color to the server.
+	 * Closing the dialog box is not allowed, a choice must be made.
+	 * @param currentClient The player who chooses the color
+	 * @param card The card that is being changed
+	 */
 	public ColorChoice(ChatClient currentClient, Card card) {
 		choiceClient = currentClient;
 		currentCard = card;

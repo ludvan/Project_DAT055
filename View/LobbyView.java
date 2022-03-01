@@ -5,8 +5,16 @@ import java.util.ArrayList;
 import javax.swing.JPanel;
 import Model.Player;
 
+/**
+ * @author ?
+ * @version 22-02-21
+ */
 public class LobbyView extends JPanel {
 
+	/**
+	 * Creates a visual representation of a lobby with the chosen color as background
+	 * @param color The color of the lobby
+	 */
     public LobbyView(Color color) {
 
         BorderLayout layout = new BorderLayout();
@@ -17,6 +25,11 @@ public class LobbyView extends JPanel {
         setVisible(true);
     }
 
+    /**
+     * Updates the visual representation of a lobby based on the size of the lobby and the players already in the server
+     * @param players The list of players currently in the lobby
+     * @param limit The max size of the lobby
+     */
     public void update(ArrayList<Player> players, int limit) {
 
         removeAll();
