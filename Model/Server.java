@@ -67,6 +67,7 @@ public class Server extends Thread {
         // Check if the user wants to draw a card
         if (data.getDrawCard()) {
             drawCardCounter++;
+            Card tmp = game.getDiscardDeck().drawCard();
             playerDraw(1, currentPlayer);
 
             // The user has drawn 3 cards. Move on
@@ -75,7 +76,7 @@ public class Server extends Thread {
                 drawCardCounter = 0;
             }
             // If the card that was drawn was stackable, then we reset the counter
-            if (Card.isStackable(game.getDiscardDeck().drawCard(), game.getDeck().drawCard())) {
+            if (Card.isStackable(tmp, game.getDeck().drawCard())) {
                 drawCardCounter = 0;
             }
 
