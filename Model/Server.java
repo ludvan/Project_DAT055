@@ -67,8 +67,11 @@ public class Server extends Thread {
         // Check if the user wants to draw a card
         if (data.getDrawCard()) {
             drawCardCounter++;
-            Card tmp = game.getDiscardDeck().drawCard();
+            Card tmp;
             playerDraw(1, currentPlayer);
+
+            tmp = game.getPlayerDeck(currentPlayer).drawCard();
+            
 
             // The user has drawn 3 cards. Move on
             if (drawCardCounter >= 3) {
