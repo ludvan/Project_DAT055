@@ -1,3 +1,11 @@
+/**
+ * @author Dag Brynildsen Tholander
+ * @version 1.0
+ * 
+ * This class is used for drawing 'profile pictures' for all players
+ * in a game. 
+ */
+
 package Controller;
 
 import java.awt.*;
@@ -46,7 +54,7 @@ public class GameCard extends JButton {
 
     public GameCard(Card card) {
         this.card = card;
-        SetCardFace(this.card, true);
+        SetCardFace(this.card, false);
         sharedConst();
     }
 
