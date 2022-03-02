@@ -1,6 +1,6 @@
 /**
  * @author Dag Brynildsen Tholander
- * @version 1.0
+ * @version 2022-03-01
  * 
  * This class is used for drawing 'profile pictures' for all players
  * in a game. 
