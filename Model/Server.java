@@ -158,11 +158,6 @@ public class Server extends Thread {
 
         game.setDeck(newDeck);
         game.setDiscardDeck(tmpDeck);
-
-        // test-syfte
-        JOptionPane.showMessageDialog(null, "reShuffle done");
-        JOptionPane.showMessageDialog(null, game.getDiscardDeck().toString());
-        JOptionPane.showMessageDialog(null, game.getDeck().toString());
     }
 
     /**
