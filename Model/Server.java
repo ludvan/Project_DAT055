@@ -161,7 +161,8 @@ public class Server extends Thread {
     }
 
     /**
-     * deciding if round is won by counting the remaining points on a players hand at the end of their turn
+     * deciding if round is won
+     * decision is made by cecking the size of a players handdeck at the end of their turn
      *
      * @return true if round is wo by current player else false
      * @author Christina Meisoll
@@ -169,23 +170,14 @@ public class Server extends Thread {
     public boolean WeHaveAWinner() {
         int currentPlayer = game.getCurrentTurn();
         String name = game.getPlayers().get(currentPlayer).getName();
-        int[] pointsArr = countpoints();
-        // kontrollprint för arrayen
-        System.out.println("pointsArr: ");
-        for (int m = 0; m < pointsArr.length; m++) {
-            System.out.println(pointsArr[m]);
-        }
-        for (int i = 0; i < pointsArr.length; i++) {
-            int temp = pointsArr[i];
-            if (temp == 0) {
-                System.out.println(name + " HAS WON!");
-                TransmitData data = new TransmitData(name, pointsArr);
-                broadcast(data);
 
-                return true;
-            }
+        if(game.getPlayers().get(currentPlayer).getDeck().getSize()==0){
+        int[] pointsArr = countpoints();
+        System.out.println(name + " HAS WON!");
+        TransmitData data = new TransmitData(name, pointsArr);
+        broadcast(data);
+        return true;
         }
-        System.out.println(name + " has not won!");
         return false;
     }
 
@@ -195,7 +187,7 @@ public class Server extends Thread {
      * @return allPoints - an integer array containing each players points in the same order as the players
      * @author Christina Meisoll
      */
-    public int[] countpoints() {
+    private int[] countpoints() {
         int size = getPlayers().size();
         int[] allPoints = new int[size];
         for (int i = 0; i < size; i++) {
@@ -211,7 +203,7 @@ public class Server extends Thread {
     }
 
     // Converts a cards value to a score
-    public int valToScore(Value v) {
+    private int valToScore(Value v) {
         int index = v.ordinal();
         if (index >= 13) {
             return 50;
