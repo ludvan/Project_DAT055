@@ -55,31 +55,27 @@ public class Server extends Thread {
     }
 
     // Handles draw card
-    private void handleDrawCard(TransmitData data)
-    {
+    private void handleDrawCard(TransmitData data) {
         int currentPlayer = game.getCurrentTurn();
-        
+
         // Check if the user wants to draw a card
-        if (data.getDrawCard()) {
-            drawCardCounter++;
-            Card tmp;
-            playerDraw(1, currentPlayer);
+        drawCardCounter++;
+        Card tmp;
+        playerDraw(1, currentPlayer);
 
-            tmp = game.getPlayerDeck(currentPlayer).drawCard();
-            
+        tmp = game.getPlayerDeck(currentPlayer).drawCard();
 
-            // The user has drawn 3 cards. Move on
-            if (drawCardCounter >= 3) {
-                game.setCurrentTurn(game.nextTurn());
-                drawCardCounter = 0;
-            }
-            // If the card that was drawn was stackable, then we reset the counter
-            if (Card.isStackable(tmp, game.getDeck().drawCard())) {
-                drawCardCounter = 0;
-            }
-
-            updateClientsGame(game);
+        // The user has drawn 3 cards. Move on
+        if (drawCardCounter >= 3) {
+            game.setCurrentTurn(game.nextTurn());
+            drawCardCounter = 0;
         }
+        // If the card that was drawn was stackable, then we reset the counter
+        if (Card.isStackable(tmp, game.getDeck().drawCard())) {
+            drawCardCounter = 0;
+        }
+
+        updateClientsGame(game);
     }
 
     // Handles a card
@@ -92,7 +88,10 @@ public class Server extends Thread {
             return;
         }
 
-        handleDrawCard(data);
+        if (data.getDrawCard()) {
+            handleDrawCard(data);
+            return;
+        }
 
         // Check if we can place a card
         Card card = data.getCard();
@@ -174,7 +173,8 @@ public class Server extends Thread {
 
     /**
      * deciding if round is won
-     * decision is made by cecking the size of a players handdeck at the end of their turn
+     * decision is made by cecking the size of a players handdeck at the end of
+     * their turn
      *
      * @return true if round is wo by current player else false
      * @author Christina Meisoll
@@ -183,12 +183,12 @@ public class Server extends Thread {
         int currentPlayer = game.getCurrentTurn();
         String name = game.getPlayers().get(currentPlayer).getName();
 
-        if(game.getPlayers().get(currentPlayer).getDeck().getSize()==0){
-        int[] pointsArr = countpoints();
-        System.out.println(name + " HAS WON!");
-        TransmitData data = new TransmitData(name, pointsArr);
-        broadcast(data);
-        return true;
+        if (game.getPlayers().get(currentPlayer).getDeck().getSize() == 0) {
+            int[] pointsArr = countpoints();
+            System.out.println(name + " HAS WON!");
+            TransmitData data = new TransmitData(name, pointsArr);
+            broadcast(data);
+            return true;
         }
         return false;
     }
@@ -196,7 +196,8 @@ public class Server extends Thread {
     /**
      * counts points in every players hand deck
      *
-     * @return allPoints - an integer array containing each players points in the same order as the players
+     * @return allPoints - an integer array containing each players points in the
+     *         same order as the players
      * @author Christina Meisoll
      */
     private int[] countpoints() {
