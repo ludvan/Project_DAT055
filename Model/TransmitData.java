@@ -1,3 +1,10 @@
+/**
+ * Data is transmitted between server and client using this class.
+ * @version 22-02-29
+ * @author DEN ANDRA FÖRFATTAREN!!!!
+ * @author Ebba Håkansson
+ */
+
 package Model;
 
 import java.io.Serializable;
@@ -12,6 +19,17 @@ public class TransmitData implements Serializable {
 	private int[] pointArr;
 	private boolean has_pressed_uno;
 
+	/**
+	 * Creates packet of data to transmit
+	 * @author ANNAN FÖRFATTARE!!!!
+	 * @author Ebba Håkansson
+	 * @param c				the card
+	 * @param id			the players id
+	 * @param chosenColor	the color that the player has chosen
+	 * @param drawCard		if the player has drawn a new card
+	 * @param chooseColor	if player has to choose color
+	 * @param uno			if the player has pressed uno
+	 */
 	public TransmitData(Card c, int id, Col chosenColor, boolean drawCard, boolean chooseColor, boolean uno) {
 		this.card = c;
 		this.playerId = id;

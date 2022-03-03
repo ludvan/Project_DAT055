@@ -1,3 +1,10 @@
+/**
+ * Class for the main menu of the game,
+ * where player can start or join server,
+ * change settings, and exit.
+ * @version 22-03-03
+ * @author ?????????????????????????
+ */
 package Controller;
 
 import java.awt.event.*;
@@ -14,6 +21,11 @@ public class Menu extends JFrame {
     private Process serverProcess;
     private ArrayList<Process> clientProcess;
 
+    /**
+     * Creates the menu window with all the buttons
+     * @author FÖRFATTARE HÄR!!!!
+     * @author Ebba Håkansson
+     */
     public Menu() {
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -190,6 +202,10 @@ public class Menu extends JFrame {
         return p;
     }
     
+     /**
+      * Makes the settings window for changing nickname and number of players
+      * @author Ebba Håkansson
+      */
     private void configWindow() {
         Properties properties = createProperty("inst.properties");
         JTextField nicknameField = new JTextField(properties.getProperty("nickname"));

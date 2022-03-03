@@ -1,7 +1,12 @@
-package Model;
-/*
- * This class fetches the current date in Sweden as a String from https://www.vilketdatum.se/
+/**
+ * Fetches the current date in sweden as a String from https://www.vilketdatum.se/
+ * @author Ebba Håkansson
+ * @version 22-02-23
  */
+
+
+
+package Model;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -10,15 +15,21 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 
+
 public class GetDate {
 	public static URLConnection uc;
 
+	/**
+	 * Creates a GetDate object
+	 * @author Ebba Håkansson
+	 */
 	public GetDate() {
 	}
 
-	/*
-	 * Fetches the webpage and finds the date in the HTML-code. Returns the date as
-	 * String.
+	/**
+	 * Fetches the web page and returns the date found in the HTML code
+	 * @return the date
+	 * @author Ebba Håkansson
 	 */
 	public String FetchDate() {
 		try {
