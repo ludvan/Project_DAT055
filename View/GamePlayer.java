@@ -1,11 +1,22 @@
+/**
+ * Class for displaying the profile pictures for 
+ * all players in a game
+ * @author Dag Brynildsen Tholander
+ * @version 2022-03-25
+ */
+
 package View;
 
 import java.awt.*;
 import javax.swing.*;
-
 public class GamePlayer extends JButton {
     private boolean isActive;
 
+    /**
+     * Toggles the backlight for the profile picture
+     * @param active
+     * @author Dag Brynildsen Tholander
+     */
     public void setActive(boolean active) {
         isActive = active;
         setPlayerIcon();
@@ -15,7 +26,8 @@ public class GamePlayer extends JButton {
         return isActive;
     }
 
-    public void setPlayerIcon() {
+    // Sets the texture of the profile pictures
+    private void setPlayerIcon() {
         ImageIcon icon;
 
         if (isActive)
