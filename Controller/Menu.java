@@ -23,8 +23,8 @@ public class Menu extends JFrame {
 
     /**
      * Creates the menu window with all the buttons
-     * @author FÖRFATTARE HÄR!!!!
-     * @author Ebba Håkansson
+     * @author Fï¿½RFATTARE Hï¿½R!!!!
+     * @author Ebba Hï¿½kansson, Liam Mattsson
      */
     public Menu() {
         try {
@@ -70,6 +70,8 @@ public class Menu extends JFrame {
         });
     }
     
+    //@author Liam Mattsson
+    //Adds the "Create Server" button and handles it's functions
     private JButton createServerButton() {
     	JButton create = new JButton("CREATE SERVER");
         create.setFont(new Font("Yu Gothic UI Semibold", Font.PLAIN, 36));
@@ -112,6 +114,8 @@ public class Menu extends JFrame {
         return create;
     }
     
+    //@author Liam Mattsson
+    //Adds the "Join Server" button and handles it's functions
     private JButton createJoinButton() {
     	JButton join = new JButton("JOIN SERVER");
         join.setFont(new Font("Yu Gothic UI Semibold", Font.PLAIN, 36));
@@ -144,6 +148,8 @@ public class Menu extends JFrame {
         return join;
     }
     
+    //@author Ebba HÃ¥kansson
+    //Creates the "Settings" button and handles it's functions
     private JButton createConfigButton() {
         JButton config = new JButton("SETTINGS");
         config.setFont(new Font("Yu Gothic UI Semibold", Font.PLAIN, 36));
@@ -156,6 +162,9 @@ public class Menu extends JFrame {
         return config;
     }
 
+    //@author Liam Mattsson
+    //Creates the "Exit" button which closes down the game window
+    //and terminates all processes
     private JButton createExitButton() {
     	JButton exit = new JButton("EXIT");
         exit.setFont(new Font("Yu Gothic UI Semibold", Font.PLAIN, 36));
@@ -176,6 +185,10 @@ public class Menu extends JFrame {
         return exit;
     }
     
+    //@author Liam Mattsson
+    /*Creates the Panel in the menu window and
+    adds the title text and all the buttons to the panel
+    */
     private JPanel createMenuPanel(ArrayList<JButton> buttonList) {
     	JPanel p = new JPanel();
     	p.setLayout(new GridBagLayout());
@@ -204,7 +217,7 @@ public class Menu extends JFrame {
     
      /**
       * Makes the settings window for changing nickname and number of players
-      * @author Ebba Håkansson
+      * @author Ebba Hï¿½kansson, Liam Mattsson
       */
     private void configWindow() {
         Properties properties = createProperty("inst.properties");
