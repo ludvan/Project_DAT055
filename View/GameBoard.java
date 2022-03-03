@@ -18,7 +18,13 @@ public class GameBoard extends JFrame {
 	private Color handColor = new Color(150, 0, 0);
 	private int playerLimit;
 	private LobbyView lobby;
-
+	/**
+	 * <p>
+	 * Creates a game map (board) for
+	 * the game to take place.
+	 * </p>
+	 * @author Ludvig Andersson, Liam Mattsson
+	 */
 	public GameBoard() {
 		setLayout(new BorderLayout());
 		width = 1200;
@@ -42,6 +48,13 @@ public class GameBoard extends JFrame {
 		}
 	}
 
+	/**
+	 * <p>
+	 * Updates the gameboard layout whenever an event occurs,
+	 * for example if we select a card or add a card to our hand.
+	 * </p>
+	 * @author Liam Mattsson
+	 */
 	public void update() {
 		if (game == null)
 			return;
