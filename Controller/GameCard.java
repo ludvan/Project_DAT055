@@ -47,11 +47,20 @@ public class GameCard extends JButton {
         setIcon(icon);
     }
 
+    /**
+     * Creates a new Game Card facing down
+     * @author Dag Brynildsen Tholander
+     */
     public GameCard() {
         SetCardFace(null, true);
         sharedConst();
     }
 
+    /**
+     * Creates a new Game Card facing up
+     * @param card
+     * @author Dag Brynildsen Tholander
+     */
     public GameCard(Card card) {
         this.card = card;
         SetCardFace(this.card, false);

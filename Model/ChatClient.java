@@ -20,6 +20,13 @@ public class ChatClient {
     private boolean hasSelectCard = false;
     private String HighscoreValues;
 
+    /**
+     * Creates a new client with a specifiec username with a connection to hostname on port
+     * @author Dag Brynildsen Tholander
+     * @param hostname
+     * @param port
+     * @param username
+     */
     public ChatClient(String hostname, int port, String username) {
         this.hostname = hostname;
         this.port = port;
@@ -31,12 +38,20 @@ public class ChatClient {
         board.setClient(this);
     }
 
-    // Adds object to sendbuffer
+    /**
+     * Adds object to sendbuffer
+     * @param object
+     * @author Dag Brynildsen Tholander
+     */
     public void sendToServer(Object object) {
         sendBuffer.add(object);
         hasSelectCard = true;
     }
 
+    /**
+     * Main loop of the client program. Handles connection, then reads and writes data to server.
+     * @author Dag Brynildsen Tholander
+     */
     public void execute() {
         try {
             // Create socket, and send username to server
@@ -115,15 +130,17 @@ public class ChatClient {
         }
     }
 
+    // @author Dag Brynildsen Tholander
     // Called once when the match has begun to sync all players games
     private void setGame(Game new_game) {
         this.game = new Game();
-        game = new_game;
+        game = game.copy(new_game);
         in_match = true;
         board.setGame(game);
         board.update();
     }
 
+    // @author Dag Brynildsen Tholander
     // Used to update every players game once something is changed
     private void updateGame(Game new_game) {
         game = game.copy(new_game);
@@ -131,12 +148,18 @@ public class ChatClient {
         board.update();
     }
 
-    // Check if its our turn
+    /**
+     * @author Dag Brynildsen Tholander
+     * @return returns true if its our turn
+     */
     public boolean isClientTurn() {
         return this.game.getPlayerId() == game.getCurrentTurn();
     }
 
-    // Check if we have any stackable card
+    /**
+     * @author Dag Brynildsen Tholander
+     * @return true if this client has a card stackable against the dealers card
+     */
     public boolean hasStackableCard() {
         boolean tmp = false;
         // loop through every card on this client and check if its stackable on the
@@ -158,16 +181,6 @@ public class ChatClient {
         return userName;
     }
 
-    /**
-     * Showing a JOptionpane informing the player on the points every player had in this round
-     * Showin a JOptionpane informing the player on the highscore table
-     * closing the gamewindow, sending the player back to the menu
-     *
-     * @param str1 - the winners name
-     * @param arr - array containings every participatings players nickname
-     *              and how many points they had on their hand when the match ended
-     * @author Christina Meisoll
-     */
     public void someoneWon(String str1, int[] arr) {
         String[] allNames = new String[arr.length];
 
@@ -198,23 +211,20 @@ public class ChatClient {
         JOptionPane.showMessageDialog(null, LbString, title, JOptionPane.PLAIN_MESSAGE);
 
         if (HighscoreValues == null) {
-            this.readHighscoreValues();
-            calculateNewHighscoreValues(str1);
+            this.getHighscoreValues();
+            updateHighscoreValues(str1);
             HighscoreValues = makeItMultiline(HighscoreValues);
             int answer = JOptionPane.showConfirmDialog(null, HighscoreValues, "local player statistics",
                     JOptionPane.PLAIN_MESSAGE);
+            // if (answer==0){
             board.closeBoard(answer);
+
+            // }
         }
     }
 
-    /**
-     * läser från highscore.txt och sparar i HighscoreValues
-     *
-     * @throws IOException - if reading from the file was unsuccessful
-     * @author Christina Meisoll
-     */
-    private void readHighscoreValues()
-    {try {
+    public void getHighscoreValues() {
+        try {
             FileReader readfile = new FileReader("highscore.txt");
             BufferedReader reader = new BufferedReader(readfile);
             String s = reader.readLine();
@@ -225,71 +235,70 @@ public class ChatClient {
         }
     }
 
-    /**
-     * generates the new String containing the Highscore table
-     *
-     * @param str - a string with the winners name
-     * @author Christina Meisoll
-     */
-    private void calculateNewHighscoreValues(String str) {
-        if (!(HighscoreValues == null || HighscoreValues.isEmpty())) {
+    public void updateHighscoreValues(String str) {
+        if (HighscoreValues == null || HighscoreValues.isEmpty()) {
+            HighscoreValues = str + ":1;";
+        } else {
             String[] entries = HighscoreValues.split(";");
             String temp1 = "";
             boolean changed = false;
-
+            System.out.println("changes is:" + changed);
+            System.out.println("antal entries: " + entries.length);
             for (int i = 0; i < entries.length; i++) {
-                // dela upp vid ":" och jamfor namn
+                System.out.println("entries[" + i + "] is: " + entries[i]);
+            }
+            for (int i = 0; i < entries.length; i++) {
+                // dela upp vid : och j�mf�r namn
                 if (str.equals(entries[i].split(":")[0])) {
-                    // oka points med 1
+                    // �ka p��ngen med 1
                     int newPoints = Integer.parseInt(entries[i].split(":")[1]);
                     newPoints = newPoints + 1;
+                    System.out.println("newpoints is: " + newPoints);
                     String x = Integer.toString(newPoints);
+                    System.out.println("x is: " + x);
                     temp1 = temp1 + str + ":" + x + ";";
+                    System.out.println("temp1 is: " + temp1);
                     changed = true;
+                    System.out.println("changes is: " + changed);
                 } else {
                     temp1 = temp1 + entries[i] + ";";
                 }
             }
             if (changed == true) {
+                System.out.println("changes was set true");
                 String[] order = temp1.split(";");
                 int size = order.length;
                 sortStringArray(order, size);
+                System.out.println("order arrayen sorterat: ");
+                for (int l = 0; l < order.length; l++) {
+                    System.out.println(order[l]);
+                }
                 HighscoreValues = new String();
                 for (int k = 0; k < entries.length; k++) {
                     HighscoreValues = HighscoreValues + order[k] + ";";
+                    System.out.println("highscorevalues after if changed true: " + HighscoreValues);
                 }
+            } else if (changed == false) {
+                System.out.println("changed was set false");
+                HighscoreValues = HighscoreValues + str + ":1;";
+                System.out.println("highscorevalues after if changed false: " + HighscoreValues);
             }
         }
-        else {
-            HighscoreValues = HighscoreValues + str + ":1;";
-        }
-        writeNewHighscore();
-    }
-
-    /**
-     * Updates the highscore.txt file.
-     * If necessary the players name entry is created.
-     * Saves uppdated highscores to the file.
-     *
-     * @throws IOException - if file doesnt exist or saving to it was unsuccessful
-     * @author Christina Meisoll
-     */
-    private void writeNewHighscore(){
 
         // kolla om filen finns, ggf. skapa den
-        File Highscorefile = new File("highscore.txt");
-        if (!Highscorefile.exists()) {
+        File Higscorefile = new File("highscore.txt");
+        if (!Higscorefile.exists()) {
             try {
-                Highscorefile.createNewFile();
+                Higscorefile.createNewFile();
             } catch (IOException e) {
-                System.out.println("Can't create file");
+                System.out.println("Cant create file");
             }
         }
         // write to file
         FileWriter writeFile = null;
         BufferedWriter writer = null;
         try {
-            writeFile = new FileWriter(Highscorefile);
+            writeFile = new FileWriter(Higscorefile);
             writer = new BufferedWriter(writeFile);
             writer.write(this.HighscoreValues);
             writer.close();
@@ -300,15 +309,7 @@ public class ChatClient {
 
     }
 
-    /**
-     * sorts an array of string so that the amount of games won is decreasing
-     *
-     * @param stringArr - Array of strings where every string has the form of "username:amount of games won"
-     * @param size - stringArrs length
-     * @author Christina Meisoll
-     */
-    private void sortStringArray(String[] stringArr, int size)
-    {
+    public void sortStringArray(String[] stringArr, int size) {
         String temp = null;
 
         for (int i = 0; i < size; i++) {
@@ -324,14 +325,7 @@ public class ChatClient {
         }
     }
 
-    /**
-     * makes the string str multiline by dividing it i substrings at every ";" and replacing these by "\n"
-     *
-     * @param str - a string to divide containing
-     * @return the string with linebreaks
-     * @author Christina Meisoll
-     */
-    private String makeItMultiline(String str) {
+    public String makeItMultiline(String str) {
         String[] part = str.split(";");
         String temp = "";
         for (int i = 0; i < part.length; i++) {
