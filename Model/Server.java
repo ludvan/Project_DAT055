@@ -54,16 +54,11 @@ public class Server extends Thread {
         updateClientsGame(game);
     }
 
-    // Handles a card
-    public void handleCard(TransmitData data) {
+    // Handles draw card
+    private void handleDrawCard(TransmitData data)
+    {
         int currentPlayer = game.getCurrentTurn();
-
-        if (data.getPressedUno()) {
-            unoPressed = true;
-            updateClientsGame(game);
-            return;
-        }
-
+        
         // Check if the user wants to draw a card
         if (data.getDrawCard()) {
             drawCardCounter++;
@@ -84,8 +79,21 @@ public class Server extends Thread {
             }
 
             updateClientsGame(game);
+        }
+    }
+
+    // Handles a card
+    public void handleCard(TransmitData data) {
+        int currentPlayer = game.getCurrentTurn();
+
+        if (data.getPressedUno()) {
+            unoPressed = true;
+            updateClientsGame(game);
             return;
         }
+
+        handleDrawCard(data);
+
         // Check if we can place a card
         Card card = data.getCard();
         if (!game.getDeck().isEmpty()) {
