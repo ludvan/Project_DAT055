@@ -1,3 +1,9 @@
+/**
+ * Class representing the game state
+ * @author Dag Brynildsen Tholander
+ * @version 2022-02-28
+ */
+
 package Model;
 
 import java.util.*;
@@ -10,7 +16,12 @@ public class Game implements java.io.Serializable {
     private int turn;
     private boolean reverse;
 
-    // Returns a copy of a game
+    /**
+     * returns a new copy of a game
+     * @author Dag Brynildsen Tholander
+     * @param game
+     * @return returns a copy of a game
+     */
     public Game copy(Game game) {
         Game tmp = new Game();
         tmp.setDeck(game.getDeck());
@@ -31,7 +42,11 @@ public class Game implements java.io.Serializable {
         reverse = false;
     }
 
-    // Creates game from another game
+    /**
+     * Creates game from another game
+     * @param clone
+     * @author Dag Brynildsen Tholander
+     */
     public Game(Game clone) {
         deck = clone.getDeck();
         discardDeck = clone.getDiscardDeck();
@@ -117,7 +132,10 @@ public class Game implements java.io.Serializable {
         this.turn = turn;
     }
 
-    // return the next turn
+    /**
+     * @author Dag Brynildsen Tholander
+     * @return returns the next turn based on wether or not we are moving CW or CCW
+     */
     public int nextTurn() {
         int t = turn;
         if (!reverse)

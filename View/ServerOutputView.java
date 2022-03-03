@@ -1,3 +1,9 @@
+/** 
+ * A class for reading output from the server via a textarea
+ * @author Dag Brynildsen Tholander
+ * @version 2022-02-25
+ */
+
 package View;
 
 import java.io.BufferedReader;
@@ -22,12 +28,21 @@ public class ServerOutputView extends Thread {
         frame.setVisible(true);
     }
 
+    /**
+     * Sets the process from which we read the output from
+     * @author Dag Brynildsen Tholander
+     * @param serverProcess
+     */
     public void setProcess(Process serverProcess) {
         this.serverProcess = serverProcess;
         this.reader = new BufferedReader(new InputStreamReader(serverProcess.getInputStream()));
         start();
     }
 
+    /**
+     * Main loop for output
+     * @author Dag Brynildsen Tholander
+     */
     public void run() {
         String text = "";
         while (true) {

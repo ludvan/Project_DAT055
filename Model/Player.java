@@ -1,3 +1,9 @@
+/**
+ * class containing information about a player such as name and deck. 
+ * @author Dag Brynildsen Tholander
+ * @version 2022-03-27
+ */
+
 package Model;
 
 import java.io.Serializable;
