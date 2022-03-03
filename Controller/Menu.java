@@ -190,7 +190,7 @@ public class Menu extends JFrame {
         return p;
     }
     
-    static void configWindow() {
+    private void configWindow() {
         Properties properties = createProperty("inst.properties");
         JTextField nicknameField = new JTextField(properties.getProperty("nickname"));
         JTextField nrPlayersField = new JTextField(properties.getProperty("nrPlayers"));
@@ -211,9 +211,15 @@ public class Menu extends JFrame {
             JOptionPane.showMessageDialog(null, "You need to enter a nickname and number of players!");
             return;
         }
+        
+        try {
         if (Integer.parseInt(nrPlayersField.getText()) > 10 || Integer.parseInt(nrPlayersField.getText()) < 2) {
             Toolkit.getDefaultToolkit().beep();
             JOptionPane.showMessageDialog(null, "The amount of players needs to be between 2 and 10!");
+            return;
+        }} catch(NumberFormatException e) {
+        	Toolkit.getDefaultToolkit().beep();
+            JOptionPane.showMessageDialog(null, "The amount of players needs to be a number");
             return;
         }
 
@@ -234,6 +240,7 @@ public class Menu extends JFrame {
         }
     }
 
+    /* Returns property for filename*/
     static Properties createProperty(String filename) {
         Properties properties = new Properties();
         try (FileInputStream fileInputStream = new FileInputStream(filename)) {
