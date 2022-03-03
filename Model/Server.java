@@ -372,6 +372,11 @@ public class Server extends Thread {
     private ArrayList<Player> getPlayers() {
         return this.game.getPlayers();
     }
+    
+    
+    public void setClientThreads(ArrayList<ClientThread> threads) {
+    	this.clientThreads = threads ;
+    }
 
     /**
      * @author Dag Brynildsen Tholander

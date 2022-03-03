@@ -45,9 +45,6 @@ public class Card implements Serializable {
 
     // checks if one card equals another card
     public static boolean equals(Card a, Card b) {
-        if (a.color == Col.black || b.color == Col.black) {
-            return a.value == b.value;
-        }
         return a.value == b.value && a.color == b.color;
     }
 
