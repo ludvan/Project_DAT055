@@ -67,6 +67,15 @@ public class Server extends Thread {
     }
 
     // @author Dag Brynildsen Tholander
+    /**
+     * <p>
+     * This function checks if the user wants do draw
+     * a card from the deck, if the user draws 3 cards
+     * we will move on to the next player.
+     * </p>
+     * @author Dag Brynildsen Tholander, Liam Mattsson
+     * @param data contains data regarding cards and players
+     */
     private void handleDrawCard(TransmitData data) {
         int currentPlayer = game.getCurrentTurn();
 
@@ -91,6 +100,9 @@ public class Server extends Thread {
     }
 
     // @author Dag Brynildsen Tholander
+    /**
+     * @author Dag Brynildsen Tholander, Liam Mattsson
+     */
     private void handleWildcard(Card card)
     {
         if (card.getValue() == Value.plus2) {
