@@ -7,7 +7,7 @@ import Model.Col;
 import Model.TransmitData;
 
 /**
- * @author ?
+ * @author Ludvig Andersson
  * @version 22-02-25
  */
 public class ColorChoice {
