@@ -6,7 +6,7 @@ import javax.swing.JPanel;
 import Model.Player;
 
 /**
- * @author ?
+ * @author Ludvig Andersson
  * @version 22-02-21
  */
 public class LobbyView extends JPanel {
