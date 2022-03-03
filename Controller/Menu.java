@@ -31,10 +31,35 @@ public class Menu extends JFrame {
         setTitle("GameLauncher");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(window_width, window_height);
-        JPanel p = new JPanel();
 
-        // Create Server button
-        JButton create = new JButton("CREATE SERVER");
+        //Create buttons and add to list
+        ArrayList<JButton> buttonList = new ArrayList<JButton>();
+        buttonList.add(createServerButton());
+        buttonList.add(createJoinButton());
+        buttonList.add(createConfigButton());
+        buttonList.add(createExitButton());
+        createMenuPanel(buttonList); //create panel
+        
+
+        // Shutdownhook to ensure that no process created in runtime are left running
+        // once the application is closed
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            @Override
+            public void run() {
+                // Shutdown all processes
+                if (clientProcess.size() != 0) {
+                    for (Process p : clientProcess) {
+                        p.destroy();
+                    }
+                }
+                if (serverProcess != null)
+                    serverProcess.destroy();
+            }
+        });
+    }
+    
+    private JButton createServerButton() {
+    	JButton create = new JButton("CREATE SERVER");
         create.setFont(new Font("Yu Gothic UI Semibold", Font.PLAIN, 36));
         create.addActionListener(new ActionListener() {
             @Override
@@ -72,9 +97,11 @@ public class Menu extends JFrame {
                 }
             }
         });
-
-        // Join Server button
-        JButton join = new JButton("JOIN SERVER");
+        return create;
+    }
+    
+    private JButton createJoinButton() {
+    	JButton join = new JButton("JOIN SERVER");
         join.setFont(new Font("Yu Gothic UI Semibold", Font.PLAIN, 36));
         join.addActionListener(new ActionListener() {
             @Override
@@ -85,7 +112,7 @@ public class Menu extends JFrame {
                     String nickname = JOptionPane.showInputDialog(null, "Please Enter your nickname:",
                             configProperties.getProperty("nickname"));
                     String ip = JOptionPane.showInputDialog(null, "Please Enter the host's ip-adress:",
-                            "xxx.xxx.xxx.xxx");
+                            "localhost");
                     if (nickname == null || nickname.isEmpty()) {
                         Toolkit.getDefaultToolkit().beep();
                         JOptionPane.showMessageDialog(null, "Invalid nickname");
@@ -102,8 +129,10 @@ public class Menu extends JFrame {
                 }
             }
         });
-
-        // Change settings
+        return join;
+    }
+    
+    private JButton createConfigButton() {
         JButton config = new JButton("SETTINGS");
         config.setFont(new Font("Yu Gothic UI Semibold", Font.PLAIN, 36));
         config.addActionListener(new ActionListener() {
@@ -112,9 +141,11 @@ public class Menu extends JFrame {
                 configWindow();
             }
         });
+        return config;
+    }
 
-        // Create Exit button
-        JButton exit = new JButton("EXIT");
+    private JButton createExitButton() {
+    	JButton exit = new JButton("EXIT");
         exit.setFont(new Font("Yu Gothic UI Semibold", Font.PLAIN, 36));
         exit.addActionListener(new ActionListener() {
             @Override
@@ -130,8 +161,12 @@ public class Menu extends JFrame {
                 System.exit(0);
             }
         });
-
-        p.setLayout(new GridBagLayout());
+        return exit;
+    }
+    
+    private JPanel createMenuPanel(ArrayList<JButton> buttonList) {
+    	JPanel p = new JPanel();
+    	p.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridwidth = GridBagConstraints.REMAINDER;
         gbc.anchor = GridBagConstraints.NORTH;
@@ -142,36 +177,19 @@ public class Menu extends JFrame {
         gbc.anchor = GridBagConstraints.CENTER;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         JPanel buttons = new JPanel(new GridBagLayout());
-        buttons.add(Box.createRigidArea(new Dimension(0, window_height / 10)));
-        buttons.add(create, gbc);
-        buttons.add(Box.createRigidArea(new Dimension(0, window_height / 10)));
-        buttons.add(join, gbc);
-        buttons.add(Box.createRigidArea(new Dimension(0, window_height / 10)));
-        buttons.add(config, gbc);
-        buttons.add(Box.createRigidArea(new Dimension(0, window_height / 10)));
-        buttons.add(exit, gbc);
+        
+        for (JButton button : buttonList) {
+        	buttons.add(Box.createRigidArea(new Dimension(0, window_height / 10)));
+            buttons.add(button, gbc);
+        }
+        
         gbc.weighty = 1;
         p.add(buttons, gbc);
         add(p);
         setVisible(true);
-
-        // Shutdownhook to ensure that no process created in runtime are left running
-        // once the application is closed
-        Runtime.getRuntime().addShutdownHook(new Thread() {
-            @Override
-            public void run() {
-                // Shutdown all processes
-                if (clientProcess.size() != 0) {
-                    for (Process p : clientProcess) {
-                        p.destroy();
-                    }
-                }
-                if (serverProcess != null)
-                    serverProcess.destroy();
-            }
-        });
+        return p;
     }
-
+    
     static void configWindow() {
         Properties properties = createProperty("inst.properties");
         JTextField nicknameField = new JTextField(properties.getProperty("nickname"));
