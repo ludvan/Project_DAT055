@@ -1,3 +1,8 @@
+/**
+ * This class represents a deck of cards
+ * @author Dag Brynildsen Tholander
+ */
+
 package Model;
 
 import java.util.ArrayList;
@@ -11,6 +16,11 @@ public class Deck implements Serializable {
         cards = new ArrayList<Card>();
     }
 
+    /**
+     * Create a deck from an array of cards
+     * @param _cards
+     * @author Dag Brynildsen Tholander
+     */
     public Deck(Card[] _cards) {
         cards = new ArrayList<Card>();
         for (int i = 0; i < _cards.length; i++) {
@@ -18,6 +28,10 @@ public class Deck implements Serializable {
         }
     }
 
+    /**
+     * Creates a standard UNO deck of 108 cards
+     * @author Dag Brynildsen Tholander
+     */
     public void fillDeck() {
         // creates a standard UNO deck of 108 cards
         // first create all basic cards
@@ -42,14 +56,30 @@ public class Deck implements Serializable {
         addCard(new Card(Value.pickColor, Col.black));
     }
 
+    /**
+     * Suffles a deck
+     * @param deck
+     * @author Dag Brynildsen Tholander
+     */
     public static void shuffle(Deck deck) {
         Collections.shuffle(deck.cards);
     }
 
+    /**
+     * Adds a new card to the deck
+     * @param card
+     * @author Dag Brynildsen Tholander
+     */
     public void addCard(Card card) {
         cards.add(card);
     }
 
+    /**
+     * Removes all cards that match card. 'card' object doesn't have to be in the deck, 
+     * as long as there is a card with the same value and color
+     * @param card
+     * @author Dag Brynildsen Tholander
+     */
     public void removeCard(Card card) {
         // Remove all cards that match 'card's value and color
         if (!isEmpty()) {
@@ -65,14 +95,21 @@ public class Deck implements Serializable {
             throw new IllegalArgumentException("Can't remove card, deck is empty!");
     }
 
-    // Returns the card on top of the deck
+    /**
+     * @author Dag Brynildsen Tholander
+     * @return the card at the top of the deck
+     */
     public Card drawCard() {
         if (isEmpty())
             return null;
         return cards.get(cards.size() - 1);
     }
 
-    // Returns card by index
+    /**
+     * @author Dag Brynildsen Tholander
+     * @param i
+     * @return the card at index i
+     */
     public Card getCard(int i) {
         if (i > cards.size())
             throw new IllegalArgumentException("Index of of range!");
@@ -88,7 +125,12 @@ public class Deck implements Serializable {
         return cards.size() == 0;
     }
 
-    // Check if a given card is in the deck
+    /**
+     * Check if an equal card is in the deck
+     * @author Dag Brynildsen Tholander
+     * @param card
+     * @return true if there is such a card
+     */
     public boolean inDeck(Card card) {
         for (int i = 0; i < cards.size(); i++) {
             if (Card.equals(card, cards.get(i)))

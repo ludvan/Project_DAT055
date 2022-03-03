@@ -1,3 +1,9 @@
+/**
+ * Thread handling the communication between server and client. Each client has its own thread
+ * @author Dag Brynildsen Tholander
+ * @version 2022-03-01
+ */
+
 package Model;
 
 import java.io.*;
@@ -9,6 +15,12 @@ public class ClientThread extends Thread {
     private ObjectOutputStream oos;
     private ObjectInputStream ois;
 
+    /**
+     * Creates a new clien thread and initializes its input/ouput streams
+     * @author Dag Brynildsen Tholander
+     * @param _socket
+     * @param _server
+     */
     public ClientThread(Socket _socket, Server _server) {
         this.socket = _socket;
         this.server = _server;
@@ -21,6 +33,11 @@ public class ClientThread extends Thread {
         }
     }
 
+    /**
+     * Main loop of the client thread.
+     * If the server isn't in a match, join the server. Else recieve data sent by client
+     * @author Dag Brynildsen Tholander
+     */
     public void run() {
         try {
             // If we arent in a match, add new users to the lobby
@@ -51,8 +68,12 @@ public class ClientThread extends Thread {
         }
     }
 
-    // Sends an object to the client
-    void sendObject(Object message) {
+    /**
+     * sends an object to the client
+     * @param message
+     * @author Dag Brynildsen Tholander
+     */
+    public void sendObject(Object message) {
         try {
             oos.writeObject(message);
             oos.reset();
