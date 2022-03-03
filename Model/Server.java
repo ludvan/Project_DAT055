@@ -78,6 +78,23 @@ public class Server extends Thread {
         updateClientsGame(game);
     }
 
+    private void handleWildcard(Card card)
+    {
+        if (card.getValue() == Value.plus2) {
+            playerDraw(2, game.nextTurn());
+            game.setCurrentTurn(game.nextTurn());
+        }
+        if (card.getValue() == Value.plus4) {
+            playerDraw(4, game.nextTurn());
+            game.setCurrentTurn(game.nextTurn());
+        }
+
+        if (card.getValue() == Value.stop)
+            game.setCurrentTurn(game.nextTurn());
+        if (card.getValue() == Value.reverse)
+            game.setReverse(!game.getReverse());
+    }
+
     // Handles a card
     public void handleCard(TransmitData data) {
         int currentPlayer = game.getCurrentTurn();
@@ -103,19 +120,8 @@ public class Server extends Thread {
         }
 
         // If we can place a card do the following
-        if (card.getValue() == Value.plus2) {
-            playerDraw(2, game.nextTurn());
-            game.setCurrentTurn(game.nextTurn());
-        }
-        if (card.getValue() == Value.plus4) {
-            playerDraw(4, game.nextTurn());
-            game.setCurrentTurn(game.nextTurn());
-        }
+        handleWildcard(card);
 
-        if (card.getValue() == Value.stop)
-            game.setCurrentTurn(game.nextTurn());
-        if (card.getValue() == Value.reverse)
-            game.setReverse(!game.getReverse());
         // if a color was chosen (only for black cards)
         if (data.getChooseColor()) {
             card.setColor(data.getChosenColor());
