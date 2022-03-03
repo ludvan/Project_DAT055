@@ -1,6 +1,5 @@
 package Model;
 
-import javax.swing.*;
 import java.net.*;
 import java.io.*;
 import java.util.*;
@@ -14,8 +13,17 @@ public class Server extends Thread {
     private int drawCardCounter; // Used to limit the amount of drawn cards
     private boolean unoPressed;
 
-    public Server(int _port, int player_limit) {
-        port = _port;
+    /**
+     * @author Dag Brynildsen Tholander
+     * 
+     * Creates a Server on a given port and with a player limit
+     * 
+     * @param port
+     * @param player_limit
+     * 
+     */
+    public Server(int port, int player_limit) {
+        this.port = port;
         game = new Game();
         clientThreads = new ArrayList<ClientThread>();
         playerLimit = player_limit;
@@ -27,7 +35,11 @@ public class Server extends Thread {
         return game;
     }
 
-    // This function deals cards to the players in the beginning of the match.
+    /**
+     * This function deals cards to the players in the beginning of the match.
+     * 
+     * @author Dag Brynildsen Tholander
+     */
     public void dealCards() {
         Deck tmp = new Deck();
         tmp.fillDeck();
@@ -54,7 +66,7 @@ public class Server extends Thread {
         updateClientsGame(game);
     }
 
-    // Handles draw card
+    // @author Dag Brynildsen Tholander
     private void handleDrawCard(TransmitData data) {
         int currentPlayer = game.getCurrentTurn();
 
@@ -78,6 +90,7 @@ public class Server extends Thread {
         updateClientsGame(game);
     }
 
+    // @author Dag Brynildsen Tholander
     private void handleWildcard(Card card)
     {
         if (card.getValue() == Value.plus2) {
@@ -233,6 +246,12 @@ public class Server extends Thread {
         }
     }
 
+    /**
+     * The main loop of the server program. Waits for users to connect
+     * ands starts a new thread for each connected client
+     * 
+     * @author Dag Brynildsen Tholander
+     */
     public void run() {
         // The below line will be true if someone is waiting to be let into the server
         try (ServerSocket serverSocket = new ServerSocket(port)) {
@@ -266,19 +285,37 @@ public class Server extends Thread {
         server.run();
     }
 
-    // Sends object to specific player
+    /**
+     * @author Dag Brynildsen Tholander
+     * 
+     * Sends an object to a specific user
+     * 
+     * @param object
+     * @param user
+     */
     public void send(Object object, ClientThread user) {
         user.sendObject(object);
     }
 
-    // Sends object to all players
+    /**
+     * Sends object to all connected users
+     * 
+     * @param object
+     * @author Dag Brynildsen Tholander
+     */
     public void broadcast(Object object) {
         for (ClientThread aUser : clientThreads) {
             aUser.sendObject(object);
         }
     }
 
-    // Sends object to all players except one
+    /**
+     * Sends object to all users except one
+     * 
+     * @param object
+     * @param excludeUser
+     * @author Dag Brynildsen Tholander
+     */
     public void broadcast(Object object, ClientThread excludeUser) {
         for (ClientThread aUser : clientThreads) {
             if (aUser != excludeUser) {
@@ -287,7 +324,11 @@ public class Server extends Thread {
         }
     }
 
-    // Updates the clients game
+    /**
+     * Sends an updated Game object to all users, with individual ID for each Game
+     * @param new_game
+     * @author Dag Brynildsen Tholander
+     */
     public void updateClientsGame(Game new_game) {
         Game player_game = new_game.copy(new_game);
         // the player_id variable of the game class can't be the same for every player
@@ -297,8 +338,12 @@ public class Server extends Thread {
         }
     }
 
-    // Stores username of the newly connected client.
-    void addUser(Player user) {
+    /**
+     * Stores username of the newly connected client. If server is full, start the match
+     * @param user
+     * @author DagBrynildsenTholander
+     */
+    public void addUser(Player user) {
         game.addPlayer(user);
         System.out.println("(" + game.getPlayers().size() + "/" + playerLimit + ") users connected");
         broadcast(game.getPlayers());
@@ -310,23 +355,37 @@ public class Server extends Thread {
         }
     }
 
-    // When a client is disconneted, removes the associated username and UserThread
-    void removeUser(Player user, ClientThread aUser) {
+    /**
+     * When a client is disconneted, removes the associated username and UserThread
+     * @param user
+     * @param aUser
+     * @author Dag Brynildsen Tholander
+     */
+    public void removeUser(Player user, ClientThread aUser) {
         game.removePlayer(user);
         clientThreads.remove(aUser);
         System.out.println("The user " + user.getName() + " quitted");
         System.out.println("(" + game.getPlayers().size() + "/" + playerLimit + ") users connected");
     }
 
-    ArrayList<Player> getPlayers() {
+    // @author Dag Brynildsen Tholander
+    private ArrayList<Player> getPlayers() {
         return this.game.getPlayers();
     }
 
-    // Returns true if there are other users connected
-    boolean hasUsers() {
+    /**
+     * @author Dag Brynildsen Tholander
+     * Returns true if there are other users connected
+     * @return Returns true if there are other users connected
+     */
+    public boolean hasUsers() {
         return !this.game.getPlayers().isEmpty();
     }
 
+    /**
+     * @author Dag Brynildsen Tholander
+     * @return true if the server is currently in a match
+     */
     public boolean inMatch() {
         return in_match;
     }
