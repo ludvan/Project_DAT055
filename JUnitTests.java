@@ -25,6 +25,7 @@ public class JUnitTests {
 	
 	private Card compSillyCard;
 	private Card sillyCard;
+	private Card norm4;
 	private Player tim;
 	private Server testServ;
 	
@@ -52,13 +53,15 @@ public class JUnitTests {
                 testServ.getGame().getDeck().addCard(tmp);
             }
         }
+		norm4 = new Card(Value.plus4, Col.black);
 		sillyCard = new Card(Value.plus4, Col.black);
-		compSillyCard = sillyCard;
 		sillyCard.setColor(Col.green);
+		compSillyCard = new Card(Value.plus4, Col.black);
+		compSillyCard.setColor(Col.green);
 		testServ.getGame().getDeck().addCard(sillyCard);
 		
 		
-		Deck.shuffle(testServ.getGame().getDeck());
+		//Deck.shuffle(testServ.getGame().getDeck());
 		
 		testServ.getGame().getDiscardDeck().addCard(new Card(Value.one,Col.green));
 		
@@ -126,6 +129,9 @@ public class JUnitTests {
 		assertTrue(testServ.getGame().getDeck().inDeck(compSillyCard));
 		assertTrue(tim.getDeck().isEmpty());
 		
+		//System.out.println(testServ.getGame().getDeck().toString());
+		//tries to remove card that doesn't exist
+		assertThrows(IllegalArgumentException.class, () -> testServ.getGame().getDiscardDeck().removeCard(sillyCard));
 		
 		Card draw = testServ.getGame().getDiscardDeck().drawCard();
 		tim.getDeck().addCard(draw);
@@ -136,15 +142,51 @@ public class JUnitTests {
 		assertTrue(testServ.getGame().getDiscardDeck().isEmpty());
 		//tries to draw from empty deck
 		assertThrows(IllegalArgumentException.class, () -> testServ.getGame().getDiscardDeck().removeCard(draw));
+		//check top card of empty deck
+		assertTrue(testServ.getGame().getDiscardDeck().drawCard() == null);
+		//check if fillDeck works
+		testServ.getGame().getDiscardDeck().fillDeck();
+		assertTrue(testServ.getGame().getDiscardDeck().getSize() == 108);
+		//checks that only 1 card is removed by removeCard
+		testServ.getGame().getDiscardDeck().removeCard(draw);
+		assertTrue(testServ.getGame().getDiscardDeck().getSize() == 107);
+		assertTrue(inDeckTest(draw,testServ.getGame().getDiscardDeck()));
+		//tries to get card out of index
+		assertThrows(IllegalArgumentException.class, () -> testServ.getGame().getDiscardDeck().getCard(200));
 		
+		
+		
+
+		
+		//checks if revertBlack works
 		testServ.getGame().getDeck().revertBlack();
-		System.out.println(testServ.getGame().getDeck());
-		assertFalse(testServ.getGame().getDeck().inDeck(compSillyCard));
+		assertFalse(inDeckTest(compSillyCard, testServ.getGame().getDeck()));
+		assertTrue(inDeckTest(norm4, testServ.getGame().getDeck()));
+		
+		//tests inDeck
+		Card notin = new Card(Value.six, Col.green);
+		assertFalse(testServ.getGame().getDeck().inDeck(notin));
+		//System.out.println(testServ.getGame().getDeck().toString());
+		
 		
 		
 
 		//assertFalse(testServ.getGame().getDiscardDeck().inDeck(compSillyCard));
 	}
+	
+	boolean equalTest(Card card1, Card card2) {
+		return card1.getValue() == card2.getValue() && card1.getColor() == card2.getColor();
+	}
+	
+	boolean inDeckTest(Card card, Deck tDeck) {
+	    for (int i = 0; i < tDeck.getSize(); i++) {
+	        if (equalTest(card, tDeck.getCard(i))) {
+	            return true;
+	        }
+	    }
+	    return false;
+	}
+	
 	
 	/*
 	@Test
