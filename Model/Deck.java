@@ -147,7 +147,10 @@ public class Deck implements Serializable {
         tmp += "Deck size : " + cards.size();
         return tmp;
     }
-
+    /**
+     * If deck contains a card with Value.plus4 or Value.pickColor that isn't black, make it black
+     * @author Ludvig Andersson
+     */
     public void revertBlack() {
         for (int i = 0; i < cards.size(); i++) {
             if ((cards.get(i).getValue() == Value.plus4 || cards.get(i).getValue() == Value.pickColor)

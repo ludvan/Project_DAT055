@@ -171,6 +171,7 @@ public class Server extends Thread {
     }
 
     // player draws number amount of cards
+    //@author Ludvig Andersson
     private void playerDraw(int number, int player) {
         Card tmp;
 
@@ -187,6 +188,7 @@ public class Server extends Thread {
     }
 
     // Reshuffles deck
+    //@author Ludvig Andersson
     private void reShuffle() {
         Card topCard = game.getDeck().drawCard();
         Deck tmpDeck = game.getDeck();
