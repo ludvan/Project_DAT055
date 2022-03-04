@@ -2,18 +2,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.util.ArrayList;
-import java.util.Date;
 
-import javax.swing.*;
-import javax.swing.JOptionPane;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -72,67 +62,10 @@ public class JUnitTests {
 		testServ.getGame().getDeck().addCard(sillyCard);
 		
 		
-		//Deck.shuffle(testServ.getGame().getDeck());
-		
-		testServ.getGame().getDiscardDeck().addCard(new Card(Value.one,Col.green));
-		
-		
-		//ArrayList<ClientThread> threadList = new ArrayList<ClientThread>();
-		
-		//ClientThread thread = new ClientThread(new Socket(), testServ);
-		
-		//threadList.add(thread);
-		
-		//testServ.setClientThreads(threadList);
-		
-		/*
-		try{
-			serverSocket = new ServerSocket(8989);
-			System.out.println("here1");
-			Socket socket = new Socket("localhost",8989);
-			//Socket socket = serverSocket.accept();
-			System.out.println("here2");
-	        ClientThread newUser = new ClientThread(socket, testServ);
-	        System.out.println("here3");
-	        threadList.add(newUser);
-	        System.out.println("here4");
-	        testServ.setClientThreads(threadList);
-		}
-		
-        catch (IOException ex) {
-            System.out.println("Error in the server: " + ex.getMessage());
-            ex.printStackTrace();
-        }
-		*/
+		testServ.getGame().getDiscardDeck().addCard(new Card(Value.one,Col.green));	
 	}
 	
-	/*
-	@AfterEach
-	void close() {
-		try {
-			serverSocket.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}*/
 	
-	/*
-	@BeforeEach
-	void setUpTest() {
-		
-		testServ = new Server(8990, 2);
-		testServ.run();
-		
-		timClient = new ChatClient("localhost", 8990, "tim");
-
-		timClient.execute();
-		
-		bobClient = new ChatClient("localhost", 8990, "bob");
-
-		bobClient.execute();
-    }
-*/
 	
 	@Test
 	//tests deck functions
@@ -191,7 +124,7 @@ public class JUnitTests {
 	//!!!WARNING!!! have to update every day
 	void testGetDate() {
 		String dategot = date.FetchDate();
-		assertTrue(dategot.equals("3 mars 2022"));
+		assertTrue(dategot.equals("4 mars 2022"));
 	}
 	
 	boolean equalTest(Card card1, Card card2) {
@@ -258,6 +191,7 @@ public class JUnitTests {
 		testServ.getGame().setCurrentTurn(testServ.getGame().nextTurn());
 		assertTrue(testServ.getGame().getCurrentTurn() == 2);
 	}
+	
 	
 	
 }
