@@ -1,5 +1,5 @@
 /** 
- * A class for reading output from the server via a textarea
+ * Creates a text area from which we can read server output.
  * @author Dag Brynildsen Tholander
  * @version 2022-02-25
  */
