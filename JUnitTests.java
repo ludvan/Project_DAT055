@@ -1,21 +1,14 @@
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
-
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import Model.*;
-import Controller.*;
-import View.*;
-import View.ServerOutputView;
 
 /**
- * 
  * @author Ludvig Andersson
- * Tests most methods that do not require threads
+ * Tests most Model methods that do not require threads
  */
 
 public class JUnitTests {
