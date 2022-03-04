@@ -1,7 +1,6 @@
 /**
  * Data is transmitted between server and client using this class.
  * @version 22-02-29
- * @author DEN ANDRA FÖRFATTAREN!!!!
  * @author Ebba Håkansson
  */
 

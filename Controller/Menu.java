@@ -3,7 +3,7 @@
  * where player can start or join server,
  * change settings, and exit.
  * @version 22-03-03
- * @author ?????????????????????????
+ * @author Liam Mattsson
  */
 package Controller;
 
@@ -23,8 +23,8 @@ public class Menu extends JFrame {
 
     /**
      * Creates the menu window with all the buttons
-     * @author Fï¿½RFATTARE Hï¿½R!!!!
-     * @author Ebba Hï¿½kansson, Liam Mattsson
+     * @author Liam Mattsson
+     * @author Ebba Håkansson 
      */
     public Menu() {
         try {
@@ -215,10 +215,10 @@ public class Menu extends JFrame {
         return p;
     }
     
-     /**
-      * Makes the settings window for changing nickname and number of players
-      * @author Ebba Hï¿½kansson, Liam Mattsson
-      */
+
+    //Makes the settings window for changing nickname and number of players
+    //@author Ebba Hï¿½kansson
+    //@author Liam Mattsson
     private void configWindow() {
         Properties properties = createProperty("inst.properties");
         JTextField nicknameField = new JTextField(properties.getProperty("nickname"));
