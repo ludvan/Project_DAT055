@@ -181,6 +181,16 @@ public class ChatClient {
         return userName;
     }
 
+    /**
+     * Showing a JOptionpane informing the player on the points every player had in this round
+     * Showin a JOptionpane informing the player on the highscore table
+     * closing the gamewindow, sending the player back to the menu
+     *
+     * @param str1 - the winners name
+     * @param arr - array containings every participatings players nickname
+     *              and how many points they had on their hand when the match ended
+     * @author Christina Meisoll
+     */
     public void someoneWon(String str1, int[] arr) {
         String[] allNames = new String[arr.length];
 
@@ -223,6 +233,12 @@ public class ChatClient {
         }
     }
 
+    /**
+     * läser från highscore.txt och sparar i HighscoreValues
+     *
+     * @throws IOException - if reading from the file was unsuccessful
+     * @author Christina Meisoll
+     */
     public void getHighscoreValues() {
         try {
             FileReader readfile = new FileReader("highscore.txt");
@@ -235,7 +251,15 @@ public class ChatClient {
         }
     }
 
-    public void updateHighscoreValues(String str) {
+    /**
+     * Updates the highscore.txt file.
+     * If necessary the players name entry is created.
+     * Saves uppdated highscores to the file.
+     *
+     * @throws IOException - if file doesnt exist or saving to it was unsuccessful
+     * @author Christina Meisoll
+     */
+    private void updateHighscoreValues(String str) {
         if (HighscoreValues == null || HighscoreValues.isEmpty()) {
             HighscoreValues = str + ":1;";
         } else {
@@ -309,7 +333,14 @@ public class ChatClient {
 
     }
 
-    public void sortStringArray(String[] stringArr, int size) {
+    /**
+     * sorts an array of string so that the amount of games won is decreasing
+     *
+     * @param stringArr - Array of strings where every string has the form of "username:amount of games won"
+     * @param size - stringArrs length
+     * @author Christina Meisoll
+     */
+    private void sortStringArray(String[] stringArr, int size) {
         String temp = null;
 
         for (int i = 0; i < size; i++) {
@@ -325,7 +356,14 @@ public class ChatClient {
         }
     }
 
-    public String makeItMultiline(String str) {
+    /**
+     * makes the string str multiline by dividing it i substrings at every ";" and replacing these by "\n"
+     *
+     * @param str - a string to divide containing
+     * @return the string with linebreaks
+     * @author Christina Meisoll
+     */
+    private String makeItMultiline(String str) {
         String[] part = str.split(";");
         String temp = "";
         for (int i = 0; i < part.length; i++) {
