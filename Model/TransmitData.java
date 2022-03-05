@@ -1,7 +1,7 @@
 /**
  * Data is transmitted between server and client using this class.
  * @version 22-02-29
- * @author Ebba Håkansson
+ * @author Ebba Hï¿½kansson
  */
 
 package Model;
@@ -20,8 +20,8 @@ public class TransmitData implements Serializable {
 
 	/**
 	 * Creates packet of data to transmit
-	 * @author ANNAN FÖRFATTARE!!!!
-	 * @author Ebba Håkansson
+	 * @author ANNAN Fï¿½RFATTARE!!!!
+	 * @author Ebba Hï¿½kansson
 	 * @param c				the card
 	 * @param id			the players id
 	 * @param chosenColor	the color that the player has chosen
@@ -49,9 +49,9 @@ public class TransmitData implements Serializable {
 		this.has_pressed_uno = uno;
 	}
 
-	public TransmitData(String str1, int[] arr) {
-		this.winner = str1;
-		this.pointArr = arr;
+	public TransmitData(String winner, int[] pointArr) {
+		this.winner = winner;
+		this.pointArr = pointArr;
 	}
 
 	public void setCard(Card c) {

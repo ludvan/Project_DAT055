@@ -233,13 +233,9 @@ public class ChatClient {
         }
     }
 
-    /**
-     * läser från highscore.txt och sparar i HighscoreValues
-     *
-     * @throws IOException - if reading from the file was unsuccessful
-     * @author Christina Meisoll
-     */
-    public void getHighscoreValues() {
+    // @author Christina Meisoll
+    // läser från highscore.txt och sparar i HighscoreValues
+    private void getHighscoreValues() {
         try {
             FileReader readfile = new FileReader("highscore.txt");
             BufferedReader reader = new BufferedReader(readfile);
@@ -251,14 +247,8 @@ public class ChatClient {
         }
     }
 
-    /**
-     * Updates the highscore.txt file.
-     * If necessary the players name entry is created.
-     * Saves uppdated highscores to the file.
-     *
-     * @throws IOException - if file doesnt exist or saving to it was unsuccessful
-     * @author Christina Meisoll
-     */
+    // @author Christina Meisoll
+    // Updates the highscore.txt file.
     private void updateHighscoreValues(String str) {
         if (HighscoreValues == null || HighscoreValues.isEmpty()) {
             HighscoreValues = str + ":1;";
@@ -333,13 +323,8 @@ public class ChatClient {
 
     }
 
-    /**
-     * sorts an array of string so that the amount of games won is decreasing
-     *
-     * @param stringArr - Array of strings where every string has the form of "username:amount of games won"
-     * @param size - stringArrs length
-     * @author Christina Meisoll
-     */
+    // @author Christina Meisoll
+    // sorts an array of string so that the amount of games won is decreasing
     private void sortStringArray(String[] stringArr, int size) {
         String temp = null;
 
@@ -356,13 +341,8 @@ public class ChatClient {
         }
     }
 
-    /**
-     * makes the string str multiline by dividing it i substrings at every ";" and replacing these by "\n"
-     *
-     * @param str - a string to divide containing
-     * @return the string with linebreaks
-     * @author Christina Meisoll
-     */
+    // @author Christina Meisoll
+    // makes the string str multiline by dividing it i substrings at every ";" and replacing these by "\n"
     private String makeItMultiline(String str) {
         String[] part = str.split(";");
         String temp = "";
